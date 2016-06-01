@@ -7,6 +7,7 @@ pydot3k
 pytest>=2.3.5
 tinynumpy>=1.2.1
 esoreader>=1.2.1
+pandas>=0.18
 
 # dev stuff
 # pip install "ipython[all]" # does not work from requirements.txt
