@@ -12,20 +12,35 @@ OUTSIDE_FILM_R = 0.03
 
 
 def rvalue(ddtt):
-    """thickness (m) / conductivity (W/m-K)"""
+    """thickness (m) / conductivity (W/m-K)
+    """
     if ddtt.obj[0] == 'Material':
         thickness = ddtt.obj[ddtt.objls.index('Thickness')]
         conductivity = ddtt.obj[ddtt.objls.index('Conductivity')]
         rvalue = thickness / conductivity
-        return rvalue
     else:
-        rvalue = 0
-        for material in ddtt.obj[2:]:
-            rvalue += material.rvalue
-
+        rvalue = INSIDE_FILM_R + OUTSIDE_FILM_R
+        layers = ddtt.obj[2:]
+        rvalue += sum(ddtt.theidf.getobject('MATERIAL', l).rvalue 
+                      for l in layers)
+    return rvalue
 
 def uvalue(ddtt):
-    pass
+    """reciprocal of the r value (W/K)
+    """
+    return 1 / rvalue(ddtt)
 
 def heatcapacity(ddtt):
-    pass
+    """thickness (m) * density (kg/m3) * specific heat (J/kg-K) * 0.001
+    """
+    if ddtt.obj[0] == 'Material':
+        thickness = ddtt.obj[ddtt.objls.index('Thickness')]
+        density = ddtt.obj[ddtt.objls.index('Density')]
+        specificheat = ddtt.obj[ddtt.objls.index('Specific_Heat')]
+        heatcapacity = thickness * density * specificheat * 0.001
+    else:
+        layers = ddtt.obj[2:]
+        heatcapacity = sum(ddtt.theidf.getobject('MATERIAL', l).heatcapacity 
+                      for l in layers)
+    return heatcapacity
+        

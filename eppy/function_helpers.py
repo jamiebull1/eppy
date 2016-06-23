@@ -66,3 +66,15 @@ def uvalue(ddtt):
 def heatcapacity(ddtt):
     heatcapacity = thermal_properties.heatcapacity(ddtt)
     return heatcapacity
+
+def buildingname(ddtt):
+    """return building name"""
+    idf = ddtt.theidf
+    building = idf.idfobjects['building'.upper()][0]
+    return building.Name
+    
+def zonesurfaces(ddtt):
+    """return al list of surfaces that belong to the zone"""
+    kwargs = {'fields':[u'Zone_Name', ],
+        'iddgroups':[u'Thermal Zones and Surfaces', ]}
+    return ddtt.getreferingobjs(**kwargs)

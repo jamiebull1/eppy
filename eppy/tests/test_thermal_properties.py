@@ -50,20 +50,42 @@ class TestThermalProperties(object):
 
     def test_rvalue_construction(self):
         idf = self.idf
-        construction = idf.getobject('CONSTRUCTION', 'TestConstruction')
-        layers = construction.obj[2:]
-        rvalue = sum(idf.getobject('MATERIAL', l).rvalue for l in layers)
-        rvalue += INSIDE_FILM_R + OUTSIDE_FILM_R
+        c = idf.getobject('CONSTRUCTION', 'TestConstruction')
+        rvalue = c.rvalue
         assert rvalue == 0.35
     
     def test_rvalue_material(self):
         idf = self.idf
-        material = idf.getobject('MATERIAL', 'TestMaterial')
-        rvalue = material.Thickness / material.Conductivity
+        m = idf.getobject('MATERIAL', 'TestMaterial')
+        rvalue = m.Thickness / m.Conductivity
         assert rvalue == 0.2
-        assert material.rvalue == 0.2
+        assert m.rvalue == 0.2
         
+    def test_uvalue_construction(self):
+        idf = self.idf
+        c = idf.getobject('CONSTRUCTION', 'TestConstruction')
+        rvalue = c.uvalue
+        assert rvalue == 1/0.35
     
+    def test_uvalue_material(self):
+        idf = self.idf
+        m = idf.getobject('MATERIAL', 'TestMaterial')
+        uvalue = 1 / (m.Thickness / m.Conductivity)
+        assert uvalue == 1/0.2
+        assert m.uvalue == 1/0.2
+            
+    def test_heatcapacity_construction(self):
+        idf = self.idf
+        c = idf.getobject('CONSTRUCTION', 'TestConstruction')
+        rvalue = c.heatcapacity
+        assert rvalue == 120
+    
+    def test_heatcapacity_material(self):
+        idf = self.idf
+        m = idf.getobject('MATERIAL', 'TestMaterial')
+        heatcapacity = (m.Thickness * m.Specific_Heat  * m.Density * 0.001)
+        assert heatcapacity == 120
+        assert m.heatcapacity == 120
 
 
 
