@@ -13,8 +13,9 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import itertools
-# import geometry
 from eppy.geometry import surface as g_surface
+from eppy.constructions import thermal_properties
+
 
 def grouper(num, iterable, fillvalue=None):
     "Collect data into fixed-length chunks or blocks"
@@ -54,3 +55,14 @@ def tilt(ddtt):
     coords = getcoords(ddtt)
     return g_surface.tilt(coords)
 
+def rvalue(ddtt):
+    rvalue = thermal_properties.rvalue(ddtt)
+    return rvalue
+
+def uvalue(ddtt):
+    uvalue = thermal_properties.uvalue(ddtt)
+    return uvalue
+
+def heatcapacity(ddtt):
+    heatcapacity = thermal_properties.heatcapacity(ddtt)
+    return heatcapacity

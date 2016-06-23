@@ -143,14 +143,18 @@ def addfunctions(dtls, bunchdt):
                     'tilt': fh.tilt,
                     'coords': fh.getcoords,  # needed for debugging
                 }
-    # add common functions
-    # for name in dtls:
-    #     for idfobject in bunchdt[name]:
-    # idfobject.__functions
-    #         idfobject['__functions']['fieldnames'] = fieldnames
-    #         idfobject['__functions']['fieldvalues'] = fieldvalues
-    #         idfobject['__functions']['getrange'] = GetRange(idfobject)
-    #         idfobject['__functions']['checkrange'] = CheckRange(idfobject)
+    cnames = [
+        "Construction",              
+              ]
+    for cname in cnames:
+        if bunchdt.has_key(cname.upper()):
+            constructions = bunchdt[cname.upper()]
+            for construction in constructions:
+                construction.__functions = {
+                    'rvalue': fh.rvalue,
+                    'uvalue': fh.uvalue,
+                    'heatcapacity': fh.heatcapacity,
+                }
 
 
 def idfreader(fname, iddfile, conv=True):

@@ -147,6 +147,22 @@ def addfunctions(dtls, bunchdt):
                     surface.__functions.update(func_dict)
                 except KeyError as e:
                     surface.__functions = func_dict
+    names = [
+        "Material",             
+              ]
+    for name in names:
+        if bunchdt.has_key(name.upper()):
+            materials = bunchdt[name.upper()]
+            for material in materials:
+                func_dict = {
+                    'rvalue': fh.rvalue,
+                    'uvalue': fh.uvalue,
+                    'heatcapacity': fh.heatcapacity,
+                }
+                try:
+                    material.__functions.update(func_dict)
+                except KeyError as e:
+                    material.__functions = func_dict
     # add common functions
     # for name in dtls:
     #     for idfobject in bunchdt[name]:
