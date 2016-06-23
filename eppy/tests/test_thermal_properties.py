@@ -16,8 +16,8 @@ from StringIO import StringIO
 from eppy.iddcurrent import iddcurrent
 from eppy.modeleditor import IDF
 
-from constructions.thermal_properties import INSIDE_FILM_R
-from constructions.thermal_properties import OUTSIDE_FILM_R
+from eppy.constructions.thermal_properties import INSIDE_FILM_R
+from eppy.constructions.thermal_properties import OUTSIDE_FILM_R
 
 
 iddsnippet = iddcurrent.iddtxt
