@@ -12,8 +12,8 @@ import os
 from eppy.useful_scripts.loopdiagram import clean_edges
 from eppy.useful_scripts.loopdiagram import dropnodes
 from eppy.useful_scripts.loopdiagram import edges2nodes
-from eppy.useful_scripts.loopdiagram import make_and_save_diagram
 from eppy.useful_scripts.loopdiagram import replace_colon
+from eppy.useful_scripts.loopdiagram import process_idf
 
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -93,6 +93,4 @@ def test_loopdiagram_integration():
     """End-to-end smoke test on an example file"""
     idd = os.path.join(IDD_FILES, "Energy+V8_1_0.idd")
     fname = os.path.join(IDF_FILES, "V8_1_0/Boiler.idf")
-    make_and_save_diagram(fname, idd)
-    os.remove(os.path.join(IDF_FILES, "V8_1_0/Boiler.png"))
-    os.remove(os.path.join(IDF_FILES, "V8_1_0/Boiler.dot"))
+    process_idf(fname, idd)
