@@ -526,9 +526,9 @@ def save_diagram(fname, g):
     dotname = '%s.dot' % (os.path.splitext(fname)[0])
     pngname = '%s.png' % (os.path.splitext(fname)[0])
     g.write(dotname)
-    print "saved file: %s" % (dotname)
+    print("saved file: %s" % (dotname))
     g.write_png(pngname)
-    print "saved file: %s" % (pngname)
+    print("saved file: %s" % (pngname))
 
 
 def main():
