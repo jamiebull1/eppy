@@ -17,6 +17,12 @@ from eppy.useful_scripts.loopdiagram import makeairplantloop
 from eppy.useful_scripts.loopdiagram import makediagram
 from eppy.useful_scripts.loopdiagram import replace_colon
 
+THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+
+RESOURCES_DIR = os.path.join(THIS_DIR, os.pardir, 'resources')
+
+IDD_FILES = os.path.join(RESOURCES_DIR, 'iddfiles')
+IDF_FILES = os.path.join(RESOURCES_DIR, 'idffiles')
 
 def test_dropnodes():
     """py.test for dropnodes"""
@@ -73,9 +79,8 @@ def test_cleanedges():
         
 def test_loopdiagram_integration():
     """End-to-end smoke test on an example file"""
-    idd = "./eppy/eppy/resources/iddfiles/Energy+V8_1_0.idd"
-    print (os.path.abspath(idd))
-    fname = "./eppy/eppy/resources/idffiles/V8_1_0/Boiler.idf"
+    idd = os.path.join(IDD_FILES, "Energy+V8_1_0.idd")
+    fname = os.path.join(IDF_FILES, "V8_1_0/Boiler.idf")
     data, commdct, _ = readidf.readdatacommdct(fname, iddfile=idd)
     edges = makeairplantloop(data, commdct)
     edges = clean_edges(edges)
