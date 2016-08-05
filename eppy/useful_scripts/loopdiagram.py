@@ -506,20 +506,29 @@ def clean_edges(arg):
         return replace_colon(arg) # not a sequence so just return repr
 
     
-def make_and_save_diagram(fname, iddfile):
+def make_and_save_diagram(args):
+    g = process_idf(args.file, args.idd)
+    save_diagram(args.file, g)
+
+
+def process_idf(fname, iddfile):
     data, commdct, _iddindex = readidf.readdatacommdct(fname, iddfile=iddfile)
     print("constructing the loops")
     edges = makeairplantloop(data, commdct)
     print("cleaning edges")
     edges = clean_edges(edges)
     print("making the diagram")
-    g = makediagram(edges)
+
+    return makediagram(edges)
+
+    
+def save_diagram(fname, g):
     dotname = '%s.dot' % (os.path.splitext(fname)[0])
     pngname = '%s.png' % (os.path.splitext(fname)[0])
     g.write(dotname)
-    print("saved file: %s" % (dotname))
+    print "saved file: %s" % (dotname)
     g.write_png(pngname)
-    print("saved file: %s" % (pngname))
+    print "saved file: %s" % (pngname)
 
 
 def main():
@@ -534,7 +543,7 @@ def main():
         help='location of idf file = ./somewhere/f1.idf',
         required=True)
     args = parser.parse_args()
-    make_and_save_diagram(args.file, args.idd)
+    make_and_save_diagram(args)
 
 
 if __name__ == "__main__":
