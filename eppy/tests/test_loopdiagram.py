@@ -9,13 +9,12 @@
 
 import os
 
-from eppy.EPlusInterfaceFunctions import readidf
-
 from eppy.useful_scripts.loopdiagram import clean_edges
 from eppy.useful_scripts.loopdiagram import dropnodes
-from eppy.useful_scripts.loopdiagram import makeairplantloop
-from eppy.useful_scripts.loopdiagram import makediagram
+from eppy.useful_scripts.loopdiagram import edges2nodes
+from eppy.useful_scripts.loopdiagram import make_and_save_diagram
 from eppy.useful_scripts.loopdiagram import replace_colon
+
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -59,6 +58,17 @@ def test_dropnodes():
     result = dropnodes(edges)
     assert result == theresult
     
+
+def test_edges2nodes():
+    """py.test for edges2nodes"""
+    thedata = (([("a", "b"), ("b", "c"), ("c", "d")],
+    ["a", "b", "c", "d"]), # edges, nodes
+    )
+    for edges, nodes in thedata:
+        result = edges2nodes(edges)   
+        assert result == nodes
+        
+
 def test_replace_colon():
     """py.test for replace_colon"""
     data = (("zone:aap", '@', "zone@aap"),# s, r, replaced
@@ -67,6 +77,7 @@ def test_replace_colon():
         result = replace_colon(s, r)
         assert result == replaced
         
+
 def test_cleanedges():
     """py.test for cleanedges"""
     data = (([('a:a', 'a'), (('a', 'a'), 'a:a'), ('a:a', ('a', 'a'))],
@@ -77,11 +88,11 @@ def test_cleanedges():
         result = clean_edges(edg)
         assert result == clean_edg
         
+        
 def test_loopdiagram_integration():
     """End-to-end smoke test on an example file"""
     idd = os.path.join(IDD_FILES, "Energy+V8_1_0.idd")
     fname = os.path.join(IDF_FILES, "V8_1_0/Boiler.idf")
-    data, commdct, _ = readidf.readdatacommdct(fname, iddfile=idd)
-    edges = makeairplantloop(data, commdct)
-    edges = clean_edges(edges)
-    g = makediagram(edges)
+    make_and_save_diagram(fname, idd)
+    os.remove(os.path.join(IDF_FILES, "V8_1_0/Boiler.png"))
+    os.remove(os.path.join(IDF_FILES, "V8_1_0/Boiler.dot"))

@@ -32,7 +32,6 @@ pathnameto_eplusscripting = "../../"
 sys.path.append(pathnameto_eplusscripting)
 
 
-
 def firstisnode(edge):
     if type(edge[0]) == tuple:
         return True
@@ -129,16 +128,6 @@ def edges2nodes(edges):
     return justnodes
     
     
-def test_edges2nodes():
-    """py.test for edges2nodes"""
-    thedata = (([("a", "b"), ("b", "c"), ("c", "d")],
-    ["a", "b", "c", "d"]), # edges, nodes
-    )
-    for edges, nodes in thedata:
-        result = edges2nodes(edges)   
-        assert result == nodes
-        
-
 def makediagram(edges):
     """make the diagram with the edges"""
     graph = pydot.Dot(graph_type='digraph')
