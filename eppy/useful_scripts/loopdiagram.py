@@ -506,9 +506,9 @@ def clean_edges(arg):
         return replace_colon(arg) # not a sequence so just return repr
 
     
-def make_and_save_diagram(args):
-    g = process_idf(args.file, args.idd)
-    save_diagram(args.file, g)
+def make_and_save_diagram(fname, iddfile):
+    g = process_idf(fname, iddfile)
+    save_diagram(fname, g)
 
 
 def process_idf(fname, iddfile):
@@ -543,7 +543,7 @@ def main():
         help='location of idf file = ./somewhere/f1.idf',
         required=True)
     args = parser.parse_args()
-    make_and_save_diagram(args)
+    make_and_save_diagram(args.file, args.idd)
 
 
 if __name__ == "__main__":
