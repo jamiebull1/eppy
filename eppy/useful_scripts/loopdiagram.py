@@ -19,7 +19,10 @@ import sys
 
 import argparse
 from eppy.EPlusInterfaceFunctions import readidf
-import pydot
+try:
+    import pydot
+except ImportError:
+    import pydot3k as pydot
 from six import string_types
 
 import eppy.loops as loops
