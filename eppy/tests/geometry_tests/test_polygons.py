@@ -1,0 +1,346 @@
+# Copyright (c) 2016 Jamie Bull
+# =======================================================================
+#  Distributed under the MIT License.
+#  (See accompanying file LICENSE or copy at
+#  http://opensource.org/licenses/MIT)
+# =======================================================================
+"""pytest for int2lines.py"""
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from eppy.geometry.polygons import Point2D
+from eppy.geometry.polygons import Point3D
+from eppy.geometry.polygons import Polygon
+from eppy.geometry.polygons import Polygon3D
+from eppy.geometry.polygons import difference_2D_polys
+from eppy.geometry.polygons import difference_3D_polys
+from eppy.geometry.polygons import intersect_2D_polys
+from eppy.geometry.polygons import intersect_3D_polys
+from eppy.geometry.polygons import union_2D_polys
+from eppy.geometry.polygons import union_3D_polys
+
+
+def test_polygon_repr():
+    s2D = Polygon([(0,0), (2,0), (2,0), (0,0)])  # vertical
+    assert eval(repr(s2D)) == s2D
+    
+    s3D = Polygon3D([(0,0,0), (2,0,0), (2,0,0), (0,0,0)])  # vertical
+    assert eval(repr(s3D)) == s3D
+
+def test_polygon_attributes():
+    poly2d = Polygon([(0,0), (0,1), (1,1), (1,0)])
+    assert len(poly2d) == 4
+    assert poly2d.xs == [0,0,1,1]
+    assert poly2d.ys == [0,1,1,0] 
+    assert poly2d.zs == [0,0,0,0]
+    assert poly2d.vertices_list == [(0,0), (0,1), (1,1), (1,0)]
+    assert poly2d.vertices == [Point2D(*v) for v in poly2d]
+    
+def test_polygon3d_attributes():
+    poly3d = Polygon3D([(0,0,0), (0,1,1), (1,1,1), (1,0,0)])
+    assert len(poly3d) == 4
+    assert poly3d.xs == [0,0,1,1]
+    assert poly3d.ys == [0,1,1,0] 
+    assert poly3d.zs == [0,1,1,0]
+    assert poly3d.vertices_list == [(0,0,0), (0,1,1), (1,1,1), (1,0,0)]
+    assert poly3d.vertices == [Point3D(*v) for v in poly3d]
+    assert poly3d.distance == 0
+    assert poly3d.is_horizontal == False
+    assert poly3d.normal_vector == [0.0, 0.5, -0.5]
+    poly3d_2 = Polygon3D([(0,1,1), (0,1,2), (1,1,2), (1,1,1)])
+    assert poly3d_2.normal_vector == [0.0, 0.5, -0.5]
+    assert poly3d_2.projection_axis == 1
+    assert poly3d.is_coplanar(poly3d_2)
+
+def test_polygons_not_equal():
+    # different normal vector
+    poly3d = Polygon3D([(0,0,0), (0,1,1), (1,1,1), (1,0,0)])
+    poly3d_2 = Polygon3D([(0,0,2), (0,1,2), (1,1,2), (1,0,2)])
+    assert poly3d.normal_vector != poly3d_2.normal_vector
+    result = poly3d == poly3d_2
+    assert result == False
+    # different distance
+    poly3d = Polygon3D([(0,0,1), (1,0,1), (1,1,1), (0,1,1)])
+    poly3d_2 = Polygon3D([(1,1,1), (2,1,1), (2,2,1), (1,2,1)])
+    assert poly3d.normal_vector == poly3d_2.normal_vector
+    assert poly3d.distance != poly3d_2.distance
+    result = poly3d == poly3d_2
+    assert result == False
+    
+def test_rotate():
+    """Test for rotating 3D polygons into 2D and back again
+    """
+    # At the origin
+    s1 = Polygon3D([(0,0,2), (2,0,2), (0,0,0)])  # vertical
+    expected = Polygon([(0,2), (2,2), (0,0)])
+    # convert to 2D    
+    result = s1.project_to_2D()
+    assert result == expected
+    
+    # revert to 3D
+    result = result.project_to_3D(s1)
+    assert result == s1
+    
+    # Away from the origin
+    s1 = Polygon3D([(1,0,2), (3,0,2), (1,0,0)])  # vertical
+    expected = Polygon([(1,2), (3,2), (1,0)])
+    # convert to 2D    
+    result = s1.project_to_2D()
+
+    assert result == expected
+
+    # revert to 3D
+    result = result.project_to_3D(s1)
+    assert result == s1
+
+    # Away from the origin
+    s1 = Polygon3D([(0,1,1), (2,2,0), (2,2,2), (0,1,2)])  # vertical
+    expected = Polygon([(0.0, 1.0), (2.0, 0.0), (2.0, 2.0), (0.0, 2.0)])
+
+    # convert to 2D    
+    result = s1.project_to_2D()
+    assert result == expected
+
+    # revert to 3D
+    result = result.project_to_3D(s1)
+    assert result == s1
+
+
+def test_union_2D_polys_single():
+    """Simplest test for union_2D_polys
+    
+    This has two squares in the horizontal plane which overlap in one place.
+    Fails if the expected union shape is not returned.
+    
+    """
+    # surface is already a flat plane with z == 0
+    s1 = Polygon([(0,2), (2,2), (2,0), (0,0)])  # clockwise
+    s2 = Polygon([(1,3), (3,3), (3,1), (1,1)])  # clockwise
+    expected = [Polygon(reversed([(0,0), (0,2), (1,2), (1,3),
+                                  (3,3), (3,1), (2,1), (2,0)]))]  #counterclockwise
+    
+    result = union_2D_polys(s1, s2)
+    for res, exp in zip(result, expected):
+        assert res == exp
+
+    result = s1.union(s2)
+    assert res == exp
+
+    result = s2.union(s1)
+    assert res == exp
+
+
+def test_intersect_2D_polys_single():
+    """Simplest test for intersect_2D_polys
+    
+    This has two squares in the horizontal plane which overlap in one place.
+    Fails if the expected overlapping shape is not returned.
+    
+    """
+    # surface is already a flat plane with z == 0
+    s1 = Polygon([(0,2), (2,2), (2,0), (0,0)])  # clockwise
+    s2 = Polygon([(1,3), (3,3), (3,1), (1,1)])  # clockwise
+    expected = [Polygon([(1,1), (2,1), (2,2), (1,2)])]  #clockwise
+    
+    result = s1.intersect(s2)
+    for res, exp in zip(result, expected):
+        assert res == exp
+
+    result = s2.intersect(s1)
+    for res, exp in zip(result, expected):
+        assert res == exp
+
+
+def test_difference_2D_polys_single():
+    """Simplest test for difference_2D_polys
+    
+    This has two squares in the horizontal plane which overlap in one place.
+    Fails if the two original polygons do not have the intersection removed.
+    
+    """
+    s1 = Polygon([(0,2), (2,2), (2,0), (0,0)])  # clockwise
+    s2 = Polygon([(1,3), (3,3), (3,1), (1,1)])  # clockwise
+    
+    # clockwise
+    ex_s1 = [Polygon(reversed([(0,2), (1,2), (1,1), (2,1), (2,0), (0,0)]))]
+    ex_s2 = [Polygon(reversed([(1,3), (3,3), (3,1), (2,1), (2,2), (1,2)]))]
+    expected = [ex_s1, ex_s2]
+
+    result = [s1.difference(s2), s2.difference(s1)]
+    assert result[0] == expected[0]
+    assert result[1] == expected[1]
+
+
+def test_union_3D_polys_single():
+    """Simplest test for union_3D_polys
+    
+    This has two squares in the horizontal plane which overlap in one place.
+    Fails if the expected union shape is not returned.
+    
+    """
+    # surface is already a flat plane with z == 0
+    s1 = Polygon3D([(0,2,0), (2,2,0), (2,0,0), (0,0,0)])  # clockwise
+    s2 = Polygon3D([(1,3,0), (3,3,0), (3,1,0), (1,1,0)])  # clockwise
+    expected = [Polygon3D(reversed([(0,0,0), (0,2,0), (1,2,0), (1,3,0),
+                           (3,3,0), (3,1,0), (2,1,0), (2,0,0)]))]  #counterclockwise
+    
+    result = union_3D_polys(s1, s2)
+    for res, exp in zip(result, expected):
+        assert res == exp
+
+    result = s1.union(s2)
+    assert res == exp
+
+    result = s2.union(s1)
+    assert res == exp
+
+
+def test_intersect_3D_polys_single():
+    """Simplest test for intersect_3D_polys
+    
+    This has two squares in the horizontal plane which overlap in one place.
+    Fails if the expected overlapping shape is not returned.
+    
+    """
+    # surface is already a flat plane with z == 0
+    s1 = Polygon3D([(0,2,0), (2,2,0), (2,0,0), (0,0,0)])  # clockwise
+    s2 = Polygon3D([(1,3,0), (3,3,0), (3,1,0), (1,1,0)])  # clockwise
+    expected = [Polygon3D([(1,1,0), (2,1,0), (2,2,0), (1,2,0)])]  #clockwise
+    
+    result = intersect_3D_polys(s1, s2)
+    for res, exp in zip(result, expected):
+        assert res == exp
+
+
+def test_difference_3D_polys_single():
+    """Simplest test for difference_3D_polys
+    
+    This has two squares in the horizontal plane which overlap in one place.
+    Fails if the two original polygons do not have the intersection removed.
+    
+    """
+    # surface is already a flat plane with z == 0
+    s1 = Polygon3D([(0,2,0), (2,2,0), (2,0,0), (0,0,0)])  # clockwise
+    s2 = Polygon3D([(1,3,0), (3,3,0), (3,1,0), (1,1,0)])  # clockwise
+    
+    # clockwise
+    ex_s1 = [Polygon3D(reversed([(0,2,0), (1,2,0), (1,1,0), (2,1,0), (2,0,0), (0,0,0)]))]
+    ex_s2 = [Polygon3D(reversed([(1,3,0), (3,3,0), (3,1,0), (2,1,0), (2,2,0), (1,2,0)]))]
+    expected = [ex_s1, ex_s2]
+
+    result = [difference_3D_polys(s1, s2), difference_3D_polys(s2, s1)]
+    assert result[0] == expected[0]
+    assert result[1] == expected[1]
+
+
+def test_intersect_no_overlap():
+    # surfaces don't overlap
+    s1 = Polygon3D([(0,2,0), (2,2,0), (2,0,0), (0,0,0)])  # clockwise
+    s2 = Polygon3D([(2,3,0), (3,3,0), (3,1,0), (2,1,0)])  # clockwise
+    expected = False  #clockwise
+    result = intersect_3D_polys(s1, s2)
+    assert result == expected
+
+
+def test_difference_no_difference():
+    # surfaces don't overlap
+    s1 = Polygon3D([(0,2,0), (2,2,0), (2,0,0), (0,0,0)])  # clockwise
+    s2 = s1
+    expected = False  #clockwise
+    result = difference_3D_polys(s1, s2)
+    assert result == expected
+
+
+def test_intersect_3D_polys_multi():
+    """Test for intersect_3D_polys with two overlapping regions
+    
+    This has two shapes in the horizontal plane which overlap in two places.
+    Fails if the overlapping shapes are not returned as a new polygons.
+
+    """    
+    # surface is already a flat plane with z == 0
+    s1 = Polygon3D([(0,0,0), (5,0,0), (5,2,0), (0,2,0)])  # counterclockwise
+    s2 = Polygon3D([(1,1,0), (2,1,0), (2,2,0), (3,2,0),
+                     (3,1,0), (4,1,0), (4,3,0), (1,3,0)])  # counterclockwise
+    overlap = [Polygon3D([(1,1,0), (2,1,0), (2,2,0), (1,2,0)]),
+               Polygon3D([(3,1,0), (4,1,0), (4,2,0), (3,2,0)])]
+    
+    ex_s1 = Polygon3D([(0,0,0), (5,0,0), (5,2,0), (4,2,0), (4,1,0), (3,1,0), 
+                        (3,2,0), (2,2,0), (2,1,0), (1,1,0), (1,2,0), (0,2,0)])
+    ex_s2 = Polygon3D([(1,2,0), (4,2,0), (4,3,0), (1,3,0)])
+
+    expected = [ex_s1, ex_s2]
+    expected.extend(overlap)
+    result = intersect_3D_polys(s1, s2)
+    
+    for res, exp in zip(result, overlap):
+        assert res == exp
+
+    result = s1.intersect(s2)
+    for res, exp in zip(result, overlap):
+        assert res == exp
+
+    result = s2.intersect(s1)
+    for res, exp in zip(result, overlap):
+        assert res == exp
+
+
+def test_difference_3D_polys_multi():
+    """Test for difference_3D_polys with two overlapping regions
+    
+    This has two shapes in the horizontal plane which overlap in two places.
+    Fails if the overlapping shapes are not returned as a new polygons.
+
+    """    
+    # surface is already a flat plane with z == 0
+    s1 = Polygon3D([(0,0,0), (5,0,0), (5,2,0), (0,2,0)])  # counterclockwise
+    s2 = Polygon3D([(1,1,0), (2,1,0), (2,2,0), (3,2,0),
+                     (3,1,0), (4,1,0), (4,3,0), (1,3,0)])  # counterclockwise
+    
+    ex_s1 = [Polygon3D([(0,0,0), (5,0,0), (5,2,0), (4,2,0), (4,1,0), (3,1,0), 
+                        (3,2,0), (2,2,0), (2,1,0), (1,1,0), (1,2,0), (0,2,0)])]
+    ex_s2 = [Polygon3D([(1,2,0), (4,2,0), (4,3,0), (1,3,0)])]
+
+    expected = [ex_s1, ex_s2]
+    result = [difference_3D_polys(s1, s2), difference_3D_polys(s2, s1)]
+    
+    for res, exp in zip(result, expected):
+        assert len(res) == len(exp)
+        for r, e  in zip(res, exp):
+            assert r == e
+            
+    assert s1.difference(s2) == ex_s1
+    assert s2.difference(s1) == ex_s2
+
+
+def test_surface_normal():
+    poly = Polygon3D([Point3D(0.0, 0.0, 0.0),
+                      Point3D(1.0, 0.0, 0.0),
+                      Point3D(1.0, 1.0, 0.0),
+                      Point3D(0.0, 1.0, 0.0)])
+    assert list(poly.normal_vector) == [0.0, 0.0, 1.0]  # for a horizontal surface
+
+    poly = Polygon3D(reversed([Point3D(0.0, 0.0, 0.0),
+                      Point3D(1.0, 0.0, 0.0),
+                      Point3D(1.0, 1.0, 0.0),
+                      Point3D(0.0, 1.0, 0.0)]))
+    assert list(poly.normal_vector) == [0.0, 0.0, -1.0]  # for a horizontal surface
+
+    poly = Polygon3D([Point3D(0.0, 0.0, 0.0),
+                      Point3D(2.0, 1.0, 0.0),
+                      Point3D(4.0, 0.0, 0.0),
+                      Point3D(4.0, 3.0, 0.0),
+                      Point3D(2.0, 2.0, 0.0),
+                      Point3D(0.0, 3.0, 0.0)])
+    assert list(poly.normal_vector) == [0.0, 0.0, 1.0]  # for a horizontal surface
+
+    poly = Polygon3D(reversed([Point3D(0.0, 0.0, 0.0),
+                      Point3D(2.0, 1.0, 0.0),
+                      Point3D(4.0, 0.0, 0.0),
+                      Point3D(4.0, 3.0, 0.0),
+                      Point3D(2.0, 2.0, 0.0),
+                      Point3D(0.0, 3.0, 0.0)]))
+    assert list(poly.normal_vector) == [0.0, 0.0, -1.0]  # for a horizontal surface

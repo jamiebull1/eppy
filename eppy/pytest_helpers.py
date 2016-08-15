@@ -12,13 +12,20 @@ import os
 
 def almostequal(first, second, places=7):
     """docstring for almostequal"""
-    # convert to float first
+    # try converting to float first
     try:
         first = float(first)
         second = float(second)
     except ValueError:
         # handle non-float types
         return str(first) == str(second)
+    except TypeError:
+        # handle iterables
+        for a, b in zip(first, second):
+            return almostequal(a, b) 
+    # test for equality
+    if first == second:
+        return True
     # test floats for near-equality
     if round(abs(second-first), places) != 0:
         return False

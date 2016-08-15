@@ -1,8 +1,8 @@
 language: cpp
 
 os: 
-  - osx
   - linux
+  - osx
 
 dist: trusty
 sudo: required 
