@@ -30,7 +30,7 @@ idf_txt = """
     Zone, osgb02 Thermal Zone, 0.0, 0.0, 0.0, 0.0, , 1, , , , , , Yes;
     BuildingSurface:Detailed, osgb01_lv01_FLOOR, FLOOR, , osgb01 Thermal Zone, ground, , NoSun, NoWind, , , 1.0, 2.1, 0.0, 2.0, 2.0, 0.0, 2.0, 1.0, 0.0, 1.0, 1.1, 0.0;
     BuildingSurface:Detailed, osgb01_lv01_WALL_0001, WALL, , osgb01 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 1.0, 1.1, 0.5, 1.0, 1.1, 0.0, 1.0, 2.1, 0.0, 1.0, 2.1, 0.5;
-    BuildingSurface:Detailed, osgb01_lv01_WALL_0002, WALL, , osgb01 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 1.0, 2.1, 0.5, 1.0, 2.1, 0.0, 2.0, 2.0, 0.0, 2.0, 2.0, 0.5;
+    BuildingSurface:Detailed, match_01, WALL, , osgb01 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 1.0, 2.1, 0.5, 1.0, 2.1, 0.0, 2.0, 2.0, 0.0, 2.0, 2.0, 0.5;
     BuildingSurface:Detailed, osgb01_lv01_WALL_0003, WALL, , osgb01 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 2.0, 2.0, 0.5, 2.0, 2.0, 0.0, 2.0, 1.0, 0.0, 2.0, 1.0, 0.5;
     BuildingSurface:Detailed, osgb01_lv01_WALL_0004, WALL, , osgb01 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 2.0, 1.0, 0.5, 2.0, 1.0, 0.0, 1.0, 1.1, 0.0, 1.0, 1.1, 0.5;
     BuildingSurface:Detailed, osgb01_lv02_FLOOR, FLOOR, , osgb01 Thermal Zone, ground, , NoSun, NoWind, , , 1.0, 2.1, 0.5, 2.0, 2.0, 0.5, 2.0, 1.0, 0.5, 1.0, 1.1, 0.5;
@@ -38,7 +38,7 @@ idf_txt = """
     BuildingSurface:Detailed, osgb02_lv01_WALL_0001, WALL, , osgb02 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 1.5, 2.05, 0.5, 1.5, 2.05, 0.0, 1.5, 3.05, 0.0, 1.5, 3.05, 0.5;
     BuildingSurface:Detailed, osgb02_lv01_WALL_0002, WALL, , osgb02 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 1.5, 3.05, 0.5, 1.5, 3.05, 0.0, 2.5, 2.95, 0.0, 2.5, 2.95, 0.5;
     BuildingSurface:Detailed, osgb02_lv01_WALL_0003, WALL, , osgb02 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 2.5, 2.95, 0.5, 2.5, 2.95, 0.0, 2.5, 1.95, 0.0, 2.5, 1.95, 0.5;
-    BuildingSurface:Detailed, osgb02_lv01_WALL_0004, WALL, , osgb02 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 2.5, 1.95, 0.5, 2.5, 1.95, 0.0, 1.5, 2.05, 0.0, 1.5, 2.05, 0.5;
+    BuildingSurface:Detailed, match_02, WALL, , osgb02 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 2.5, 1.95, 0.5, 2.5, 1.95, 0.0, 1.5, 2.05, 0.0, 1.5, 2.05, 0.5;
     BuildingSurface:Detailed, osgb02_lv02_FLOOR, FLOOR, , osgb02 Thermal Zone, ground, , NoSun, NoWind, , , 1.5, 3.05, 0.5, 2.5, 2.95, 0.5, 2.5, 1.95, 0.5, 1.5, 2.05, 0.5;
 """
 
@@ -67,4 +67,10 @@ class TestIntersectMatch():
         ending = len(idf.idfobjects['BUILDINGSURFACE:DETAILED'])
         assert starting == 12
         assert ending == 14
-        idf.printidf()
+
+        result = [w for w in idf.idfobjects['BUILDINGSURFACE:DETAILED']
+                     if w.Name == 'match_01_new_1']
+        assert len(result) == 1
+        result = [w for w in idf.idfobjects['BUILDINGSURFACE:DETAILED']
+                     if w.Name == 'match_02_new_1']
+        assert len(result) == 1

@@ -14,6 +14,7 @@ from __future__ import unicode_literals
 
 from copy import deepcopy
 import itertools
+from six.moves import zip_longest
 
 from eppy.geometry.polygons import Polygon3D
 
@@ -53,19 +54,17 @@ def intersect_idf_surfaces(idf):
         # create new surfaces for the intersects, and their reflections
         for i, s in enumerate(intersects, 1):
             # regular intersection
-            new = deepcopy(s1[0])
+            new = idf.copyidfobject(s1[0])
             new.Name = "%s_%s_%i" % (s1[0].Name, 'new', i)
             set_coords(new, s.points_matrix, global_geometry_rules)
             new.Outside_Boundary_Condition = "Zone"
             new.Outside_Boundary_Condition_Object = s2[0].Zone_Name
-            idf.copyidfobject(new)
             # inverted intersection
-            new_inv = deepcopy(s2[0])
+            new_inv = idf.copyidfobject(s2[0])
             new_inv.Name = "%s_%s_%i" % (s2[0].Name, 'new', i)
             new_inv.Outside_Boundary_Condition = "Zone"
             new_inv.Outside_Boundary_Condition_Object = s1[0].Zone_Name
             set_coords(new_inv, reversed(s.points_matrix), global_geometry_rules)
-            idf.copyidfobject(new_inv)
         # edit the original two surfaces
         s1_new = s1[1].difference(s2[1])
         s2_new = s2[1].difference(s1[1])
@@ -109,7 +108,7 @@ def set_coords(surface, new_coords, ggr):
     vertex_fields = surface.fieldnames[first_x:last_x]
     
     # set the vertex field values
-    for field, x in itertools.izip_longest(vertex_fields, coords, fillvalue=""):
+    for field, x in zip_longest(vertex_fields, coords, fillvalue=""):
         surface[field] = x
     
     

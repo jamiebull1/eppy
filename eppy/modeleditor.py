@@ -763,14 +763,14 @@ class IDF(object):
         Parameters
         ----------
         idfobject : EpBunch object
-            The IDF object to remove. This usually comes from another idf file,
+            The IDF object to copy. This usually comes from another idf file,
             or it can be used to copy within this idf file.
 
         """
-        addthisbunch(self.idfobjects,
-                     self.model,
-                     self.idd_info,
-                     idfobject, self)
+        return addthisbunch(self.idfobjects,
+                            self.model,
+                            self.idd_info,
+                            idfobject, self)
 
     def getobject(self, key, name):
         """Fetch an IDF object given key and name.
