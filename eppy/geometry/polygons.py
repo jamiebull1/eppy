@@ -470,7 +470,7 @@ def normal_vector(poly):
     """
     n = [0.0, 0.0, 0.0]
 
-    for i, v_curr in enumerate(poly[:-1]):
+    for i, v_curr in enumerate(poly):
         v_next = poly[(i+1) % len(poly)]
         n[0] += (v_curr.y - v_next.y) * (v_curr.z + v_next.z)
         n[1] += (v_curr.z - v_next.z) * (v_curr.x + v_next.x)

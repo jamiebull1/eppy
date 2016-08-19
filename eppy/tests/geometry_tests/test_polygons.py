@@ -50,11 +50,12 @@ def test_polygon3d_attributes():
     assert poly3d.distance == 0
     assert poly3d.is_horizontal == False
     assert poly3d.normal_vector == [0.0, 0.5, -0.5]
-    poly3d_2 = Polygon3D([(0,1,1), (0,1,2), (1,1,2), (1,1,1)])
+    poly3d_2 = Polygon3D([(0,1,1), (0,2,2), (1,2,2), (1,1,1)])
     assert poly3d_2.normal_vector == [0.0, 0.5, -0.5]
     assert poly3d_2.projection_axis == 1
-    assert poly3d.is_coplanar(poly3d_2)
-
+    result = poly3d.is_coplanar(poly3d_2)
+    assert result
+    
 def test_polygons_not_equal():
     # different normal vector
     poly3d = Polygon3D([(0,0,0), (0,1,1), (1,1,1), (1,0,0)])
@@ -63,8 +64,8 @@ def test_polygons_not_equal():
     result = poly3d == poly3d_2
     assert result == False
     # different distance
-    poly3d = Polygon3D([(0,0,1), (1,0,1), (1,1,1), (0,1,1)])
-    poly3d_2 = Polygon3D([(1,1,1), (2,1,1), (2,2,1), (1,2,1)])
+    poly3d = Polygon3D([(0,0,0), (0,1,1), (1,1,1), (1,0,0)])
+    poly3d_2 = Polygon3D([(0,1,2), (0,2,3), (1,2,3), (1,1,2)])
     assert poly3d.normal_vector == poly3d_2.normal_vector
     assert poly3d.distance != poly3d_2.distance
     result = poly3d == poly3d_2
@@ -344,3 +345,10 @@ def test_surface_normal():
                       Point3D(2.0, 2.0, 0.0),
                       Point3D(0.0, 3.0, 0.0)]))
     assert list(poly.normal_vector) == [0.0, 0.0, -1.0]  # for a horizontal surface
+    
+    poly = Polygon3D([[ 1.,  1.1,  0.5],
+                      [ 1.,  1.1,  0.],
+                      [ 1.,  2.1,  0.],
+                      [ 1.,  2.1,  0.5]])
+    assert list(poly.normal_vector) == [1.0, 0.0, 0.0]  # for a horizontal surface
+    
