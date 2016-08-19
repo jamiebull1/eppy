@@ -4,6 +4,7 @@
 #  (See accompanying file LICENSE or copy at
 #  http://opensource.org/licenses/MIT)
 # =======================================================================
+from eppy.pytest_helpers import almostequal
 """
 Heavy lifting geometry for IDF surfaces.
 
@@ -374,18 +375,27 @@ class Polygon3D(Polygon):
     def is_coplanar(self, other):
         """Check if polygon is in the same plane as another polygon.
         
+        This includes the same plane but opposite orientation.
+        
         Parameters
         ----------
         other : Polygon3D
-            Another polygon
+            Another polygon.
         
         Returns
         -------
         bool
         
         """
-        return (self.normal_vector == other.normal_vector and 
-                self.distance == other.distance)
+        if (almostequal(self.normal_vector, other.normal_vector) and
+                almostequal(self.distance, other.distance)):
+            return True
+        elif (almostequal(self.normal_vector, 
+                          inverse_vector(other.normal_vector)) and
+              almostequal(self.distance, -other.distance)):
+            return True
+        else:
+            return False
 
     def project_to_2D(self):
         """Project the 3D polygon into 2D space.
@@ -405,6 +415,18 @@ class Polygon3D(Polygon):
         
         return Polygon([pt[:2] for pt in projected_points])
     
+    def invert_orientation(self):
+        """Reverse the order of the vertices.
+        
+        This is to create a matching surface, e.g. the other side of a wall.
+        
+        Returns
+        -------
+        Polygon3D
+        
+        """
+        return Polygon3D(reversed(self.vertices))
+        
     def union(self, poly):
         """Union with another 3D polygon.
         
@@ -496,6 +518,22 @@ def normalise_vector(v):
     normalised_v = [i / magnitude for i in v]
     
     return normalised_v
+
+
+def inverse_vector(v):
+    """Convert a vector to the same vector but in the opposite direction
+    
+    Parameters
+    ----------
+    v : list
+        The vector.
+        
+    Returns
+    -------
+    list
+    
+    """    
+    return [-i for i in v]
 
 
 def prep_3D_polys(poly1, poly2):

@@ -57,6 +57,8 @@ def test_polygon3d_attributes():
     assert result
     
 def test_polygons_not_equal():
+    """Test the check for equality between polygons.
+    """
     # different normal vector
     poly3d = Polygon3D([(0,0,0), (0,1,1), (1,1,1), (1,0,0)])
     poly3d_2 = Polygon3D([(0,0,2), (0,1,2), (1,1,2), (1,0,2)])
@@ -70,6 +72,17 @@ def test_polygons_not_equal():
     assert poly3d.distance != poly3d_2.distance
     result = poly3d == poly3d_2
     assert result == False
+    
+def test_reflect():
+    """
+    Test that a polygon with inverted orientation is seen as coplanar with the
+    original polygon, but not seen as equal.
+    
+    """
+    poly3d = Polygon3D([(0,0,0), (0,1,1), (1,1,1), (1,0,0)])
+    poly3d_inv = poly3d.invert_orientation()
+    assert poly3d != poly3d_inv
+    assert poly3d.is_coplanar(poly3d_inv)
     
 def test_rotate():
     """Test for rotating 3D polygons into 2D and back again
@@ -235,6 +248,16 @@ def test_difference_3D_polys_single():
     result = [difference_3D_polys(s1, s2), difference_3D_polys(s2, s1)]
     assert result[0] == expected[0]
     assert result[1] == expected[1]
+    
+def test_intersect_3D_polys_angled():
+    s1 = Polygon3D([(2.5,1.95,0.5), (2.5,1.95,0), (1.5,2.05,0), (1.5,2.05,0.5)])  # clockwise
+    s2 = Polygon3D([(1,2.1,0.5), (1,2.1,0), (2,2,0), (2,2,0.5)])  # clockwise
+    expected = [Polygon3D([(2.0, 2.0, 0.5), (1.5, 2.05, 0.5),
+                           (1.5, 2.05, 0.0), (2.0, 2.0, 0.0)])]
+
+    result = intersect_3D_polys(s1, s2)
+
+    assert result == expected
 
 
 def test_intersect_no_overlap():
