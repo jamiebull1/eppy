@@ -765,6 +765,10 @@ class IDF(object):
         idfobject : EpBunch object
             The IDF object to copy. This usually comes from another idf file,
             or it can be used to copy within this idf file.
+            
+        Returns
+        -------
+        EpBunch object.
 
         """
         return addthisbunch(self.idfobjects,
