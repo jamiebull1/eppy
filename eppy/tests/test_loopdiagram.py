@@ -9,6 +9,9 @@
 
 import os
 
+from eppy.pytest_helpers import IDD_FILES
+from eppy.pytest_helpers import IDF_FILES
+from eppy.pytest_helpers import do_integration_tests
 import pytest
 
 from eppy.useful_scripts.loopdiagram import clean_edges
@@ -16,15 +19,7 @@ from eppy.useful_scripts.loopdiagram import dropnodes
 from eppy.useful_scripts.loopdiagram import edges2nodes
 from eppy.useful_scripts.loopdiagram import process_idf
 from eppy.useful_scripts.loopdiagram import replace_colon
-from eppy.pytest_helpers import do_integration_tests
 
-
-THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-
-RESOURCES_DIR = os.path.join(THIS_DIR, os.pardir, 'resources')
-
-IDD_FILES = os.path.join(RESOURCES_DIR, 'iddfiles')
-IDF_FILES = os.path.join(RESOURCES_DIR, 'idffiles')
 
 def test_dropnodes():
     """py.test for dropnodes"""

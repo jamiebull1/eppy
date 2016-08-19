@@ -9,6 +9,12 @@
 
 import os
 
+THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+
+RESOURCES_DIR = os.path.join(THIS_DIR, 'resources')
+
+IDD_FILES = os.path.join(RESOURCES_DIR, 'iddfiles')
+IDF_FILES = os.path.join(RESOURCES_DIR, 'idffiles')
 
 def almostequal(first, second, places=7):
     """docstring for almostequal"""
