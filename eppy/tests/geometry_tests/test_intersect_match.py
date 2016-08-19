@@ -24,30 +24,43 @@ from six import StringIO
 from eppy.geometry.intersect_match import getidfsurfaces
 from eppy.geometry.intersect_match import intersect_idf_surfaces
 
+idf_txt = """
+    Building, Building 1, , , , , , , ;  GlobalGeometryRules, UpperLeftCorner, Counterclockwise, Relative, Relative, Relative;
+    Zone, osgb01 Thermal Zone, 0.0, 0.0, 0.0, 0.0, , 1, , , , , , Yes;
+    Zone, osgb02 Thermal Zone, 0.0, 0.0, 0.0, 0.0, , 1, , , , , , Yes;
+    BuildingSurface:Detailed, osgb01_lv01_FLOOR, FLOOR, , osgb01 Thermal Zone, ground, , NoSun, NoWind, , , 1.0, 2.1, 0.0, 2.0, 2.0, 0.0, 2.0, 1.0, 0.0, 1.0, 1.1, 0.0;
+    BuildingSurface:Detailed, osgb01_lv01_WALL_0001, WALL, , osgb01 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 1.0, 1.1, 0.5, 1.0, 1.1, 0.0, 1.0, 2.1, 0.0, 1.0, 2.1, 0.5;
+    BuildingSurface:Detailed, osgb01_lv01_WALL_0002, WALL, , osgb01 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 1.0, 2.1, 0.5, 1.0, 2.1, 0.0, 2.0, 2.0, 0.0, 2.0, 2.0, 0.5;
+    BuildingSurface:Detailed, osgb01_lv01_WALL_0003, WALL, , osgb01 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 2.0, 2.0, 0.5, 2.0, 2.0, 0.0, 2.0, 1.0, 0.0, 2.0, 1.0, 0.5;
+    BuildingSurface:Detailed, osgb01_lv01_WALL_0004, WALL, , osgb01 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 2.0, 1.0, 0.5, 2.0, 1.0, 0.0, 1.0, 1.1, 0.0, 1.0, 1.1, 0.5;
+    BuildingSurface:Detailed, osgb01_lv02_FLOOR, FLOOR, , osgb01 Thermal Zone, ground, , NoSun, NoWind, , , 1.0, 2.1, 0.5, 2.0, 2.0, 0.5, 2.0, 1.0, 0.5, 1.0, 1.1, 0.5;
+    BuildingSurface:Detailed, osgb02_lv01_FLOOR, FLOOR, , osgb02 Thermal Zone, ground, , NoSun, NoWind, , , 1.5, 3.05, 0.0, 2.5, 2.95, 0.0, 2.5, 1.95, 0.0, 1.5, 2.05, 0.0;
+    BuildingSurface:Detailed, osgb02_lv01_WALL_0001, WALL, , osgb02 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 1.5, 2.05, 0.5, 1.5, 2.05, 0.0, 1.5, 3.05, 0.0, 1.5, 3.05, 0.5;
+    BuildingSurface:Detailed, osgb02_lv01_WALL_0002, WALL, , osgb02 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 1.5, 3.05, 0.5, 1.5, 3.05, 0.0, 2.5, 2.95, 0.0, 2.5, 2.95, 0.5;
+    BuildingSurface:Detailed, osgb02_lv01_WALL_0003, WALL, , osgb02 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 2.5, 2.95, 0.5, 2.5, 2.95, 0.0, 2.5, 1.95, 0.0, 2.5, 1.95, 0.5;
+    BuildingSurface:Detailed, osgb02_lv01_WALL_0004, WALL, , osgb02 Thermal Zone, outdoors, , SunExposed, WindExposed, , , 2.5, 1.95, 0.5, 2.5, 1.95, 0.0, 1.5, 2.05, 0.0, 1.5, 2.05, 0.5;
+    BuildingSurface:Detailed, osgb02_lv02_FLOOR, FLOOR, , osgb02 Thermal Zone, ground, , NoSun, NoWind, , , 1.5, 3.05, 0.5, 2.5, 2.95, 0.5, 2.5, 1.95, 0.5, 1.5, 2.05, 0.5;
+"""
 
 class TestIntersectMatch():
     
-    @pytest.mark.skipif(
-        not do_integration_tests(), reason="$EPPY_INTEGRATION env var not set")
     def test_getidfsurfaces(self):    
         iddfhandle = StringIO(iddcurrent.iddtxt)
         if IDF.getiddname() == None:
             IDF.setiddname(iddfhandle)
         
-        idf = IDF(os.path.join(IDF_FILES, 'V8_3_0/test_intersect_match.idf'))
-        
+        idf = IDF(StringIO(idf_txt))
+
         surfaces = getidfsurfaces(idf)
         assert isinstance(surfaces, Idf_MSequence)
         assert len(surfaces) == 12
     
-    @pytest.mark.skipif(
-        not do_integration_tests(), reason="$EPPY_INTEGRATION env var not set")
     def test_intersect_idf_surfaces(self):       
         iddfhandle = StringIO(iddcurrent.iddtxt)
         if IDF.getiddname() == None:
             IDF.setiddname(iddfhandle)
         
-        idf = IDF(os.path.join(IDF_FILES, 'V8_3_0/test_intersect_match.idf'))
+        idf = IDF(StringIO(idf_txt))
         
         starting = len(idf.idfobjects['BUILDINGSURFACE:DETAILED'])
         intersect_idf_surfaces(idf)

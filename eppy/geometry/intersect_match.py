@@ -32,6 +32,11 @@ def intersect_idf_surfaces(idf):
     
     """
     surfaces = getidfsurfaces(idf)
+    """
+    @TODO: Add the Polygon3D as a field for all EPlus building surfaces so we
+    can call surface1.poly.intersect(surface2.poly) and avoid all the indexing
+    in the code below.
+    """ 
     surfaces = [[s, Polygon3D(s.coords)] for s in surfaces]
     global_geometry_rules = idf.idfobjects['GLOBALGEOMETRYRULES']
 
