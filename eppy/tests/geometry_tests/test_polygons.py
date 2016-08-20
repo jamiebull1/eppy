@@ -374,4 +374,35 @@ def test_surface_normal():
                       [ 1.,  2.1,  0.],
                       [ 1.,  2.1,  0.5]])
     assert list(poly.normal_vector) == [1.0, 0.0, 0.0]  # for a horizontal surface
+
     
+def test_surface_is_clockwise():
+    """Test if a surface is clockwise as seen from a given point.
+    """
+    poly = Polygon3D([
+        Point3D(0.0, 0.0, 0.0),
+        Point3D(1.0, 0.0, 0.0),
+        Point3D(1.0, 1.0, 0.0),
+        Point3D(0.0, 1.0, 0.0)])
+    poly_inv = Polygon3D(reversed([
+        Point3D(0.0, 0.0, 0.0),
+        Point3D(1.0, 0.0, 0.0),
+        Point3D(1.0, 1.0, 0.0),
+        Point3D(0.0, 1.0, 0.0)]))
+
+    pt = Point3D(0.5, 0.5, 1.0)  # point above the plane
+
+    assert poly.is_clockwise(pt)
+    assert not poly_inv.is_clockwise(pt)
+    
+
+def test_point():
+    pt1 = Point3D(0.0, 0.0, 0.0)
+    pt2 = Point3D(1.0, 1.0, 1.0)
+    
+    assert pt2 - pt1 == pt2
+    assert pt1 - pt2 == Point3D(-1,-1,-1)
+    
+    assert pt2 + pt2 == Point3D(2,2,2)
+    
+

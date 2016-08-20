@@ -37,6 +37,18 @@ class Point2D(object):
     def __eq__(self, other): 
         return self.__dict__ == other.__dict__
             
+    def __sub__(self, other):
+        return self.__class__(*[self[i] - other[i] for i in range(len(self))])
+    
+    def __add__(self, other):
+        return self.__class__(*[self[i] + other[i] for i in range(len(self))])
+    
+    def __len__(self):
+        return len(self.args)
+    
+    def __getitem__(self, key):
+        return self.args[key]
+
         
 class Point3D(Point2D):
     """Three dimensional point."""
@@ -48,7 +60,7 @@ class Point3D(Point2D):
     def __repr__(self):
         class_name = type(self).__name__
         return '{}({!r}, {!r}, {!r})'.format(class_name, *self.args)
-
+    
 
 class Polygon(object):
     """Two-dimensional polygon."""
@@ -369,9 +381,35 @@ class Polygon3D(Polygon):
     
     @property
     def is_horizontal(self):
-        """Check if polygon is in the xy plane."""
+        """Check if polygon is in the xy plane.
+        
+        Returns
+        -------
+        bool
+        
+        """
         return np.array(self.zs).std() < 1e-8
     
+    def is_clockwise(self, viewpoint):
+        """Check if vertices are ordered clockwise
+        
+        This function checks the vertices as seen from the viewpoint.
+        
+        Parameters
+        ----------
+        viewpoint : Point3D
+        
+        Returns
+        -------
+        bool
+        
+        """
+        arbitrary_pt = self.vertices[0]
+        v = arbitrary_pt - viewpoint
+        n = self.normal_vector
+        sign = np.dot(v, n)
+        return sign < 0
+
     def is_coplanar(self, other):
         """Check if polygon is in the same plane as another polygon.
         
