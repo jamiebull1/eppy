@@ -4,13 +4,17 @@
 #  (See accompanying file LICENSE or copy at
 #  http://opensource.org/licenses/MIT)
 # =======================================================================
-from eppy.pytest_helpers import almostequal
 """
 Heavy lifting geometry for IDF surfaces.
 
 PyClipper is used for clipping.
 
 """
+
+from math import atan2
+
+from eppy.pytest_helpers import almostequal
+
 import pyclipper as pc
 
 
@@ -22,10 +26,10 @@ except ImportError:
 
 class Vector2D(object):
     """Two dimensional point."""
-    def __init__(self, x, y):
-        self.x = float(x)
-        self.y = float(y)
-        self.args = (self.x, self.y)
+    def __init__(self, *args):
+        self.args = list(args)
+        self.x = float(args[0])
+        self.y = float(args[1])
     
     def __iter__(self):
         return (i for i in self.args)
@@ -49,8 +53,14 @@ class Vector2D(object):
     def __getitem__(self, key):
         return self.args[key]
 
+    def __setitem__(self, key, value):
+        self.args[key] = value
+        
+    def cross(self, other):
+        return np.cross(self, other)
+
     @property
-    def magnitude(self):
+    def length(self):
         """The length of a vector.
         
         Parameters
@@ -68,6 +78,28 @@ class Vector2D(object):
             return self.x * other.y - self.y * other.x
         else:
             return np.dot(self, other)
+    
+    def normalize(self):
+        return self.set_length(1.0)
+    
+    def set_length(self, new_length):
+        current_length = self.length        
+        multiplier = new_length / current_length
+        self.args = [i * multiplier for i in self.args]
+        
+
+def test_set_length():
+    v = Vector3D(1, 1, 1)
+    v.set_length(1)
+    for i in v:
+        assert almostequal(i, 0.57735026)
+
+def test_normalize():
+    v = Vector3D(1, 1, 1)
+    v.normalize(1)
+    for i in v:
+        assert almostequal(i, 0.57735026)
+
 
 
 class Vector3D(Vector2D):
@@ -349,7 +381,10 @@ class Polygon3D(Polygon):
     n_dims = 3
 
     def __init__(self, vertices):
-        self.vertices = [Vector3D(*v) for v in vertices]
+        try:
+            self.vertices = [Vector3D(*v) for v in vertices]
+        except TypeError:
+            self.vertices = vertices
 
     def __eq__(self, other):
         # try the simple case
@@ -383,7 +418,7 @@ class Polygon3D(Polygon):
         nd.array
 
         """
-        return normal_vector(self.vertices)
+        return Vector3D(*normal_vector(self.vertices))
 
     @property
     def distance(self):
@@ -510,10 +545,16 @@ class Polygon3D(Polygon):
         
         Returns
         -------
-        Vector3D
+        Polygon3D
         
         """
-        return self
+        starting_vertex = self.find_starting_position(starting_position)
+        start_index = self.vertices.index(starting_vertex)
+
+        new_poly = [self.vertices[(i + start_index) % len(self)] 
+                    for i in range(len(self))]
+
+        return Polygon3D(new_poly)
     
     def project_to_2D(self):
         """Project the 3D polygon into 2D space.

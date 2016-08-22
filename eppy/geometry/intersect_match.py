@@ -138,7 +138,7 @@ def normalise_coords(coords, outside_pt, ggr=None):
     poly = set_entry_direction(poly, outside_pt, ggr)
     
     # check and set starting position
-    
+    poly = set_starting_position(poly, outside_pt, ggr)
 
     coords = poly.points_matrix
     
@@ -168,7 +168,7 @@ def set_starting_position(poly, outside_pt, ggr=None):
         starting_position = 'upperleftcorner' # EnergyPlus default
     else:
         starting_position = ggr[0].Starting_Vertex_Position.lower()
-    poly = poly.reorder_vertices(starting_position)
+    poly = poly.order_points(starting_position)
 
     return poly
 

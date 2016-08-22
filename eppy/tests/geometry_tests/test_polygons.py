@@ -418,65 +418,83 @@ def test_point():
    
     
 def test_find_corner():
-    pts = [(2,2,2), (2,2,1), (1.5, 1.5, 1), (1,1,1), (1, 1, 1.5), (1,1,2)]
-    poly = Polygon3D(pts)
+    pts = [(2,2,2), (2,2,1), (1,1,1), (1,1,2)]
+    
+    polygon = Polygon3D(pts)
     expected = Vector3D(2,2,2)
-    result = find_corner(poly, 'UpperLeftCorner')   
-    print(expected, result) 
+    result = find_starting_position(polygon, 'UpperLeftCorner')   
     assert result == expected
     
     poly = Polygon3D(reversed(pts))
     expected = Vector3D(1,1,2)
-    result = find_corner(poly, 'UpperLeftCorner')
-    print(expected, result) 
+    result = find_starting_position(polygon, 'UpperLeftCorner')
     assert result == expected
     
     poly = Polygon3D(pts)
     expected = Vector3D(1,1,1)
-    result = find_corner(poly, 'LowerRightCorner')    
-    print(expected, result) 
+    result = find_starting_position(polygon, 'LowerRightCorner')    
     assert result == expected
     
     poly = Polygon3D(reversed(pts))
     expected = Vector3D(2,2,1)
-    result = find_corner(poly, 'LowerRightCorner')
-    print(expected, result) 
+    result = find_starting_position(polygon, 'LowerRightCorner')
     assert result == expected
     
     
-def find_corner(poly, corner):
-    if "upper" in corner.lower():
+def test_find_corner_horizontal():
+    pts = [(2,2,0), (2,1,0), (1, 1, 0), (1,2,0)]
+    
+    polygon = Polygon3D(pts)
+    expected = Vector3D(2,2,0)
+    result = find_starting_position(polygon, 'UpperLeftCorner')   
+    assert result == expected
+    
+    poly = Polygon3D(reversed(pts))
+    expected = Vector3D(1,2,0)
+    result = find_starting_position(polygon, 'UpperLeftCorner')
+    assert result == expected
+    
+    poly = Polygon3D(pts)
+    expected = Vector3D(1,1,0)
+    result = find_starting_position(polygon, 'LowerRightCorner')    
+    assert result == expected
+    
+    poly = Polygon3D(reversed(pts))
+    expected = Vector3D(2,1,0)
+    result = find_starting_position(polygon, 'LowerRightCorner')
+    assert result == expected
+    
+def find_starting_position(polygon, starting_position):
+    """Reorder the vertices based on a starting position rule.
+
+    Parameters
+    ----------
+    starting_position : str
+        The string that defines vertex starting position in EnergyPlus.
+    
+    Returns
+    -------
+    Vector3D
+    
+    """
+    if polygon.is_horizontal:
+        stored_z = polygon.zs[0]
+        poly = Polygon3D((v.x, 0, v.y) for v in polygon.vertices)
+    else:
+        poly = polygon
+    if "upper" in starting_position.lower():
         points = [pt for pt in poly if pt.z == max(poly.zs)]
-    elif "lower" in corner.lower():
+    elif "lower" in starting_position.lower():
         points = [pt for pt in poly if pt.z == min(poly.zs)]
         
-    if "right" in corner.lower():
-        points_and_angles = angles(poly, points)
-        points = sorted(points_and_angles, key=lambda x: x[1])
-        return points[0][0]
+    if "right" in starting_position.lower():
+        result = points[1]
         
-    elif "left" in corner.lower():
-        points_and_angles = angles(poly, points)
-        points = sorted(points_and_angles, key=lambda x: x[1])
-        return points[-1][0]
+    elif "left" in starting_position.lower():
+        result = points[0]
+    if polygon.is_horizontal:
+        result = Vector3D(result.x, result.z, stored_z)
+
+    return result
         
-def angles(poly, points):
-    n = poly.normal_vector
-    centre = poly.centroid
-    pt_outside = centre + n
-    return [[pt, angle_clockwise(pt, pt_outside, n)] 
-            for pt in points]
 
-def angle_clockwise(pt, pt_outside, n):
-    n = Vector3D(*n)
-    towards_plane = Vector3D(*inverse_vector(n))
-    towards_corner = pt - pt_outside
-    dot = towards_plane.dot(towards_corner)
-    det = (towards_plane.x*towards_corner.y + towards_corner.x*towards_plane.z +
-           towards_plane.z*towards_corner.z - towards_plane.z*towards_corner.y -
-           towards_corner.z*towards_plane.x - towards_plane.y*towards_corner.x)
-    
-    angle = atan2(det, dot)
-    print(angle)
-
-    return angle
