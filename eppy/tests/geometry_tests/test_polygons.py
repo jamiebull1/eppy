@@ -4,23 +4,34 @@
 #  (See accompanying file LICENSE or copy at
 #  http://opensource.org/licenses/MIT)
 # =======================================================================
-"""pytest for int2lines.py"""
+"""pytest for polygons.py"""
 
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from eppy.geometry.polygons import Point2D
-from eppy.geometry.polygons import Point3D
+from math import acos
+from math import atan2
+from math import pi
+
 from eppy.geometry.polygons import Polygon
 from eppy.geometry.polygons import Polygon3D
+from eppy.geometry.polygons import Vector2D
+from eppy.geometry.polygons import Vector3D
 from eppy.geometry.polygons import difference_2D_polys
 from eppy.geometry.polygons import difference_3D_polys
 from eppy.geometry.polygons import intersect_2D_polys
 from eppy.geometry.polygons import intersect_3D_polys
+from eppy.geometry.polygons import inverse_vector
 from eppy.geometry.polygons import union_2D_polys
 from eppy.geometry.polygons import union_3D_polys
+
+
+try:
+    import numpy as np
+except ImportError:
+    import tinynumpy.tinynumpy as np
 
 
 def test_polygon_repr():
@@ -37,7 +48,7 @@ def test_polygon_attributes():
     assert poly2d.ys == [0,1,1,0] 
     assert poly2d.zs == [0,0,0,0]
     assert poly2d.vertices_list == [(0,0), (0,1), (1,1), (1,0)]
-    assert poly2d.vertices == [Point2D(*v) for v in poly2d]
+    assert poly2d.vertices == [Vector2D(*v) for v in poly2d]
     
 def test_polygon3d_attributes():
     poly3d = Polygon3D([(0,0,0), (0,1,1), (1,1,1), (1,0,0)])
@@ -46,7 +57,7 @@ def test_polygon3d_attributes():
     assert poly3d.ys == [0,1,1,0] 
     assert poly3d.zs == [0,1,1,0]
     assert poly3d.vertices_list == [(0,0,0), (0,1,1), (1,1,1), (1,0,0)]
-    assert poly3d.vertices == [Point3D(*v) for v in poly3d]
+    assert poly3d.vertices == [Vector3D(*v) for v in poly3d]
     assert poly3d.distance == 0
     assert poly3d.is_horizontal == False
     assert poly3d.normal_vector == [0.0, 0.5, -0.5]
@@ -341,32 +352,32 @@ def test_difference_3D_polys_multi():
 
 
 def test_surface_normal():
-    poly = Polygon3D([Point3D(0.0, 0.0, 0.0),
-                      Point3D(1.0, 0.0, 0.0),
-                      Point3D(1.0, 1.0, 0.0),
-                      Point3D(0.0, 1.0, 0.0)])
+    poly = Polygon3D([Vector3D(0.0, 0.0, 0.0),
+                      Vector3D(1.0, 0.0, 0.0),
+                      Vector3D(1.0, 1.0, 0.0),
+                      Vector3D(0.0, 1.0, 0.0)])
     assert list(poly.normal_vector) == [0.0, 0.0, 1.0]  # for a horizontal surface
 
-    poly = Polygon3D(reversed([Point3D(0.0, 0.0, 0.0),
-                      Point3D(1.0, 0.0, 0.0),
-                      Point3D(1.0, 1.0, 0.0),
-                      Point3D(0.0, 1.0, 0.0)]))
+    poly = Polygon3D(reversed([Vector3D(0.0, 0.0, 0.0),
+                      Vector3D(1.0, 0.0, 0.0),
+                      Vector3D(1.0, 1.0, 0.0),
+                      Vector3D(0.0, 1.0, 0.0)]))
     assert list(poly.normal_vector) == [0.0, 0.0, -1.0]  # for a horizontal surface
 
-    poly = Polygon3D([Point3D(0.0, 0.0, 0.0),
-                      Point3D(2.0, 1.0, 0.0),
-                      Point3D(4.0, 0.0, 0.0),
-                      Point3D(4.0, 3.0, 0.0),
-                      Point3D(2.0, 2.0, 0.0),
-                      Point3D(0.0, 3.0, 0.0)])
+    poly = Polygon3D([Vector3D(0.0, 0.0, 0.0),
+                      Vector3D(2.0, 1.0, 0.0),
+                      Vector3D(4.0, 0.0, 0.0),
+                      Vector3D(4.0, 3.0, 0.0),
+                      Vector3D(2.0, 2.0, 0.0),
+                      Vector3D(0.0, 3.0, 0.0)])
     assert list(poly.normal_vector) == [0.0, 0.0, 1.0]  # for a horizontal surface
 
-    poly = Polygon3D(reversed([Point3D(0.0, 0.0, 0.0),
-                      Point3D(2.0, 1.0, 0.0),
-                      Point3D(4.0, 0.0, 0.0),
-                      Point3D(4.0, 3.0, 0.0),
-                      Point3D(2.0, 2.0, 0.0),
-                      Point3D(0.0, 3.0, 0.0)]))
+    poly = Polygon3D(reversed([Vector3D(0.0, 0.0, 0.0),
+                      Vector3D(2.0, 1.0, 0.0),
+                      Vector3D(4.0, 0.0, 0.0),
+                      Vector3D(4.0, 3.0, 0.0),
+                      Vector3D(2.0, 2.0, 0.0),
+                      Vector3D(0.0, 3.0, 0.0)]))
     assert list(poly.normal_vector) == [0.0, 0.0, -1.0]  # for a horizontal surface
     
     poly = Polygon3D([[ 1.,  1.1,  0.5],
@@ -380,29 +391,92 @@ def test_surface_is_clockwise():
     """Test if a surface is clockwise as seen from a given point.
     """
     poly = Polygon3D([
-        Point3D(0.0, 0.0, 0.0),
-        Point3D(1.0, 0.0, 0.0),
-        Point3D(1.0, 1.0, 0.0),
-        Point3D(0.0, 1.0, 0.0)])
+        Vector3D(0.0, 0.0, 0.0),
+        Vector3D(1.0, 0.0, 0.0),
+        Vector3D(1.0, 1.0, 0.0),
+        Vector3D(0.0, 1.0, 0.0)])
     poly_inv = Polygon3D(reversed([
-        Point3D(0.0, 0.0, 0.0),
-        Point3D(1.0, 0.0, 0.0),
-        Point3D(1.0, 1.0, 0.0),
-        Point3D(0.0, 1.0, 0.0)]))
+        Vector3D(0.0, 0.0, 0.0),
+        Vector3D(1.0, 0.0, 0.0),
+        Vector3D(1.0, 1.0, 0.0),
+        Vector3D(0.0, 1.0, 0.0)]))
 
-    pt = Point3D(0.5, 0.5, 1.0)  # point above the plane
+    pt = Vector3D(0.5, 0.5, 1.0)  # point above the plane
 
     assert poly.is_clockwise(pt)
     assert not poly_inv.is_clockwise(pt)
     
 
 def test_point():
-    pt1 = Point3D(0.0, 0.0, 0.0)
-    pt2 = Point3D(1.0, 1.0, 1.0)
+    pt1 = Vector3D(0.0, 0.0, 0.0)
+    pt2 = Vector3D(1.0, 1.0, 1.0)
     
     assert pt2 - pt1 == pt2
-    assert pt1 - pt2 == Point3D(-1,-1,-1)
+    assert pt1 - pt2 == Vector3D(-1,-1,-1)
     
-    assert pt2 + pt2 == Point3D(2,2,2)
+    assert pt2 + pt2 == Vector3D(2,2,2)
+   
     
+def test_find_corner():
+    pts = [(2,2,2), (2,2,1), (1.5, 1.5, 1), (1,1,1), (1, 1, 1.5), (1,1,2)]
+    poly = Polygon3D(pts)
+    expected = Vector3D(2,2,2)
+    result = find_corner(poly, 'UpperLeftCorner')   
+    print(expected, result) 
+    assert result == expected
+    
+    poly = Polygon3D(reversed(pts))
+    expected = Vector3D(1,1,2)
+    result = find_corner(poly, 'UpperLeftCorner')
+    print(expected, result) 
+    assert result == expected
+    
+    poly = Polygon3D(pts)
+    expected = Vector3D(1,1,1)
+    result = find_corner(poly, 'LowerRightCorner')    
+    print(expected, result) 
+    assert result == expected
+    
+    poly = Polygon3D(reversed(pts))
+    expected = Vector3D(2,2,1)
+    result = find_corner(poly, 'LowerRightCorner')
+    print(expected, result) 
+    assert result == expected
+    
+    
+def find_corner(poly, corner):
+    if "upper" in corner.lower():
+        points = [pt for pt in poly if pt.z == max(poly.zs)]
+    elif "lower" in corner.lower():
+        points = [pt for pt in poly if pt.z == min(poly.zs)]
+        
+    if "right" in corner.lower():
+        points_and_angles = angles(poly, points)
+        points = sorted(points_and_angles, key=lambda x: x[1])
+        return points[0][0]
+        
+    elif "left" in corner.lower():
+        points_and_angles = angles(poly, points)
+        points = sorted(points_and_angles, key=lambda x: x[1])
+        return points[-1][0]
+        
+def angles(poly, points):
+    n = poly.normal_vector
+    centre = poly.centroid
+    pt_outside = centre + n
+    return [[pt, angle_clockwise(pt, pt_outside, n)] 
+            for pt in points]
 
+def angle_clockwise(pt, pt_outside, n):
+    n = Vector3D(*n)
+    towards_plane = Vector3D(*inverse_vector(n))
+    towards_corner = pt - pt_outside
+    dot = towards_plane.dot(towards_corner)
+    det = (towards_plane.x*towards_corner.y + towards_corner.x*towards_plane.z +
+           towards_plane.z*towards_corner.z - towards_plane.z*towards_corner.y -
+           towards_corner.z*towards_plane.x - towards_plane.y*towards_corner.x)
+    
+    angle = atan2(det, dot)
+    print(angle)
+
+    return angle

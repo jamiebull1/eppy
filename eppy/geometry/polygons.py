@@ -20,7 +20,7 @@ except ImportError:
     import tinynumpy.tinynumpy as np
 
 
-class Point2D(object):
+class Vector2D(object):
     """Two dimensional point."""
     def __init__(self, x, y):
         self.x = float(x)
@@ -49,11 +49,31 @@ class Point2D(object):
     def __getitem__(self, key):
         return self.args[key]
 
+    @property
+    def magnitude(self):
+        """The length of a vector.
         
-class Point3D(Point2D):
+        Parameters
+        ----------
+        list-like
+            A list or other iterable.
+            
+        """
+        length = sum(x ** 2 for x in self) ** 0.5
+    
+        return length
+
+    def dot(self, other):
+        if len(self) == 2:
+            return self.x * other.y - self.y * other.x
+        else:
+            return np.dot(self, other)
+
+
+class Vector3D(Vector2D):
     """Three dimensional point."""
     def __init__(self, x, y, z):
-        super(Point3D, self).__init__(x, y)
+        super(Vector3D, self).__init__(x, y)
         self.z = float(z)
         self.args = (self.x, self.y, self.z)
         
@@ -67,7 +87,7 @@ class Polygon(object):
     n_dims = 2
 
     def __init__(self, vertices):
-        self.vertices = [Point2D(*v) for v in vertices]
+        self.vertices = [Vector2D(*v) for v in vertices]
     
     def __iter__(self):
         return (i for i in self.vertices)
@@ -85,6 +105,9 @@ class Polygon(object):
     def __len__(self):
         return len(self.vertices)
             
+    def __getitem__(self, key):
+        return self.vertices[key]
+
     @property
     def points_matrix(self):
         """[[x1, x2,... xn]
@@ -326,7 +349,7 @@ class Polygon3D(Polygon):
     n_dims = 3
 
     def __init__(self, vertices):
-        self.vertices = [Point3D(*v) for v in vertices]
+        self.vertices = [Vector3D(*v) for v in vertices]
 
     def __eq__(self, other):
         # try the simple case
@@ -397,7 +420,7 @@ class Polygon3D(Polygon):
         
         Parameters
         ----------
-        viewpoint : Point3D
+        viewpoint : Vector3D
         
         Returns
         -------
@@ -409,7 +432,7 @@ class Polygon3D(Polygon):
         n = self.normal_vector
         sign = np.dot(v, n)
         return sign < 0
-
+    
     def is_coplanar(self, other):
         """Check if polygon is in the same plane as another polygon.
         
@@ -435,6 +458,63 @@ class Polygon3D(Polygon):
         else:
             return False
 
+    @property
+    def centroid(self):
+        """The centroid of a polygon.
+        
+        Returns
+        -------
+        Vector3D
+        
+        """
+        return Vector3D(
+            sum(self.xs) / len(self),
+            sum(self.ys) / len(self),
+            sum(self.zs) / len(self))
+    
+    def outside_point(self, entry_direction='counterclockwise'):
+        """Return a point outside the zone to which the surface belongs.
+        
+        The point will be outside the zone, respecting the global geometry rules
+        for vertex entry direction.
+        
+        Parameters
+        ----------
+        entry_direction : str
+            Either "clockwise" or "counterclockwise", as seen from outside the
+            space.
+        
+        Returns
+        -------
+        Vector3D
+        
+        """
+        entry_direction = entry_direction.lower()
+        if entry_direction == 'clockwise':
+            inside = self.vertices[0] - self.normal_vector
+        elif entry_direction == 'counterclockwise':
+            inside = self.vertices[0] + self.normal_vector
+        else:
+            raise ValueError("invalid value for entry_direction '%s'" % 
+                             entry_direction)
+    
+        return inside
+    
+    def order_points(self, starting_position):
+        """Reorder the vertices based on a starting position rule.
+        
+        Parameters
+        ----------
+        starting_position : str
+            The string that defines vertex starting position in EnergyPlus.
+        
+        Returns
+        -------
+        Vector3D
+        
+        """
+        return self
+    
     def project_to_2D(self):
         """Project the 3D polygon into 2D space.
         
@@ -732,13 +812,13 @@ def project_inv(pt, proj_axis, a, v):
 def pt_to_tuple(pt, dims=3):
     """Convert a point to a numpy array.
     
-    Convert a Point3D to an (x,y,z) tuple or a Point2D to an (x,y) tuple.
+    Convert a Vector3D to an (x,y,z) tuple or a Vector2D to an (x,y) tuple.
     Ensures all values are floats since some other types cause problems in 
     pyclipper (notably where sympy.Zero is used to represent 0.0).
 
     Parameters
     ----------
-    pt : sympy.Point3D, sympy.Point2D
+    pt : sympy.Vector3D, sympy.Vector2D
         The point to convert.
     dims : int, optional
         Number of dimensions {default : 3}.
@@ -748,10 +828,10 @@ def pt_to_tuple(pt, dims=3):
     tuple
 
     """
-    # handle Point3D
+    # handle Vector3D
     if dims == 3:
         return float(pt.x), float(pt.y), float(pt.z)
-    # handle Point2D
+    # handle Vector2D
     elif dims == 2:
         return float(pt.x), float(pt.y)
 
@@ -759,14 +839,14 @@ def pt_to_tuple(pt, dims=3):
 def pt_to_array(pt, dims=3):
     """Convert a point to a numpy array.
     
-    Converts a Point3D to a numpy.array([x,y,z]) or a Point2D to a 
+    Converts a Vector3D to a numpy.array([x,y,z]) or a Vector2D to a 
     numpy.array([x,y]).
     Ensures all values are floats since some other types cause problems in 
     pyclipper (notably where sympy.Zero is used to represent 0.0).
     
     Parameters
     ----------
-    pt : sympy.Point3D
+    pt : sympy.Vector3D
         The point to convert.
     dims : int, optional
         Number of dimensions {default : 3}.
@@ -776,9 +856,9 @@ def pt_to_array(pt, dims=3):
     numpy.ndarray
 
     """
-    # handle Point3D
+    # handle Vector3D
     if dims == 3:
         return np.array([float(pt.x), float(pt.y), float(pt.z)])
-    # handle Point2D
+    # handle Vector2D
     elif dims == 2:
         return np.array([float(pt.x), float(pt.y)])
