@@ -57,7 +57,7 @@ def intersect_idf_surfaces(idf):
         if not intersects:
             continue
         # create new surfaces for the intersects, and their reflections
-        for i, s in enumerate(intersects, 1):
+        for i, intersect in enumerate(intersects, 1):
             # regular intersection
             """
             @TODO: Check the intersection touches an edge of both surfaces.
@@ -69,7 +69,7 @@ def intersect_idf_surfaces(idf):
             """
             new = idf.copyidfobject(s1[0])
             new.Name = "%s_%s_%i" % (s1[0].Name, 'new', i)
-            set_coords(new, s.points_matrix, outside_s2, ggr)
+            set_coords(new, intersect, outside_s2, ggr)
             new.Outside_Boundary_Condition = "Zone"
             new.Outside_Boundary_Condition_Object = s2[0].Zone_Name
             # inverted intersection
@@ -77,19 +77,19 @@ def intersect_idf_surfaces(idf):
             new_inv.Name = "%s_%s_%i" % (s2[0].Name, 'new', i)
             new_inv.Outside_Boundary_Condition = "Zone"
             new_inv.Outside_Boundary_Condition_Object = s1[0].Zone_Name
-            set_coords(new_inv, reversed(s.points_matrix), outside_s2, ggr)
+            set_coords(new_inv, intersect.invert_orientation(), outside_s2, ggr)
         # edit the original two surfaces
         s1_new = s1[1].difference(s2[1])
         s2_new = s2[1].difference(s1[1])
         if s1_new:
             # modify the original s1[0]
-            set_coords(s1[0], s1_new[0].points_matrix, outside_s1, ggr)
+            set_coords(s1[0], s1_new[0], outside_s1, ggr)
         if s2_new:
             # modify the original s2[0]
-            set_coords(s2[0], s2_new[0].points_matrix, outside_s2, ggr)
+            set_coords(s2[0], s2_new[0], outside_s2, ggr)
     
         
-def set_coords(surface, coords, outside_pt, ggr=None):
+def set_coords(surface, poly, outside_pt, ggr=None):
     """Update the coordinates of a surface.
     
     This functions follows the GlobalGeometryRules of the IDF where available.
@@ -108,13 +108,13 @@ def set_coords(surface, coords, outside_pt, ggr=None):
     
     """
     # make new_coords follow the GlobalGeometryRules
-    coords = normalize_coords(coords, outside_pt, ggr)
-    coords = coords.flatten()
+    poly = normalize_coords(poly, outside_pt, ggr)
+    coords = [i for vertex in poly for i in vertex]
     # find the vertex fields
     n_vertices_index = surface.fieldnames.index('Number_of_Vertices')
-    last_x = len(surface.obj)
+    last_z = len(surface.obj)
     first_x = n_vertices_index + 1 # X of first coordinate
-    vertex_fields = surface.fieldnames[first_x:last_x]
+    vertex_fields = surface.fieldnames[first_x:last_z] # Z of final coordinate
     
     # set the vertex field values
     for field, x in zip_longest(vertex_fields, coords, fillvalue=""):

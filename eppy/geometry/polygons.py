@@ -776,11 +776,13 @@ def pt_to_array(pt, dims=3):
     elif dims == 2:
         return np.array([float(pt.x), float(pt.y)])
     
-def normalize_coords(coords, outside_pt, ggr=None):
+def normalize_coords(poly, outside_pt, ggr=None):
     """Put coordinates into the correct format for EnergyPlus.
     
-    coords : list
-        The new coordinates.
+    poly : Polygon3D
+        Polygon with the new coordinates.
+    outside_pt : Vector3D
+        An outside point of the new polygon.
     ggr : EPBunch, optional
         The section of the IDF that give rules for the order of vertices in a
         surface {default : None}.
@@ -790,8 +792,6 @@ def normalize_coords(coords, outside_pt, ggr=None):
     list
     
     """
-    poly = Polygon3D(coords)
-    
     # check and set entry direction
     poly = set_entry_direction(poly, outside_pt, ggr)
     
