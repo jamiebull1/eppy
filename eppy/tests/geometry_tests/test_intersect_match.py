@@ -19,7 +19,6 @@ from six import StringIO
 from eppy.geometry.intersect_match import getidfsurfaces
 from eppy.geometry.intersect_match import intersect_idf_surfaces
 from eppy.geometry.polygons import Polygon3D
-from eppy.geometry.intersect_match import normalise_coords
 
 
 idf_txt = """
@@ -74,56 +73,54 @@ class TestIntersectMatch():
         ggr = idf.idfobjects['GLOBALGEOMETRYRULES']
         poly = Polygon3D([(0,0,1), (0,0,0), (1,0,0), (1,0,1)])
         inv_poly = Polygon3D(reversed([(0,0,1), (0,0,0), (1,0,0), (1,0,1)]))
+        
         offset_poly = Polygon3D([(1,0,1), (0,0,1), (0,0,0), (1,0,0)])
         inv_offset_poly = Polygon3D(
             reversed([(1,0,1), (0,0,1), (0,0,0), (1,0,0)]))
 
         entry_direction = 'counterclockwise'
-        outside_pt = poly.outside_point(entry_direction)
-        expected = poly.points_matrix
+        expected = Polygon3D([(0,0,1), (0,0,0), (1,0,0), (1,0,1)])
         
         # expect no change
-        result = normalise_coords(poly, outside_pt, ggr)
-        assert (result == expected).all()
+        result = poly.normalize_coords(entry_direction, ggr)
+        assert result == expected
         
         # expect direction to be reversed
-        result = normalise_coords(inv_poly, outside_pt, ggr)
-        assert (result == expected).all()
+        result = poly.normalize_coords(entry_direction, ggr)
+        assert result == expected
         
         entry_direction = 'clockwise'
-        outside_pt = Polygon3D(poly).outside_point(entry_direction)
-        expected = inv_poly.points_matrix
+        result = poly.normalize_coords(entry_direction, ggr)
+        expected = inv_poly
         
         # expect no change
-        result = normalise_coords(poly, outside_pt, ggr)
-        assert (result == expected).all()
+        result = poly.normalize_coords(entry_direction, ggr)
+        assert result == expected
         
         # expect direction to be reversed
-        result = normalise_coords(inv_poly, outside_pt, ggr)
-        assert (result == expected).all()
+        result = poly.normalize_coords(entry_direction, ggr)
+        assert result == expected
         
         entry_direction = 'counterclockwise'
-        outside_pt = poly.outside_point(entry_direction)
-        expected = poly.points_matrix
+        expected = Polygon3D([(0,0,1), (0,0,0), (1,0,0), (1,0,1)])
         
         # expect to move entry point
-        result = normalise_coords(offset_poly, outside_pt, ggr)
-        assert (result == expected).all()
+        result = poly.normalize_coords(entry_direction, ggr)
+        assert result == expected
 
         # expect direction to reverse and to move entry point
-        result = normalise_coords(inv_offset_poly, outside_pt, ggr)
-        assert (result == expected).all()
+        result = poly.normalize_coords(entry_direction, ggr)
+        assert result == expected
                 
         entry_direction = 'clockwise'
-        outside_pt = Polygon3D(poly).outside_point(entry_direction)
-        expected = inv_poly.points_matrix
+        expected = inv_poly
         
         # expect to move entry point
-        result = normalise_coords(offset_poly, outside_pt, ggr)
-        assert (result == expected).all()
+        result = poly.normalize_coords(entry_direction, ggr)
+        assert result == expected
 
         # expect direction to reverse and to move entry point
-        result = normalise_coords(inv_offset_poly, outside_pt, ggr)
-        assert (result == expected).all()
+        result = poly.normalize_coords(entry_direction, ggr)
+        assert result == expected
         
         

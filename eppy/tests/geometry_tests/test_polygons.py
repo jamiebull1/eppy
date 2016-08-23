@@ -15,6 +15,8 @@ from math import acos
 from math import atan2
 from math import pi
 
+from eppy.pytest_helpers import almostequal
+
 from eppy.geometry.polygons import Polygon
 from eppy.geometry.polygons import Polygon3D
 from eppy.geometry.polygons import Vector2D
@@ -38,7 +40,7 @@ def test_polygon_repr():
     s2D = Polygon([(0,0), (2,0), (2,0), (0,0)])  # vertical
     assert eval(repr(s2D)) == s2D
     
-    s3D = Polygon3D([(0,0,0), (2,0,0), (2,0,0), (0,0,0)])  # vertical
+    s3D = Polygon3D([(0,0,0), (2,0,0), (2,2,0), (0,2,0)])  # vertical
     assert eval(repr(s3D)) == s3D
 
 def test_polygon_attributes():
@@ -390,16 +392,16 @@ def test_surface_normal():
 def test_surface_is_clockwise():
     """Test if a surface is clockwise as seen from a given point.
     """
-    poly = Polygon3D([
-        Vector3D(0.0, 0.0, 0.0),
-        Vector3D(1.0, 0.0, 0.0),
-        Vector3D(1.0, 1.0, 0.0),
-        Vector3D(0.0, 1.0, 0.0)])
-    poly_inv = Polygon3D(reversed([
+    poly = Polygon3D(reversed([
         Vector3D(0.0, 0.0, 0.0),
         Vector3D(1.0, 0.0, 0.0),
         Vector3D(1.0, 1.0, 0.0),
         Vector3D(0.0, 1.0, 0.0)]))
+    poly_inv = Polygon3D([
+        Vector3D(0.0, 0.0, 0.0),
+        Vector3D(1.0, 0.0, 0.0),
+        Vector3D(1.0, 1.0, 0.0),
+        Vector3D(0.0, 1.0, 0.0)])
 
     pt = Vector3D(0.5, 0.5, 1.0)  # point above the plane
 
@@ -497,4 +499,20 @@ def find_starting_position(polygon, starting_position):
 
     return result
         
+def test_invert():
+    v = Vector3D(1, 2, 3)
+    assert v.invert() == Vector3D(-1, -2, -3)
+    
+
+def test_set_length():
+    v = Vector3D(1, 1, 1)
+    v.set_length(1)
+    for i in v:
+        assert almostequal(i, 0.57735026)
+
+def test_normalize():
+    v = Vector3D(1, 1, 1)
+    v.normalize()
+    for i in v:
+        assert almostequal(i, 0.57735026)
 

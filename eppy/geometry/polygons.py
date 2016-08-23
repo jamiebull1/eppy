@@ -11,10 +11,13 @@ PyClipper is used for clipping.
 
 """
 
-from math import atan2
-
 from eppy.pytest_helpers import almostequal
 
+from eppy.geometry.transformations import reorder_ULC
+from eppy.geometry.vectors import Vector2D
+from eppy.geometry.vectors import Vector3D
+from eppy.geometry.vectors import inverse_vector
+from eppy.geometry.vectors import normalise_vector
 import pyclipper as pc
 
 
@@ -23,96 +26,6 @@ try:
 except ImportError:
     import tinynumpy.tinynumpy as np
 
-
-class Vector2D(object):
-    """Two dimensional point."""
-    def __init__(self, *args):
-        self.args = list(args)
-        self.x = float(args[0])
-        self.y = float(args[1])
-    
-    def __iter__(self):
-        return (i for i in self.args)
-
-    def __repr__(self):
-        class_name = type(self).__name__
-        return '{}({!r}, {!r})'.format(class_name, *self.args)
-    
-    def __eq__(self, other): 
-        return self.__dict__ == other.__dict__
-            
-    def __sub__(self, other):
-        return self.__class__(*[self[i] - other[i] for i in range(len(self))])
-    
-    def __add__(self, other):
-        return self.__class__(*[self[i] + other[i] for i in range(len(self))])
-    
-    def __len__(self):
-        return len(self.args)
-    
-    def __getitem__(self, key):
-        return self.args[key]
-
-    def __setitem__(self, key, value):
-        self.args[key] = value
-        
-    def cross(self, other):
-        return np.cross(self, other)
-
-    @property
-    def length(self):
-        """The length of a vector.
-        
-        Parameters
-        ----------
-        list-like
-            A list or other iterable.
-            
-        """
-        length = sum(x ** 2 for x in self) ** 0.5
-    
-        return length
-
-    def dot(self, other):
-        if len(self) == 2:
-            return self.x * other.y - self.y * other.x
-        else:
-            return np.dot(self, other)
-    
-    def normalize(self):
-        return self.set_length(1.0)
-    
-    def set_length(self, new_length):
-        current_length = self.length        
-        multiplier = new_length / current_length
-        self.args = [i * multiplier for i in self.args]
-        
-
-def test_set_length():
-    v = Vector3D(1, 1, 1)
-    v.set_length(1)
-    for i in v:
-        assert almostequal(i, 0.57735026)
-
-def test_normalize():
-    v = Vector3D(1, 1, 1)
-    v.normalize(1)
-    for i in v:
-        assert almostequal(i, 0.57735026)
-
-
-
-class Vector3D(Vector2D):
-    """Three dimensional point."""
-    def __init__(self, x, y, z):
-        super(Vector3D, self).__init__(x, y)
-        self.z = float(z)
-        self.args = (self.x, self.y, self.z)
-        
-    def __repr__(self):
-        class_name = type(self).__name__
-        return '{}({!r}, {!r}, {!r})'.format(class_name, *self.args)
-    
 
 class Polygon(object):
     """Two-dimensional polygon."""
@@ -387,9 +300,6 @@ class Polygon3D(Polygon):
             self.vertices = vertices
 
     def __eq__(self, other):
-        # try the simple case
-        if self.__dict__ == other.__dict__:
-            return True
         # check they're in the same plane
         if list(self.normal_vector) != list(other.normal_vector):
             return False
@@ -466,7 +376,7 @@ class Polygon3D(Polygon):
         v = arbitrary_pt - viewpoint
         n = self.normal_vector
         sign = np.dot(v, n)
-        return sign < 0
+        return sign > 0
     
     def is_coplanar(self, other):
         """Check if polygon is in the same plane as another polygon.
@@ -548,13 +458,7 @@ class Polygon3D(Polygon):
         Polygon3D
         
         """
-        starting_vertex = self.find_starting_position(starting_position)
-        start_index = self.vertices.index(starting_vertex)
-
-        new_poly = [self.vertices[(i + start_index) % len(self)] 
-                    for i in range(len(self))]
-
-        return Polygon3D(new_poly)
+        return reorder_ULC(self)
     
     def project_to_2D(self):
         """Project the 3D polygon into 2D space.
@@ -636,6 +540,10 @@ class Polygon3D(Polygon):
         
         """
         return difference_3D_polys(self, poly)
+    
+    def normalize_coords(self, entry_direction, ggr):
+        outside_point = self.outside_point(entry_direction)
+        return normalize_coords(self, outside_point, ggr)
 
 
 def normal_vector(poly):
@@ -658,41 +566,6 @@ def normal_vector(poly):
         n[2] += (v_curr.x - v_next.x) * (v_curr.y + v_next.y)
     
     return normalise_vector(n)
-
-
-def normalise_vector(v):
-    """Convert a vector to a unit vector
-    
-    Parameters
-    ----------
-    v : list
-        The vector.
-        
-    Returns
-    -------
-    list
-    
-    """
-    magnitude = sum(abs(i) for i in v)
-    normalised_v = [i / magnitude for i in v]
-    
-    return normalised_v
-
-
-def inverse_vector(v):
-    """Convert a vector to the same vector but in the opposite direction
-    
-    Parameters
-    ----------
-    v : list
-        The vector.
-        
-    Returns
-    -------
-    list
-    
-    """    
-    return [-i for i in v]
 
 
 def prep_3D_polys(poly1, poly2):
@@ -849,7 +722,6 @@ def project_inv(pt, proj_axis, a, v):
     w[proj_axis] = c
     return tuple(w)
 
-
 def pt_to_tuple(pt, dims=3):
     """Convert a point to a numpy array.
     
@@ -903,3 +775,55 @@ def pt_to_array(pt, dims=3):
     # handle Vector2D
     elif dims == 2:
         return np.array([float(pt.x), float(pt.y)])
+    
+def normalize_coords(coords, outside_pt, ggr=None):
+    """Put coordinates into the correct format for EnergyPlus.
+    
+    coords : list
+        The new coordinates.
+    ggr : EPBunch, optional
+        The section of the IDF that give rules for the order of vertices in a
+        surface {default : None}.
+    
+    Returns
+    -------
+    list
+    
+    """
+    poly = Polygon3D(coords)
+    
+    # check and set entry direction
+    poly = set_entry_direction(poly, outside_pt, ggr)
+    
+    # check and set starting position
+    poly = set_starting_position(poly, outside_pt, ggr)
+
+    return poly
+
+
+def set_entry_direction(poly, outside_pt, ggr=None):
+    """Check and set entry direction.
+    """
+    if not ggr:
+        entry_direction = 'counterclockwise' # EnergyPlus default
+    else:
+        entry_direction = ggr[0].Vertex_Entry_Direction.lower()
+    if entry_direction == 'counterclockwise':
+        if poly.is_clockwise(outside_pt):
+            poly = poly.invert_orientation()
+    elif entry_direction == 'clockwise':
+        if not poly.is_clockwise(outside_pt):
+            poly = poly.invert_orientation()
+    return poly
+
+
+def set_starting_position(poly, outside_pt, ggr=None):
+    """Check and set entry direction.
+    """
+    if not ggr:
+        starting_position = 'upperleftcorner' # EnergyPlus default
+    else:
+        starting_position = ggr[0].Starting_Vertex_Position.lower()
+    poly = poly.order_points(starting_position)
+
+    return poly

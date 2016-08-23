@@ -13,9 +13,10 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import itertools
-from six.moves import zip_longest
 
 from eppy.geometry.polygons import Polygon3D
+from eppy.geometry.polygons import normalize_coords
+from six.moves import zip_longest
 
 
 def intersect_idf_surfaces(idf):
@@ -107,7 +108,7 @@ def set_coords(surface, coords, outside_pt, ggr=None):
     
     """
     # make new_coords follow the GlobalGeometryRules
-    coords = normalise_coords(coords, outside_pt, ggr)
+    coords = normalize_coords(coords, outside_pt, ggr)
     coords = coords.flatten()
     # find the vertex fields
     n_vertices_index = surface.fieldnames.index('Number_of_Vertices')
@@ -119,59 +120,6 @@ def set_coords(surface, coords, outside_pt, ggr=None):
     for field, x in zip_longest(vertex_fields, coords, fillvalue=""):
         surface[field] = x
     
-
-def normalise_coords(coords, outside_pt, ggr=None):
-    """Put coordinates into the correct format for EnergyPlus.
-    
-    coords : list
-        The new coordinates.
-    ggr : EPBunch, optional
-        The section of the IDF that give rules for the order of vertices in a
-        surface {default : None}.
-    
-    Returns
-    -------
-    list
-    
-    """
-    poly = Polygon3D(coords)
-    poly = set_entry_direction(poly, outside_pt, ggr)
-    
-    # check and set starting position
-    poly = set_starting_position(poly, outside_pt, ggr)
-
-    coords = poly.points_matrix
-    
-    return coords
-
-
-def set_entry_direction(poly, outside_pt, ggr=None):
-    """Check and set entry direction.
-    """
-    if not ggr:
-        entry_direction = 'counterclockwise' # EnergyPlus default
-    else:
-        entry_direction = ggr[0].Vertex_Entry_Direction.lower()
-    if entry_direction == 'counterclockwise':
-        if poly.is_clockwise(outside_pt):
-            poly = poly.invert_orientation()
-    elif entry_direction == 'clockwise':
-        if not poly.is_clockwise(outside_pt):
-            poly = poly.invert_orientation()
-    return poly
-
-
-def set_starting_position(poly, outside_pt, ggr=None):
-    """Check and set entry direction.
-    """
-    if not ggr:
-        starting_position = 'upperleftcorner' # EnergyPlus default
-    else:
-        starting_position = ggr[0].Starting_Vertex_Position.lower()
-    poly = poly.order_points(starting_position)
-
-    return poly
-
 
 def getidfsurfaces(idf):
     """Return all surfaces in an IDF.
