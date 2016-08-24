@@ -13,7 +13,6 @@ PyClipper is used for clipping.
 
 from eppy.pytest_helpers import almostequal
 
-from eppy.geometry.transformations import reorder_ULC
 from eppy.geometry.vectors import Vector2D
 from eppy.geometry.vectors import Vector3D
 from eppy.geometry.vectors import inverse_vector
@@ -23,6 +22,7 @@ import pyclipper as pc
 
 try:
     import numpy as np
+    from eppy.geometry.transformations import reorder_ULC
 except ImportError:
     import tinynumpy.tinynumpy as np
 

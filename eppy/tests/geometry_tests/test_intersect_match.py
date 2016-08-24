@@ -16,18 +16,15 @@ from eppy.idf_msequence import Idf_MSequence
 from eppy.modeleditor import IDF
 import pytest
 from six import StringIO
-    
+
 try:
     import numpy
+    from eppy.geometry.intersect_match import getidfsurfaces
+    from eppy.geometry.intersect_match import intersect_idf_surfaces
+    from eppy.geometry.polygons import Polygon3D
+    NUMPY = True
 except ImportError:
-    pytestmark = pytest.mark.skip(reason="tinynumpy does not support matrices")
-
-from eppy.geometry.intersect_match import getidfsurfaces
-from eppy.geometry.intersect_match import intersect_idf_surfaces
-from eppy.geometry.polygons import Polygon3D
-
-
-
+    NUMPY = False
 
 
 idf_txt = """
@@ -49,7 +46,9 @@ idf_txt = """
     BuildingSurface:Detailed, z2_WALL_0004, Wall, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , 2.5, 1.95, 0.5, 2.5, 1.95, 0.0, 1.5, 2.05, 0.0, 1.5, 2.05, 0.5;
     """
 
+@pytest.mark.skipif(not NUMPY, reason="transforms3d requires numpy")
 class TestIntersectMatch():
+    
     def setup(self):
         iddfhandle = StringIO(iddcurrent.iddtxt)
         if IDF.getiddname() == None:

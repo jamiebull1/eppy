@@ -12,8 +12,6 @@ from transforms3d._gohlketransforms import translation_matrix
 
 from eppy.geometry.vectors import Vector3D
 
-
-#from eppy.geometry.polygons import Vector3D
 try:
     import numpy as np
 except ImportError:
