@@ -4,7 +4,6 @@ as possible, but also trying to respect the intent of the algorithms used in
 OpenStudio for the sake of consistency between tools based on EnergyPlus.
 
 """
-from eppy.pytest_helpers import almostequal
 from transforms3d._gohlketransforms import concatenate_matrices
 from transforms3d._gohlketransforms import identity_matrix
 from transforms3d._gohlketransforms import inverse_matrix

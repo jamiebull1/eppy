@@ -14,11 +14,20 @@ from __future__ import unicode_literals
 from eppy.iddcurrent import iddcurrent
 from eppy.idf_msequence import Idf_MSequence
 from eppy.modeleditor import IDF
+import pytest
 from six import StringIO
+    
+try:
+    import numpy
+except ImportError:
+    pytestmark = pytest.mark.skip(reason="tinynumpy does not support matrices")
 
 from eppy.geometry.intersect_match import getidfsurfaces
 from eppy.geometry.intersect_match import intersect_idf_surfaces
 from eppy.geometry.polygons import Polygon3D
+
+
+
 
 
 idf_txt = """

@@ -13,7 +13,13 @@ from __future__ import unicode_literals
 
 from eppy.pytest_helpers import almostequal
 from numpy import deg2rad
+import pytest
 from transforms3d._gohlketransforms import translation_matrix
+
+try:
+    import numpy
+except ImportError:
+    pytestmark = pytest.mark.skip(reason="tinynumpy does not support matrices")
 
 from eppy.geometry.polygons import Polygon3D
 from eppy.geometry.transformations import Transformation
