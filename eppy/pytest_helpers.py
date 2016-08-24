@@ -27,8 +27,7 @@ def almostequal(first, second, places=7):
         return str(first) == str(second)
     except TypeError:
         # handle iterables
-        for a, b in zip(first, second):
-            return almostequal(a, b) 
+        return all([a==b for a,b in zip(first, second)])
     # test for equality
     if first == second:
         return True
