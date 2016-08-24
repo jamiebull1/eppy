@@ -1,3 +1,16 @@
+# Copyright (c) 2016 Jamie Bull
+# =======================================================================
+#  Distributed under the MIT License.
+#  (See accompanying file LICENSE or copy at
+#  http://opensource.org/licenses/MIT)
+# =======================================================================
+"""pytest for transformations.py"""
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from eppy.pytest_helpers import almostequal
 from numpy import deg2rad
 from transforms3d._gohlketransforms import translation_matrix
@@ -5,7 +18,7 @@ from transforms3d._gohlketransforms import translation_matrix
 from eppy.geometry.polygons import Polygon3D
 from eppy.geometry.transformations import Transformation
 from eppy.geometry.transformations import reorder_ULC
-from geometry.vectors import Vector3D
+from eppy.geometry.vectors import Vector3D
 
 
 def test_translation_transformations():
