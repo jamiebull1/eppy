@@ -19,7 +19,7 @@ from eppy.geometry.vectors import inverse_vector
 from eppy.geometry.vectors import normalise_vector
 import pyclipper as pc
 
-
+# keep imports which rely on numpy isolated
 try:
     import numpy as np
     from eppy.geometry.transformations import reorder_ULC
@@ -27,7 +27,8 @@ except ImportError:
     import tinynumpy.tinynumpy as np
 
 
-class Edge(object):
+class Segment(object):
+    """Line segment in 3D."""
     
     def __init__(self, *vertices):
         self.vertices = vertices
@@ -39,6 +40,18 @@ class Edge(object):
         return '{}({!r})'.format(class_name, self.vertices)
     
     def on_poly_edge(self, poly):
+        """Test if segment lies on any edge of a polygon
+        
+        Parameters
+        ----------
+        poly : Polygon3D
+            The polygon to test against.
+        
+        Returns
+        -------
+        bool
+        
+        """
         v1 = self.p1 - self.p2
         for edge in poly.edges:
             v2 = edge.p1 - edge.p2
@@ -86,8 +99,10 @@ class Polygon(object):
     
     @property
     def edges(self):
+        """A list of edges represented as Segment objects.
+        """
         vertices = self.vertices
-        return [Edge(vertices[i], vertices[(i+1) % len(self)])
+        return [Segment(vertices[i], vertices[(i+1) % len(self)])
                 for i in range(len(self))]
 
     @property
@@ -342,12 +357,7 @@ class Polygon3D(Polygon):
     def normal_vector(self):
         """Vector perpendicular to the polygon in the outward direction.
         
-        Choose a triangle from pt1, pt2, pt3 on the polygon:
-            segment a is pt1 to pt2
-            segment b is pt2 to pt3
-            vector U is p2 - p1
-            vector V is p1 - p3
-            normal vector N is UxV (cross product)
+        Uses Newell's Method.
         
         Returns
         -------
@@ -362,6 +372,10 @@ class Polygon3D(Polygon):
         A number where v[0] * x + v[1] * y + v[2] * z = a is the equation of
         the plane containing the polygon (where v is the polygon normal vector).
         
+        Returns
+        -------
+        float
+        
         """
         v = self.normal_vector
         pt = self.points_matrix[0]  # arbitrary point in the polygon
@@ -370,6 +384,13 @@ class Polygon3D(Polygon):
     
     @property
     def projection_axis(self):
+        """Return an axis which will not lead to degenerate surface.
+        
+        Returns
+        -------
+        int
+        
+        """
         proj_axis = max(range(3), key=lambda i: abs(self.normal_vector[i]))
         return proj_axis
     
@@ -486,7 +507,10 @@ class Polygon3D(Polygon):
         Polygon3D
         
         """
-        return reorder_ULC(self)
+        try:
+            return reorder_ULC(self)
+        except AttributeError:
+            raise AttributeError("reorder_ULC requires numpy to be installed")
     
     def project_to_2D(self):
         """Project the 3D polygon into 2D space.
@@ -498,7 +522,7 @@ class Polygon3D(Polygon):
         
         Returns
         -------
-        Polygon
+        Polygon3D
         
         """        
         points = self.points_matrix
@@ -570,6 +594,20 @@ class Polygon3D(Polygon):
         return difference_3D_polys(self, poly)
     
     def normalize_coords(self, entry_direction, ggr):
+        """Order points, respecting the global geometry rules
+        
+        Parameters
+        ----------
+        entry_direction : str
+            Clockwise or counterclockwise.
+        ggr : EPBunch
+            GlobalGeometryRules object.
+        
+        Returns
+        -------
+        Polygon3D
+        
+        """
         outside_point = self.outside_point(entry_direction)
         return normalize_coords(self, outside_point, ggr)
 
@@ -624,6 +662,21 @@ def prep_3D_polys(poly1, poly2):
 
 
 def union_3D_polys(poly1, poly2):
+    """Union of two 3D polygons.
+    
+    Parameters
+    ----------
+    poly1 : Polygon3D
+        The subject polygon.
+    poly2 : Polygon3D
+        The clip polygon.
+
+    Returns
+    -------
+    list or False
+        A list of lists of Polygon3D objects representing each union.
+    
+    """
     clipper = prep_3D_polys(poly1, poly2)
         
     unions = clipper.Execute(
@@ -635,6 +688,22 @@ def union_3D_polys(poly1, poly2):
 
 
 def intersect_3D_polys(poly1, poly2):    
+    """Intersection of two 3D polygons.
+    
+    Parameters
+    ----------
+    poly1 : Polygon3D
+        The subject polygon.
+    poly2 : Polygon3D
+        The clip polygon.
+
+    Returns
+    -------
+    list or False
+        False if no intersection, otherwise a list of lists of Polygon3D
+        objects representing each intersection.
+    
+    """
     clipper = prep_3D_polys(poly1, poly2)
     
     intersections = clipper.Execute(
@@ -646,6 +715,22 @@ def intersect_3D_polys(poly1, poly2):
 
 
 def difference_3D_polys(poly1, poly2):
+    """Difference between of two 3D polygons.
+    
+    Parameters
+    ----------
+    poly1 : Polygon3D
+        The subject polygon.
+    poly2 : Polygon3D
+        The clip polygon.
+
+    Returns
+    -------
+    list or False
+        False if no difference, otherwise a list of lists of Polygon3D
+        objects representing each difference.
+    
+    """
     clipper = prep_3D_polys(poly1, poly2)
     
     differences = clipper.Execute(
@@ -678,7 +763,24 @@ def process_clipped_3D_polys(results, example3d):
 
         
 def project_to_2D(vertices, proj_axis):
-    """
+    """Project a 3D polygon into 2D space.
+    
+    Parameters
+    ----------
+    vertices : list 
+        The three-dimensional vertices of the polygon.
+    proj_axis : int
+        The axis to project into.
+    a : float
+        Distance to the origin for the plane to project into.
+    v : list
+        Normal vector of the plane to project into.
+    
+    Returns
+    -------
+    list
+        The transformed vertices.
+    
     """
     points = [project(x, proj_axis) for x in vertices]
     return points
@@ -750,6 +852,7 @@ def project_inv(pt, proj_axis, a, v):
     w[proj_axis] = c
     return tuple(w)
 
+
 def pt_to_tuple(pt, dims=3):
     """Convert a point to a numpy array.
     
@@ -804,6 +907,7 @@ def pt_to_array(pt, dims=3):
     elif dims == 2:
         return np.array([float(pt.x), float(pt.y)])
     
+    
 def normalize_coords(poly, outside_pt, ggr=None):
     """Put coordinates into the correct format for EnergyPlus.
     
@@ -822,7 +926,6 @@ def normalize_coords(poly, outside_pt, ggr=None):
     """
     # check and set entry direction
     poly = set_entry_direction(poly, outside_pt, ggr)
-    
     # check and set starting position
     poly = set_starting_position(poly, outside_pt, ggr)
 
