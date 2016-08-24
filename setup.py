@@ -55,6 +55,7 @@ setup(
         "six>=1.10.0",
         "decorator>=4.0.10",
         "pyclipper>=1.0.2",  # used for geometry intersection
+        "transforms3d",  # used for geometry tranformations
         ],
     classifiers = [
         'Programming Language :: Python :: 2',
