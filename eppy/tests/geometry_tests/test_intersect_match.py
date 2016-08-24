@@ -46,6 +46,50 @@ idf_txt = """
     BuildingSurface:Detailed, z2_WALL_0004, Wall, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , 2.5, 1.95, 0.5, 2.5, 1.95, 0.0, 1.5, 2.05, 0.0, 1.5, 2.05, 0.5;
     """
 
+idf_txt_ring = """
+Version, 8.5;
+Building, Building 1, , , , , , , ;
+Zone, z1 Thermal Zone, -0.0, 3.5, 1.0, 1.0, , , , , , , ;
+Zone, z2 Thermal Zone, -0.0, 3.5, 1.0, 0.0, , , , , , , ;
+BuildingSurface:Detailed, z1_WALL_0001, WALL, , z1 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -0.25, 2.5, 1.0, -0.25, 2.5, 0.0, -1.68, 2.5, 0.0, -1.68, 2.5, 1.0;
+BuildingSurface:Detailed, z1_WALL_0002, WALL, , z1 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -0.25, 0.4, 1.0, -0.25, 0.4, 0.0, -0.25, 2.5, 0.0, -0.25, 2.5, 1.0;
+BuildingSurface:Detailed, z1_ROOF_0001, ROOF, , z1 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -0.25, 0.4, 1.0, -0.25, 2.5, 1.0, -1.68, 2.5, 1.0, -1.68, 0.4, 1.0;
+BuildingSurface:Detailed, z1_FLOOR_0001, FLOOR, , z1 Thermal Zone, Ground, , NoSun, NoWind, , , -0.25, 2.5, 0.0, -0.25, 0.4, 0.0, -1.68, 0.4, 0.0, -1.68, 2.5, 0.0;
+BuildingSurface:Detailed, z1_WALL_0003, WALL, , z1 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -1.68, 0.4, 1.0, -1.68, 0.4, 0.0, -0.25, 0.4, 0.0, -0.25, 0.4, 1.0;
+BuildingSurface:Detailed, z1_WALL_0004, WALL, , z1 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -1.68, 2.5, 1.0, -1.68, 2.5, 0.0, -1.68, 0.4, 0.0, -1.68, 0.4, 1.0;
+BuildingSurface:Detailed, z2_FLOOR_0001, FLOOR, , z2 Thermal Zone, Ground, , NoSun, NoWind, , , 0.0, 2.9, 0.0, 0.0, 0.0, 0.0, -2.14, 0.0, 0.0, -2.14, 2.9, 0.0;
+BuildingSurface:Detailed, z2_WALL_0001, WALL, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -2.14, 0.0, 1.0, -2.14, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0;
+BuildingSurface:Detailed, z2_WALL_0002, WALL, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -2.14, 2.9, 1.0, -2.14, 2.9, 0.0, -2.14, 0.0, 0.0, -2.14, 0.0, 1.0;
+BuildingSurface:Detailed, z2_WALL_0003, WALL, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , 0.0, 2.9, 1.0, 0.0, 2.9, 0.0, -2.14, 2.9, 0.0, -2.14, 2.9, 1.0;
+BuildingSurface:Detailed, z2_WALL_0004, WALL, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 2.9, 0.0, 0.0, 2.9, 1.0;
+BuildingSurface:Detailed, z2_ROOF_0001, ROOF, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , 0.0, 0.0, 1.0, 0.0, 2.9, 1.0, -2.14, 2.9, 1.0, -2.14, 0.0, 1.0;
+"""
+@pytest.mark.skipif(not NUMPY, reason="transforms3d requires numpy")
+class TestIntersectMatchRing():
+    
+    def setup(self):
+        iddfhandle = StringIO(iddcurrent.iddtxt)
+        if IDF.getiddname() == None:
+            IDF.setiddname(iddfhandle)
+        
+        self.idf = IDF(StringIO(idf_txt_ring))
+            
+    def test_intersect_idf_surfaces(self):       
+        idf = self.idf        
+        starting = len(idf.idfobjects['BUILDINGSURFACE:DETAILED'])
+        intersect_idf_surfaces(idf)
+        ending = len(idf.idfobjects['BUILDINGSURFACE:DETAILED'])
+        assert starting == 12
+        assert ending == 14
+
+        result = [w for w in idf.idfobjects['BUILDINGSURFACE:DETAILED']
+                     if w.Name == 'z1_WALL_0002_new_1']
+        assert len(result) == 1
+        result = [w for w in idf.idfobjects['BUILDINGSURFACE:DETAILED']
+                     if w.Name == 'z2_WALL_0004_new_1']
+        assert len(result) == 1
+
+
 @pytest.mark.skipif(not NUMPY, reason="transforms3d requires numpy")
 class TestIntersectMatch():
     

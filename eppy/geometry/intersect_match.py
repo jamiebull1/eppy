@@ -64,9 +64,6 @@ def intersect_idf_surfaces(idf):
             If it doesn't touch an edge then we need to make subsurfaces in
             each surface.
             """
-            """
-            @TODO: Handle any existing subsurfaces which may need to be split.
-            """
             new_name = "%s_%s_%i" % (s1[0].Name, 'new', i)
             new_inv_name = "%s_%s_%i" % (s2[0].Name, 'new', i)
             # intersection
