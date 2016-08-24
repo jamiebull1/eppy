@@ -118,7 +118,7 @@ def is_subsurface(s1, s2, intersect):
     """
     for edge in intersect.edges:
         if all([edge.on_poly_edge(s1), edge.on_poly_edge(s2)]):
-            return True
+            return False
     
 def set_coords(surface, poly, outside_pt, ggr=None):
     """Update the coordinates of a surface.
