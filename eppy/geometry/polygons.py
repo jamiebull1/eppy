@@ -26,6 +26,7 @@ try:
 except ImportError:
     import tinynumpy.tinynumpy as np
 
+
 class Edge(object):
     
     def __init__(self, *vertices):
@@ -43,19 +44,8 @@ class Edge(object):
             v2 = edge.p1 - edge.p2
             cross = Vector3D(*v1.cross(v2))
             if almostequal(cross, Vector3D(0,0,0), places=12):
-                print('equal:   ', v1.cross(v2))
                 return True
         
-
-def slope(p1, p2):
-    slope = p2[1] - p1[1] / p2[0] - p1[0]
-    return slope
-
-
-def intercept(p1, p2):
-    intercept = p1[1] - slope(p1, p2) * p1[0]
-    return intercept
-
 
 class Polygon(object):
     """Two-dimensional polygon."""
@@ -350,7 +340,7 @@ class Polygon3D(Polygon):
 
     @property
     def normal_vector(self):
-        """Vector perpendicular to the polygon
+        """Vector perpendicular to the polygon in the outward direction.
         
         Choose a triangle from pt1, pt2, pt3 on the polygon:
             segment a is pt1 to pt2
@@ -361,7 +351,7 @@ class Polygon3D(Polygon):
         
         Returns
         -------
-        nd.array
+        Vector3D
 
         """
         return Vector3D(*normal_vector(self.vertices))
@@ -429,12 +419,14 @@ class Polygon3D(Polygon):
         bool
         
         """
-        if (almostequal(self.normal_vector, other.normal_vector) and
-                almostequal(self.distance, other.distance)):
+        n1 = self.normal_vector
+        n2 = other.normal_vector
+        d1 = self.distance
+        d2 = other.distance
+        
+        if (almostequal(n1, n2) and almostequal(d1, d2)):
             return True
-        elif (almostequal(self.normal_vector, 
-                          inverse_vector(other.normal_vector)) and
-              almostequal(self.distance, -other.distance)):
+        elif (almostequal(n1, -n2) and almostequal(d1, -d2)):
             return True
         else:
             return False
