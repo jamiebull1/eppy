@@ -67,16 +67,19 @@ def intersect_idf_surfaces(idf):
             """
             @TODO: Handle any existing subsurfaces which may need to be split.
             """
+            new_name = "%s_%s_%i" % (s1[0].Name, 'new', i)
+            new_inv_name = "%s_%s_%i" % (s2[0].Name, 'new', i)
+            # intersection
             new = idf.copyidfobject(s1[0])
-            new.Name = "%s_%s_%i" % (s1[0].Name, 'new', i)
+            new.Name = new_name
             set_coords(new, intersect, outside_s2, ggr)
-            new.Outside_Boundary_Condition = "Zone"
-            new.Outside_Boundary_Condition_Object = s2[0].Zone_Name
+            new.Outside_Boundary_Condition = "Surface"
+            new.Outside_Boundary_Condition_Object = new_inv_name
             # inverted intersection
             new_inv = idf.copyidfobject(s2[0])
-            new_inv.Name = "%s_%s_%i" % (s2[0].Name, 'new', i)
-            new_inv.Outside_Boundary_Condition = "Zone"
-            new_inv.Outside_Boundary_Condition_Object = s1[0].Zone_Name
+            new_inv.Name = new_inv_name
+            new_inv.Outside_Boundary_Condition = "Surface"
+            new_inv.Outside_Boundary_Condition_Object = new_name
             set_coords(new_inv, intersect.invert_orientation(), outside_s2, ggr)
         # edit the original two surfaces
         s1_new = s1[1].difference(s2[1])
