@@ -27,10 +27,10 @@ class Vector2D(object):
         return '{}({!r}, {!r})'.format(class_name, *self.args)
     
     def __eq__(self, other):
-        if (a == b for a, b in zip(self, other)):
-            return True
-#        else:
-#            return False
+        for a, b in zip(self, other):
+            if a != b:
+                return False
+        return True
         
     def __sub__(self, other):
         return self.__class__(*[self[i] - other[i] for i in range(len(self))])

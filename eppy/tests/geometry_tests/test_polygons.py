@@ -75,16 +75,15 @@ def test_polygons_not_equal():
     # different normal vector
     poly3d = Polygon3D([(0,0,0), (0,1,1), (1,1,1), (1,0,0)])
     poly3d_2 = Polygon3D([(0,0,2), (0,1,2), (1,1,2), (1,0,2)])
+    result = poly3d.normal_vector == poly3d_2.normal_vector
     assert poly3d.normal_vector != poly3d_2.normal_vector
-    result = poly3d == poly3d_2
-    assert result == False
+    assert poly3d != poly3d_2
     # different distance
     poly3d = Polygon3D([(0,0,0), (0,1,1), (1,1,1), (1,0,0)])
     poly3d_2 = Polygon3D([(0,1,2), (0,2,3), (1,2,3), (1,1,2)])
     assert poly3d.normal_vector == poly3d_2.normal_vector
     assert poly3d.distance != poly3d_2.distance
-    result = poly3d == poly3d_2
-    assert result == False
+    assert poly3d != poly3d_2
     
 def test_reflect():
     """
@@ -417,88 +416,7 @@ def test_point():
     assert pt1 - pt2 == Vector3D(-1,-1,-1)
     
     assert pt2 + pt2 == Vector3D(2,2,2)
-   
-    
-def test_find_corner():
-    pts = [(2,2,2), (2,2,1), (1,1,1), (1,1,2)]
-    
-    polygon = Polygon3D(pts)
-    expected = Vector3D(2,2,2)
-    result = find_starting_position(polygon, 'UpperLeftCorner')   
-    assert result == expected
-    
-    poly = Polygon3D(reversed(pts))
-    expected = Vector3D(1,1,2)
-    result = find_starting_position(polygon, 'UpperLeftCorner')
-    assert result == expected
-    
-    poly = Polygon3D(pts)
-    expected = Vector3D(1,1,1)
-    result = find_starting_position(polygon, 'LowerRightCorner')    
-    assert result == expected
-    
-    poly = Polygon3D(reversed(pts))
-    expected = Vector3D(2,2,1)
-    result = find_starting_position(polygon, 'LowerRightCorner')
-    assert result == expected
-    
-    
-def test_find_corner_horizontal():
-    pts = [(2,2,0), (2,1,0), (1, 1, 0), (1,2,0)]
-    
-    polygon = Polygon3D(pts)
-    expected = Vector3D(2,2,0)
-    result = find_starting_position(polygon, 'UpperLeftCorner')   
-    assert result == expected
-    
-    poly = Polygon3D(reversed(pts))
-    expected = Vector3D(1,2,0)
-    result = find_starting_position(polygon, 'UpperLeftCorner')
-    assert result == expected
-    
-    poly = Polygon3D(pts)
-    expected = Vector3D(1,1,0)
-    result = find_starting_position(polygon, 'LowerRightCorner')    
-    assert result == expected
-    
-    poly = Polygon3D(reversed(pts))
-    expected = Vector3D(2,1,0)
-    result = find_starting_position(polygon, 'LowerRightCorner')
-    assert result == expected
-    
-def find_starting_position(polygon, starting_position):
-    """Reorder the vertices based on a starting position rule.
-
-    Parameters
-    ----------
-    starting_position : str
-        The string that defines vertex starting position in EnergyPlus.
-    
-    Returns
-    -------
-    Vector3D
-    
-    """
-    if polygon.is_horizontal:
-        stored_z = polygon.zs[0]
-        poly = Polygon3D((v.x, 0, v.y) for v in polygon.vertices)
-    else:
-        poly = polygon
-    if "upper" in starting_position.lower():
-        points = [pt for pt in poly if pt.z == max(poly.zs)]
-    elif "lower" in starting_position.lower():
-        points = [pt for pt in poly if pt.z == min(poly.zs)]
-        
-    if "right" in starting_position.lower():
-        result = points[1]
-        
-    elif "left" in starting_position.lower():
-        result = points[0]
-    if polygon.is_horizontal:
-        result = Vector3D(result.x, result.z, stored_z)
-
-    return result
-        
+           
 def test_invert():
     v = Vector3D(1, 2, 3)
     assert v.invert() == Vector3D(-1, -2, -3)
