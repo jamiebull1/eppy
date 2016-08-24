@@ -123,7 +123,7 @@ class TestTransormations():
         assert almostequal(tempVertices, expectedVertices, tol)
     
         # rotate 30 degrees about z
-        testVertices = t.rotation(Vector3D(0,0,1), np.np.deg2rad(30)) * vertices
+        testVertices = t.rotation(Vector3D(0,0,1), np.deg2rad(30)) * vertices
         t = Transformation().align_face(testVertices)
         tempVertices = t.inverse() * testVertices
         expectedVertices = Polygon3D([(0,1,1),(0,0,0),(1,0,0),(1,1,0)])
