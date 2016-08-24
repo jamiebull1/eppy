@@ -26,6 +26,36 @@ try:
 except ImportError:
     import tinynumpy.tinynumpy as np
 
+class Edge(object):
+    
+    def __init__(self, *vertices):
+        self.vertices = vertices
+        self.p1 = vertices[0]
+        self.p2 = vertices[1]
+    
+    def __repr__(self):
+        class_name = type(self).__name__
+        return '{}({!r})'.format(class_name, self.vertices)
+    
+    def on_poly_edge(self, poly):
+        v1 = self.p1 - self.p2
+        for edge in poly.edges:
+            v2 = edge.p1 - edge.p2
+            cross = Vector3D(*v1.cross(v2))
+            if almostequal(cross, Vector3D(0,0,0), places=12):
+                print('equal:   ', v1.cross(v2))
+                return True
+        
+
+def slope(p1, p2):
+    slope = p2[1] - p1[1] / p2[0] - p1[0]
+    return slope
+
+
+def intercept(p1, p2):
+    intercept = p1[1] - slope(p1, p2) * p1[0]
+    return intercept
+
 
 class Polygon(object):
     """Two-dimensional polygon."""
@@ -63,6 +93,12 @@ class Polygon(object):
         for i, v in enumerate(self.vertices):
             points[i,:] = pt_to_array(v, dims=self.n_dims)
         return points
+    
+    @property
+    def edges(self):
+        vertices = self.vertices
+        return [Edge(vertices[i], vertices[(i+1) % len(self)])
+                for i in range(len(self))]
 
     @property
     def xs(self):

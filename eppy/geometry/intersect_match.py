@@ -56,14 +56,19 @@ def intersect_idf_surfaces(idf):
         intersects = s1[1].intersect(s2[1])
         if not intersects:
             continue
+        print(s1[0].Name, s2[0].Name)
+        print(intersects)
         # create new surfaces for the intersects, and their reflections
         for i, intersect in enumerate(intersects, 1):
             # regular intersection
             """
             @TODO: Check the intersection touches an edge of both surfaces.
-            If it doesn't touch an edge then we need to make subsurfaces in
-            each surface.
+            If it doesn't touch an edge then we need to make subsurfaces as 
+            doors in each surface.
             """
+            if is_subsurface(s1[1], s2[1], intersect):
+                print("subsurface - continuing")
+                continue
             new_name = "%s_%s_%i" % (s1[0].Name, 'new', i)
             new_inv_name = "%s_%s_%i" % (s2[0].Name, 'new', i)
             # intersection
@@ -88,7 +93,33 @@ def intersect_idf_surfaces(idf):
             # modify the original s2[0]
             set_coords(s2[0], s2_new[0], outside_s2, ggr)
     
+def is_subsurface(s1, s2, intersect):
+    """
+    Check the intersection touches an edge of both surfaces.
+
+    If it doesn't touch an edge then we need to make subsurfaces as 
+    doors in each surface.
+    
+    Parameters
+    ----------
+    s1 : Polygon3D
+        The first surface.
+
+    s2 : Polygon3D
+        The second surface.
+
+    intersect : Polygon3D
+        The intersection between the two surfaces.
         
+    Returns
+    -------
+    bool
+
+    """
+    for edge in intersect.edges:
+        if all([edge.on_poly_edge(s1), edge.on_poly_edge(s2)]):
+            return True
+    
 def set_coords(surface, poly, outside_pt, ggr=None):
     """Update the coordinates of a surface.
     

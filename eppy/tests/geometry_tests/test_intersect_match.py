@@ -49,20 +49,20 @@ idf_txt = """
 idf_txt_ring = """
 Version, 8.5;
 Building, Building 1, , , , , , , ;
-Zone, z1 Thermal Zone, -0.0, 3.5, 1.0, 1.0, , , , , , , ;
-Zone, z2 Thermal Zone, -0.0, 3.5, 1.0, 0.0, , , , , , , ;
-BuildingSurface:Detailed, z1_WALL_0001, WALL, , z1 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -0.25, 2.5, 1.0, -0.25, 2.5, 0.0, -1.68, 2.5, 0.0, -1.68, 2.5, 1.0;
-BuildingSurface:Detailed, z1_WALL_0002, WALL, , z1 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -0.25, 0.4, 1.0, -0.25, 0.4, 0.0, -0.25, 2.5, 0.0, -0.25, 2.5, 1.0;
-BuildingSurface:Detailed, z1_ROOF_0001, ROOF, , z1 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -0.25, 0.4, 1.0, -0.25, 2.5, 1.0, -1.68, 2.5, 1.0, -1.68, 0.4, 1.0;
-BuildingSurface:Detailed, z1_FLOOR_0001, FLOOR, , z1 Thermal Zone, Ground, , NoSun, NoWind, , , -0.25, 2.5, 0.0, -0.25, 0.4, 0.0, -1.68, 0.4, 0.0, -1.68, 2.5, 0.0;
-BuildingSurface:Detailed, z1_WALL_0003, WALL, , z1 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -1.68, 0.4, 1.0, -1.68, 0.4, 0.0, -0.25, 0.4, 0.0, -0.25, 0.4, 1.0;
-BuildingSurface:Detailed, z1_WALL_0004, WALL, , z1 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -1.68, 2.5, 1.0, -1.68, 2.5, 0.0, -1.68, 0.4, 0.0, -1.68, 0.4, 1.0;
-BuildingSurface:Detailed, z2_FLOOR_0001, FLOOR, , z2 Thermal Zone, Ground, , NoSun, NoWind, , , 0.0, 2.9, 0.0, 0.0, 0.0, 0.0, -2.14, 0.0, 0.0, -2.14, 2.9, 0.0;
-BuildingSurface:Detailed, z2_WALL_0001, WALL, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -2.14, 0.0, 1.0, -2.14, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0;
-BuildingSurface:Detailed, z2_WALL_0002, WALL, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , -2.14, 2.9, 1.0, -2.14, 2.9, 0.0, -2.14, 0.0, 0.0, -2.14, 0.0, 1.0;
-BuildingSurface:Detailed, z2_WALL_0003, WALL, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , 0.0, 2.9, 1.0, 0.0, 2.9, 0.0, -2.14, 2.9, 0.0, -2.14, 2.9, 1.0;
-BuildingSurface:Detailed, z2_WALL_0004, WALL, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 2.9, 0.0, 0.0, 2.9, 1.0;
-BuildingSurface:Detailed, z2_ROOF_0001, ROOF, , z2 Thermal Zone, Outdoors, , SunExposed, WindExposed, , , 0.0, 0.0, 1.0, 0.0, 2.9, 1.0, -2.14, 2.9, 1.0, -2.14, 0.0, 1.0;
+Zone, Thermal Zone 1, 0.0, 0.0, 0.0, 0.0, , 1, , , , , , Yes;
+Zone, Thermal Zone 2, 0.0, 0.0, 0.0, 0.0, , 1, , , , , , Yes;
+BuildingSurface:Detailed, z1 Floor 0001, Floor, , Thermal Zone 1, Ground, , NoSun, NoWind, , , -0.259, 2.46, 0.0, -0.259, 0.4, 0.0, -1.68, 0.4, 0.0, -1.68, 2.46, 0.0;
+BuildingSurface:Detailed, z1 Wall 0001, Wall, , Thermal Zone 1, Outdoors, , SunExposed, WindExposed, , , -0.259, 2.46, 0.7279, -0.259, 2.46, 0.0, -1.68, 2.46, 0.0, -1.68, 2.46, 0.7279;
+BuildingSurface:Detailed, z1 Wall 0002, Wall, , Thermal Zone 1, Outdoors, , SunExposed, WindExposed, , , -0.259, 0.4, 0.7279, -0.259, 0.4, 0.0, -0.259, 2.46, 0.0, -0.259, 2.46, 0.7279;
+BuildingSurface:Detailed, z1 Wall 0003, Wall, , Thermal Zone 1, Outdoors, , SunExposed, WindExposed, , , -1.68, 0.4, 0.7279, -1.68, 0.4, 0.0, -0.259, 0.4, 0.0, -0.259, 0.4, 0.7279;
+BuildingSurface:Detailed, z1 Wall 0004, Wall, , Thermal Zone 1, Outdoors, , SunExposed, WindExposed, , , -1.68, 2.46, 0.7279, -1.68, 2.46, 0.0, -1.68, 0.4, 0.0, -1.68, 0.4, 0.7279;
+BuildingSurface:Detailed, z1 Roof 0001, Roof, , Thermal Zone 1, Outdoors, , SunExposed, WindExposed, , , -0.259, 0.4, 0.7279, -0.259, 2.46, 0.7279, -1.68, 2.46, 0.7279, -1.68, 0.4, 0.7279;
+BuildingSurface:Detailed, z2 Floor 0001, Floor, , Thermal Zone 2, Ground, , NoSun, NoWind, , , 0.0, 2.9, 0.7279, 0.0, 0.0, 0.7279, -2.14, 0.0, 0.7279, -2.14, 2.9, 0.7279;
+BuildingSurface:Detailed, z2 Wall 0001, Wall, , Thermal Zone 2, Outdoors, , SunExposed, WindExposed, , , -2.14, 0.0, 1.458, -2.14, 0.0, 0.7279, 0.0, 0.0, 0.7279, 0.0, 0.0, 1.458;
+BuildingSurface:Detailed, z2 Wall 0002, Wall, , Thermal Zone 2, Outdoors, , SunExposed, WindExposed, , , -2.14, 2.9, 1.458, -2.14, 2.9, 0.7279, -2.14, 0.0, 0.7279, -2.14, 0.0, 1.458;
+BuildingSurface:Detailed, z2 Wall 0003, Wall, , Thermal Zone 2, Outdoors, , SunExposed, WindExposed, , , 0.0, 2.9, 1.458, 0.0, 2.9, 0.7279, -2.14, 2.9, 0.7279, -2.14, 2.9, 1.458;
+BuildingSurface:Detailed, z2 Wall 0004, Wall, , Thermal Zone 2, Outdoors, , SunExposed, WindExposed, , , 0.0, 0.0, 1.458, 0.0, 0.0, 0.7279, 0.0, 2.9, 0.7279, 0.0, 2.9, 1.458;
+BuildingSurface:Detailed, z2 Roof 0001, Roof, , Thermal Zone 2, Outdoors, , SunExposed, WindExposed, , , 0.0, 0.0, 1.458, 0.0, 2.9, 1.458, -2.14, 2.9, 1.458, -2.14, 0.0, 1.458;
 """
 @pytest.mark.skipif(not NUMPY, reason="transforms3d requires numpy")
 class TestIntersectMatchRing():
@@ -81,7 +81,7 @@ class TestIntersectMatchRing():
         ending = len(idf.idfobjects['BUILDINGSURFACE:DETAILED'])
         assert starting == 12
         assert ending == 14
-
+        idf.printidf()
         result = [w for w in idf.idfobjects['BUILDINGSURFACE:DETAILED']
                      if w.Name == 'z1_WALL_0002_new_1']
         assert len(result) == 1
