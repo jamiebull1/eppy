@@ -82,11 +82,11 @@ class TestIntersectMatchRing():
         assert starting == 12
         assert ending == 14
         idf.printidf()
-        result = [w for w in idf.idfobjects['BUILDINGSURFACE:DETAILED']
-                     if w.Name == 'z1_WALL_0002_new_1']
+        result = [f for f in idf.idfobjects['BUILDINGSURFACE:DETAILED']
+                     if f.Name == 'z2 Floor 0001_new_1']
         assert len(result) == 1
-        result = [w for w in idf.idfobjects['BUILDINGSURFACE:DETAILED']
-                     if w.Name == 'z2_WALL_0004_new_1']
+        result = [r for r in idf.idfobjects['BUILDINGSURFACE:DETAILED']
+                     if r.Name == 'z1 Roof 0001_new_1']
         assert len(result) == 1
 
 
