@@ -119,49 +119,49 @@ class TestTransormations():
         testVertices = t.rotation(Vector3D(0,0,1), 0) * vertices
         t = Transformation().align_face(testVertices)
         tempVertices = t.inverse() * testVertices
-        expectedVertices = Polygon3D([(0,1,1),(0,0,0),(1,0,0),(1,1,0)])
+        expectedVertices = Polygon3D([(0,1,0),(0,0,0),(1,0,0),(1,1,0)])
         assert almostequal(tempVertices, expectedVertices, tol)
     
         # rotate 30 degrees about z
         testVertices = t.rotation(Vector3D(0,0,1), np.deg2rad(30)) * vertices
         t = Transformation().align_face(testVertices)
         tempVertices = t.inverse() * testVertices
-        expectedVertices = Polygon3D([(0,1,1),(0,0,0),(1,0,0),(1,1,0)])
+        expectedVertices = Polygon3D([(0,1,0),(0,0,0),(1,0,0),(1,1,0)])
         assert almostequal(tempVertices, expectedVertices, tol)
     
         # rotate -30 degrees about z
         testVertices = t.rotation(Vector3D(0,0,1), -np.deg2rad(30)) * vertices
         t = Transformation().align_face(testVertices)
         tempVertices = t.inverse() * testVertices
-        expectedVertices = Polygon3D([(0,1,1),(0,0,0),(1,0,0),(1,1,0)])
+        expectedVertices = Polygon3D([(0,1,0),(0,0,0),(1,0,0),(1,1,0)])
         assert almostequal(tempVertices, expectedVertices, tol)
     
         # rotate -30 degrees about x
         testVertices = t.rotation(Vector3D(1,0,0), -np.deg2rad(30)) * vertices
         t = Transformation().align_face(testVertices)
         tempVertices = t.inverse() * testVertices    
-        expectedVertices = Polygon3D([(0,1,1),(0,0,0),(1,0,0),(1,1,0)])
+        expectedVertices = Polygon3D([(0,1,0),(0,0,0),(1,0,0),(1,1,0)])
         assert almostequal(tempVertices, expectedVertices, tol)
     
         # rotate -90 degrees about x
         testVertices = t.rotation(Vector3D(1,0,0), -np.deg2rad(90)) * vertices
         t = Transformation().align_face(testVertices)
         tempVertices = t.inverse() * testVertices
-        expectedVertices = Polygon3D([(1,0,0),(1,0,0),(0,1,0),(0,0,0)])
+        expectedVertices = Polygon3D([(1,0,0),(1,1,0),(0,1,0),(0,0,0)])
         assert almostequal(tempVertices, expectedVertices, tol)
     
         # rotate 30 degrees about x
         testVertices = t.rotation(Vector3D(1,0,0), np.deg2rad(30)) * vertices
         t = Transformation().align_face(testVertices)
         tempVertices = t.inverse() * testVertices    
-        expectedVertices = Polygon3D([(0,1,1),(0,0,0),(1,0,0),(1,1,0)])
+        expectedVertices = Polygon3D([(0,1,0),(0,0,0),(1,0,0),(1,1,0)])
         assert almostequal(tempVertices, expectedVertices, tol)
     
         # rotate 90 degrees about x
         testVertices = t.rotation(Vector3D(1,0,0), np.deg2rad(90)) * vertices
         t = Transformation().align_face(testVertices)
         tempVertices = t.inverse() * testVertices    
-        expectedVertices = Polygon3D([(1,0,0),(1,0,0),(0,1,0),(0,0,0)])
+        expectedVertices = Polygon3D([(1,0,0),(1,1,0),(0,1,0),(0,0,0)])
         assert almostequal(tempVertices, expectedVertices, tol)
     
     
