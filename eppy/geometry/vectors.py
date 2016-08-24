@@ -3,9 +3,6 @@ Created on 23 Aug 2016
 
 @author: Jamie
 '''
-from eppy.pytest_helpers import almostequal
-
-
 try:
     import numpy as np
 except ImportError:

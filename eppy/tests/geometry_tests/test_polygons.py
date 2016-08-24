@@ -11,10 +11,6 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from math import acos
-from math import atan2
-from math import pi
-
 from eppy.pytest_helpers import almostequal
 
 from eppy.geometry.polygons import Polygon
