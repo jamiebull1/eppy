@@ -11,6 +11,11 @@ PyClipper is used for clipping.
 
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from eppy.pytest_helpers import almostequal
 
 from eppy.geometry.vectors import Vector2D

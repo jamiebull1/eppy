@@ -6,7 +6,6 @@
 # =======================================================================
 """Intersect and match all surfaces in an IDF.
 """
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -48,41 +47,41 @@ def intersect_idf_surfaces(idf):
         # get a point outside the zone, assuming surface is oriented correctly
         outside_s1 = s1[1].outside_point(clockwise)
         outside_s2 = s2[1].outside_point(clockwise)
-            
-        if s1[0].Zone_Name == s2[0].Zone_Name:
-            continue
+
         if not s1[1].is_coplanar(s2[1]):
             continue
         intersects = s1[1].intersect(s2[1])
         if not intersects:
             continue
-        print(s1[0].Name, s2[0].Name)
-        print(intersects)
         # create new surfaces for the intersects, and their reflections
         for i, intersect in enumerate(intersects, 1):
-            # regular intersection
             """
             @TODO: Check the intersection touches an edge of both surfaces.
             If it doesn't touch an edge then we need to make subsurfaces as 
-            doors in each surface.
+            doors in each surface, or split the subsurface.
             """
-            if is_subsurface(s1[1], s2[1], intersect):
+            if is_hole(s1[1], s2[1], intersect):
+                # split surface with a hole in it, or make it a subsurface
                 print("subsurface - continuing")
                 continue
-            new_name = "%s_%s_%i" % (s1[0].Name, 'new', i)
-            new_inv_name = "%s_%s_%i" % (s2[0].Name, 'new', i)
-            # intersection
-            new = idf.copyidfobject(s1[0])
-            new.Name = new_name
-            set_coords(new, intersect, outside_s2, ggr)
-            new.Outside_Boundary_Condition = "Surface"
-            new.Outside_Boundary_Condition_Object = new_inv_name
-            # inverted intersection
-            new_inv = idf.copyidfobject(s2[0])
-            new_inv.Name = new_inv_name
-            new_inv.Outside_Boundary_Condition = "Surface"
-            new_inv.Outside_Boundary_Condition_Object = new_name
-            set_coords(new_inv, intersect.invert_orientation(), outside_s2, ggr)
+            else:
+                # regular intersection
+                new_name = "%s_%s_%i" % (s1[0].Name, 'new', i)
+                new_inv_name = "%s_%s_%i" % (s2[0].Name, 'new', i)
+                # intersection
+                new = idf.copyidfobject(s1[0])
+                new.Name = new_name
+                set_coords(new, intersect, outside_s2, ggr)
+                new.Outside_Boundary_Condition = "Surface"
+                new.Outside_Boundary_Condition_Object = new_inv_name
+                # inverted intersection
+                new_inv = idf.copyidfobject(s2[0])
+                new_inv.Name = new_inv_name
+                new_inv.Outside_Boundary_Condition = "Surface"
+                new_inv.Outside_Boundary_Condition_Object = new_name
+                set_coords(new_inv,
+                           intersect.invert_orientation(),
+                           outside_s2, ggr)
         # edit the original two surfaces
         s1_new = s1[1].difference(s2[1])
         s2_new = s2[1].difference(s1[1])
@@ -93,12 +92,13 @@ def intersect_idf_surfaces(idf):
             # modify the original s2[0]
             set_coords(s2[0], s2_new[0], outside_s2, ggr)
     
-def is_subsurface(s1, s2, intersect):
-    """
-    Check the intersection touches an edge of both surfaces.
-
-    If it doesn't touch an edge then we need to make subsurfaces as 
-    doors in each surface.
+    
+def is_hole(s1, s2, intersect):
+    """Identify if intersect is a hole in either of the surfaces.
+    
+    Check the intersection touches an edge of both surfaces. If it doesn't then
+    it represents a hole in one of the surfaces, and this needs further
+    processing into valid EnergyPlus surfaces.
     
     Parameters
     ----------
@@ -116,10 +116,25 @@ def is_subsurface(s1, s2, intersect):
     bool
 
     """
-    for edge in intersect.edges:
-        if all([edge.on_poly_edge(s1), edge.on_poly_edge(s2)]):
-            return False
-    
+    a = any(e.on_poly_edge(s1) for e in intersect.edges)
+    b = any(e.on_poly_edge(s2) for e in intersect.edges)
+    return all([a, b])
+
+
+def test_is_hole():
+    """Test if a surface represents a hole in one of the surfaces.
+    """
+    poly1 = Polygon3D([(0,4,0),(0,0,0),(4,0,0),(4,4,0)])
+    poly2 = Polygon3D([(3,3,0),(3,1,0),(1,1,0),(1,3,0)])
+    intersect = Polygon3D([(3,3,0),(1,3,0),(1,1,0),(3,1,0)])
+    assert is_hole(poly1, poly2, intersect)
+
+    poly1 = Polygon3D([(0,4,0),(0,0,0),(4,0,0),(4,4,0)])
+    poly2 = Polygon3D([(3,3,0),(3,1,0),(0,1,0),(0,3,0)])
+    intersect = Polygon3D([(3,3,0),(0,3,0),(0,1,0),(3,1,0)])
+    assert not is_hole(poly1, poly2, intersect)
+
+
 def set_coords(surface, poly, outside_pt, ggr=None):
     """Update the coordinates of a surface.
     

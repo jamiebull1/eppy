@@ -5,8 +5,6 @@
 #  http://opensource.org/licenses/MIT)
 # =======================================================================
 """pytest for intersect_match.py"""
-# isolate dependencies on Numpy
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -20,6 +18,7 @@ from six import StringIO
 
 
 try:
+    # isolate imports with dependencies on Numpy
     import numpy
     from eppy.geometry.intersect_match import getidfsurfaces
     from eppy.geometry.intersect_match import intersect_idf_surfaces
@@ -27,9 +26,9 @@ try:
     from eppy.geometry.polygons import Polygon3D
     from eppy.geometry.view_geometry import view_idf
     from eppy.geometry.view_geometry import view_polygons
-    NUMPY = True
+    NUMPY = True  # set flag so we can do tests
 except ImportError:
-    NUMPY = False
+    NUMPY = False  # set flag not to do tests
 
 
 idf_txt = """

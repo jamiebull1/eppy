@@ -4,11 +4,17 @@
 #  (See accompanying file LICENSE or copy at
 #  http://opensource.org/licenses/MIT)
 # =======================================================================
+
 """
 Developer tool for visualising geometry during development of the eppy.geometry
 package.
 
 """
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 from eppy.iddcurrent import iddcurrent
 from eppy.function_helpers import getcoords

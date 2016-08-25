@@ -1,8 +1,17 @@
-'''
-Created on 23 Aug 2016
+# Copyright (c) 2016 Jamie Bull
+# =======================================================================
+#  Distributed under the MIT License.
+#  (See accompanying file LICENSE or copy at
+#  http://opensource.org/licenses/MIT)
+# =======================================================================
+"""Utilities for IDF vectors.
+"""
 
-@author: Jamie
-'''
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 try:
     import numpy as np
 except ImportError:
