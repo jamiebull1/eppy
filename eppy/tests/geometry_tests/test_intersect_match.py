@@ -5,6 +5,7 @@
 #  http://opensource.org/licenses/MIT)
 # =======================================================================
 """pytest for intersect_match.py"""
+# isolate dependencies on Numpy
 
 from __future__ import absolute_import
 from __future__ import division
@@ -17,11 +18,15 @@ from eppy.modeleditor import IDF
 import pytest
 from six import StringIO
 
+
 try:
     import numpy
     from eppy.geometry.intersect_match import getidfsurfaces
     from eppy.geometry.intersect_match import intersect_idf_surfaces
+    from eppy.geometry.intersect_match import is_hole
     from eppy.geometry.polygons import Polygon3D
+    from eppy.geometry.view_geometry import view_idf
+    from eppy.geometry.view_geometry import view_polygons
     NUMPY = True
 except ImportError:
     NUMPY = False
@@ -64,6 +69,8 @@ BuildingSurface:Detailed, z2 Wall 0003, Wall, , Thermal Zone 2, Outdoors, , SunE
 BuildingSurface:Detailed, z2 Wall 0004, Wall, , Thermal Zone 2, Outdoors, , SunExposed, WindExposed, , , 0.0, 0.0, 1.458, 0.0, 0.0, 0.7279, 0.0, 2.9, 0.7279, 0.0, 2.9, 1.458;
 BuildingSurface:Detailed, z2 Roof 0001, Roof, , Thermal Zone 2, Outdoors, , SunExposed, WindExposed, , , 0.0, 0.0, 1.458, 0.0, 2.9, 1.458, -2.14, 2.9, 1.458, -2.14, 0.0, 1.458;
 """
+
+
 @pytest.mark.skipif(not NUMPY, reason="transforms3d requires numpy")
 class TestIntersectMatchRing():
     
@@ -78,16 +85,26 @@ class TestIntersectMatchRing():
         idf = self.idf        
         starting = len(idf.idfobjects['BUILDINGSURFACE:DETAILED'])
         intersect_idf_surfaces(idf)
+#        view_idf(idf_txt=idf.idfstr())
         ending = len(idf.idfobjects['BUILDINGSURFACE:DETAILED'])
         assert starting == 12
         assert ending == 14
-        idf.printidf()
         result = [f for f in idf.idfobjects['BUILDINGSURFACE:DETAILED']
                      if f.Name == 'z2 Floor 0001_new_1']
         assert len(result) == 1
         result = [r for r in idf.idfobjects['BUILDINGSURFACE:DETAILED']
                      if r.Name == 'z1 Roof 0001_new_1']
         assert len(result) == 1
+
+
+def test_intersect():
+    poly1 = Polygon3D([(1.0, 2.1, 0.5), (1.0, 2.1, 0.0),
+                       (2.0, 2.0, 0.0), (2.0, 2.0, 0.5)])
+    poly2 = Polygon3D([(2.5, 1.95, 0.5), (2.5, 1.95, 0.0),
+                       (1.5, 2.05, 0.0), (1.5, 2.05, 0.5)])
+    intersect = poly1.intersect(poly2)[0]
+#    view_polygons({'blue': [poly1, poly2], 'red': [intersect]})
+    assert not is_hole(poly1, poly2, intersect)
 
 
 @pytest.mark.skipif(not NUMPY, reason="transforms3d requires numpy")

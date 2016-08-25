@@ -52,13 +52,16 @@ class Segment(object):
         bool
         
         """
-        v1 = self.p1 - self.p2
         for edge in poly.edges:
-            v2 = edge.p1 - edge.p2
-            cross = Vector3D(*v1.cross(v2))
-            if almostequal(cross, Vector3D(0,0,0), places=12):
+            a = edge.p1.cross(self.p1)
+            b = edge.p2.cross(self.p1)
+            c = edge.p1.cross(self.p2)
+            d = edge.p2.cross(self.p2)
+            # check all cross products were equal to Vector3D(0,0,0)
+            if all(almostequal(p, Vector3D(0,0,0)) for p in [a,b,c,d]):
                 return True
-        
+        return False
+
 
 class Polygon(object):
     """Two-dimensional polygon."""

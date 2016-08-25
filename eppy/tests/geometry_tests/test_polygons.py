@@ -24,6 +24,7 @@ from eppy.geometry.polygons import intersect_3D_polys
 from eppy.geometry.polygons import inverse_vector
 from eppy.geometry.polygons import union_2D_polys
 from eppy.geometry.polygons import union_3D_polys
+from eppy.geometry.polygons import Segment
 
 
 try:
@@ -413,6 +414,7 @@ def test_point():
     
     assert pt2 + pt2 == Vector3D(2,2,2)
            
+           
 def test_invert():
     v = Vector3D(1, 2, 3)
     assert v.invert() == Vector3D(-1, -2, -3)
@@ -424,9 +426,19 @@ def test_set_length():
     for i in v:
         assert almostequal(i, 0.57735026)
 
+
 def test_normalize():
     v = Vector3D(1, 1, 1)
     v.normalize()
     for i in v:
         assert almostequal(i, 0.57735026)
+
+
+def test_on_poly_edge():
+    poly = Polygon3D([(0,4,0),(0,0,0),(4,0,0),(4,4,0)])
+    edge1 = Segment(Vector3D(0,1,0), Vector3D(0,2,0))
+    edge2 = Segment(Vector3D(1,1,0), Vector3D(1,2,0))
+    assert edge1.on_poly_edge(poly)
+    assert not edge2.on_poly_edge(poly)
+
 
