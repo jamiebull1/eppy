@@ -71,6 +71,17 @@ BuildingSurface:Detailed, z2 Roof 0001, Roof, , Thermal Zone 2, Outdoors, , SunE
 
 
 @pytest.mark.skipif(not NUMPY, reason="transforms3d requires numpy")
+def test_intersect():
+    poly1 = Polygon3D([(1.0, 2.1, 0.5), (1.0, 2.1, 0.0),
+                       (2.0, 2.0, 0.0), (2.0, 2.0, 0.5)])
+    poly2 = Polygon3D([(2.5, 1.95, 0.5), (2.5, 1.95, 0.0),
+                       (1.5, 2.05, 0.0), (1.5, 2.05, 0.5)])
+    intersect = poly1.intersect(poly2)[0]
+#    view_polygons({'blue': [poly1, poly2], 'red': [intersect]})
+    assert not is_hole(poly1, poly2, intersect)
+
+
+@pytest.mark.skipif(not NUMPY, reason="transforms3d requires numpy")
 class TestIntersectMatchRing():
     
     def setup(self):
@@ -94,16 +105,6 @@ class TestIntersectMatchRing():
         result = [r for r in idf.idfobjects['BUILDINGSURFACE:DETAILED']
                      if r.Name == 'z1 Roof 0001_new_1']
         assert len(result) == 1
-
-
-def test_intersect():
-    poly1 = Polygon3D([(1.0, 2.1, 0.5), (1.0, 2.1, 0.0),
-                       (2.0, 2.0, 0.0), (2.0, 2.0, 0.5)])
-    poly2 = Polygon3D([(2.5, 1.95, 0.5), (2.5, 1.95, 0.0),
-                       (1.5, 2.05, 0.0), (1.5, 2.05, 0.5)])
-    intersect = poly1.intersect(poly2)[0]
-#    view_polygons({'blue': [poly1, poly2], 'red': [intersect]})
-    assert not is_hole(poly1, poly2, intersect)
 
 
 @pytest.mark.skipif(not NUMPY, reason="transforms3d requires numpy")
