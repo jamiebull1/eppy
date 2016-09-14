@@ -118,6 +118,7 @@ def edges2nodes(edges):
     return justnodes
     
 
+    
 def makediagram(edges):
     """make the diagram with the edges"""
     graph = pydot.Dot(graph_type='digraph')
@@ -515,6 +516,14 @@ def main():
     fname = nspace.file
     iddfile = nspace.idd
     data, commdct, idd_index = readidf.readdatacommdct(fname, iddfile=iddfile)
+    
+def make_and_save_diagram(fname, iddfile):
+    g = process_idf(fname, iddfile)
+    save_diagram(fname, g)
+
+
+def process_idf(fname, iddfile):
+    data, commdct, _iddindex = readidf.readdatacommdct(fname, iddfile=iddfile)
     print("constructing the loops")
     edges = makeairplantloop(data, commdct)
     print("cleaning edges")
