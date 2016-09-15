@@ -6,6 +6,14 @@ Changes
 
 It is now possible to run E+ from eppy
 
+release r0.5.41
+~~~~~~~~~~~~~~~
+
+2016-09-14
+----------
+
+bugfix in loopdiagram.py. Some cleanup by removing extra copies of loopdiagram.py
+
 release r0.5.40
 ~~~~~~~~~~~~~~~
 
