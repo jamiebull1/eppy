@@ -10,21 +10,21 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from six import iteritems
-from six import StringIO
-
 import copy
-from eppy.iddcurrent import iddcurrent
-from eppy.idfreader import idfreader1
-from eppy.idfreader import makeabunch
+import distutils.spawn
 import itertools
 import os
 import platform
 
+from eppy.iddcurrent import iddcurrent
+from eppy.idfreader import idfreader1
+from eppy.idfreader import makeabunch
 from py._log import warning
+from six import StringIO
+from six import iteritems
 
-import eppy.function_helpers as function_helpers
 import eppy.EPlusInterfaceFunctions.iddgroups as iddgroups
+import eppy.function_helpers as function_helpers
 
 
 class NoObjectError(Exception):
@@ -46,6 +46,12 @@ class IDDNotSetError(Exception):
 
 
 class IDDAlreadySetError(Exception):
+
+    """Exception Object"""
+    pass
+
+
+class DefaultIDDNotFoundError(Exception):
 
     """Exception Object"""
     pass
@@ -495,6 +501,23 @@ def refname2key(idf, refname):
     return [item[0] for item in getallobjlists(idf, refname)]
 
 
+def find_idd():
+    """Find the IDD for the currently-installed version of EnergyPlus.
+    """
+    try:
+        energyplus = distutils.spawn.find_executable('EnergyPlus')
+        if not energyplus:
+            raise DefaultIDDNotFoundError()
+        energyplus = os.path.realpath(energyplus) # follow links in /usr/bin
+        folder = os.path.dirname(energyplus)
+        idd = os.path.join(folder, 'Energy+.idd')
+        if not os.path.isfile(idd):
+            raise DefaultIDDNotFoundError()
+        return idd
+    except:
+        raise DefaultIDDNotFoundError()
+
+    
 class IDF(object):
 
     """
@@ -655,9 +678,8 @@ class IDF(object):
 
         """
         if self.getiddname() == None:
-            errortxt = ("IDD file needed to read the idf file. "
-                        "Set it using IDF.setiddname(iddfile)")
-            raise IDDNotSetError(errortxt)
+            iddname = find_idd()
+            self.setiddname(iddname)
         readout = idfreader1(
             self.idfname, self.iddname, self,
             commdct=self.idd_info, block=self.block)
