@@ -600,8 +600,8 @@ def test_idd_index():
     assert idf.idd_index == {}
 
 
-@pytest.mark.skipif(
-    not do_integration_tests(), reason="$EPPY_INTEGRATION env var not set")
+#@pytest.mark.skipif(
+#    not do_integration_tests(), reason="$EPPY_INTEGRATION env var not set")
 def test_find_idd():
     """py.test for looking for the currently-installed IDD.
     
@@ -621,7 +621,8 @@ def test_find_idd():
     else:
         EPLUS_HOME = "/Applications/EnergyPlus-{}".format(version)
 
-    with set_env(PATH='%s;%s' % ('PATH', EPLUS_HOME)):
+    path = os.environ['PATH']
+    with set_env(PATH='%s;%s' % (path, EPLUS_HOME)):
         try:
             result = find_idd()
         except DefaultIDDNotFoundError:
@@ -632,7 +633,7 @@ def test_find_idd():
 
     path = os.environ['PATH']
     new_path = path.replace(EPLUS_HOME, '')
-    with set_env(PATH='%s;%s' % ('PATH', new_path)):
+    with set_env(PATH=new_path):
         try:
             result = find_idd()
             print(os.environ['PATH'])
