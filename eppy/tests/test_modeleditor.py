@@ -23,13 +23,13 @@ from eppy.modeleditor import IDF
 from eppy.modeleditor import find_idd
 from eppy.pytest_helpers import almostequal
 from eppy.pytest_helpers import do_integration_tests
+from eppy.pytest_helpers import set_env
 import pytest
 from six import StringIO
 from six import string_types
 
 import eppy.idfreader as idfreader
 import eppy.snippet as snippet
-from pytest_helpers import set_env
 
 
 iddsnippet = iddcurrent.iddtxt
