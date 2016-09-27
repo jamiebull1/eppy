@@ -622,7 +622,7 @@ def test_find_idd():
         EPLUS_HOME = "/Applications/EnergyPlus-{}".format(version)
 
     path = os.environ['PATH']
-    with set_env(PATH='%s;%s' % (path, EPLUS_HOME)):
+    with set_env(PATH='%s%s%s' % (path, os.pathsep, EPLUS_HOME)):
         try:
             result = find_idd()
         except DefaultIDDNotFoundError:
