@@ -12,6 +12,8 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import copy
+
+import distutils.spawn
 import itertools
 import os
 import platform
