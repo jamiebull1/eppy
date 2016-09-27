@@ -600,8 +600,8 @@ def test_idd_index():
     assert idf.idd_index == {}
 
 
-@pytest.mark.skipif(
-    not do_integration_tests(), reason="$EPPY_INTEGRATION env var not set")
+#@pytest.mark.skipif(
+#    not do_integration_tests(), reason="$EPPY_INTEGRATION env var not set")
 def test_find_idd():
     """py.test for looking for the currently-installed IDD.
     
@@ -631,10 +631,7 @@ def test_find_idd():
         expected = os.path.join(EPLUS_HOME, "Energy+.idd")
         assert result == expected
 
-    path = os.environ['PATH']
-    new_path = path.replace(EPLUS_HOME, '')
-    new_path = new_path.replace('/usr/local/bin:', '')
-    with set_env(PATH=new_path):
+    with set_env(PATH=''):
         try:
             result = find_idd()
             print(os.environ['PATH'])
