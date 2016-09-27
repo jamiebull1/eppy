@@ -638,6 +638,7 @@ def test_find_idd():
         try:
             result = find_idd()
             print(os.environ['PATH'])
+            print(result)
             assert False
         except DefaultIDDNotFoundError:
             # catch the expected exception
