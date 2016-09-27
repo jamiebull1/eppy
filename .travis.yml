@@ -23,7 +23,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo hdiutil attach $ENERGYPLUS_DOWNLOAD_FILENAME.$EXT; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo installer -pkg /Volumes/$ENERGYPLUS_DOWNLOAD_FILENAME/$ENERGYPLUS_DOWNLOAD_FILENAME.pkg -target /; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo chmod +x $ENERGYPLUS_DOWNLOAD_FILENAME.$EXT; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "y\r" | sudo ./$ENERGYPLUS_DOWNLOAD_FILENAME.$EXT; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "y\rn\r" | sudo ./$ENERGYPLUS_DOWNLOAD_FILENAME.$EXT; fi
 
   - sudo rm $ENERGYPLUS_DOWNLOAD_FILENAME.$EXT
 
