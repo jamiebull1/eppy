@@ -5,25 +5,32 @@
 #  http://opensource.org/licenses/MIT)
 # =======================================================================
 """py.test for modeleditor"""
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from six import StringIO
-from six import string_types
-from eppy import modeleditor
-from eppy.iddcurrent import iddcurrent
-from eppy.modeleditor import IDF
-from eppy.pytest_helpers import almostequal
 from itertools import product
 import os
+import platform
 
+from eppy import modeleditor
+from eppy.bunch_subclass import Bunch
+from eppy.iddcurrent import iddcurrent
+from eppy.modeleditor import DefaultIDDNotFoundError
+from eppy.modeleditor import IDF
+from eppy.modeleditor import find_idd
+from eppy.pytest_helpers import almostequal
+from eppy.pytest_helpers import do_integration_tests
 import pytest
+from six import StringIO
+from six import string_types
 
 import eppy.idfreader as idfreader
 import eppy.snippet as snippet
-from eppy.bunch_subclass import Bunch
+from pytest_helpers import set_env
+
 
 iddsnippet = iddcurrent.iddtxt
 idfsnippet = snippet.idfsnippet
@@ -591,3 +598,40 @@ def test_idd_index():
     idftxt = """"""
     idf = IDF(StringIO(idftxt))
     assert idf.idd_index == {}
+
+
+@pytest.mark.skipif(
+    not do_integration_tests(), reason="$EPPY_INTEGRATION env var not set")
+def test_find_idd():
+    """py.test for looking for the currently-installed IDD.
+    
+    On CI this should be the most recent version of EnergyPlus and installed in
+    the default location.
+    
+    This test may fail if the user does not have the latest supported version of
+    EnergyPlus, or if they have it installed in a non-default location.
+    
+    """
+    version = '8-5-0'
+    
+    if platform.system() == 'Windows':
+        EPLUS_HOME = "C:\EnergyPlusV{}".format(version)
+    elif platform.system() == "Linux":
+        EPLUS_HOME = "/usr/local/EnergyPlus-{}".format(version)
+    else:
+        EPLUS_HOME = "/Applications/EnergyPlus-{}".format(version)
+
+    with set_env(PATH='%s;%s' % ('PATH', EPLUS_HOME)):
+        result = find_idd()
+        expected = os.path.join(EPLUS_HOME, "Energy+.idd")
+        assert result == expected
+
+    path = os.environ['PATH']
+    new_path = path.replace(EPLUS_HOME, '')
+    with set_env(PATH='%s;%s' % ('PATH', new_path)):
+        try:
+            result = find_idd()
+            assert False
+        except DefaultIDDNotFoundError:
+            # catch the expected exception
+            pass
