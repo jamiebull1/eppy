@@ -622,7 +622,11 @@ def test_find_idd():
         EPLUS_HOME = "/Applications/EnergyPlus-{}".format(version)
 
     with set_env(PATH='%s;%s' % ('PATH', EPLUS_HOME)):
-        result = find_idd()
+        try:
+            result = find_idd()
+        except DefaultIDDNotFoundError:
+            print(os.environ['PATH'])
+            result = ''
         expected = os.path.join(EPLUS_HOME, "Energy+.idd")
         assert result == expected
 
@@ -631,6 +635,7 @@ def test_find_idd():
     with set_env(PATH='%s;%s' % ('PATH', new_path)):
         try:
             result = find_idd()
+            print(os.environ['PATH'])
             assert False
         except DefaultIDDNotFoundError:
             # catch the expected exception
