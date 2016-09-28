@@ -13,13 +13,13 @@ from __future__ import unicode_literals
 
 from itertools import product
 import os
-import platform
 
 from eppy import modeleditor
 from eppy.bunch_subclass import Bunch
 from eppy.iddcurrent import iddcurrent
 from eppy.modeleditor import DefaultIDDNotFoundError
 from eppy.modeleditor import IDF
+from eppy.modeleditor import default_home
 from eppy.modeleditor import find_idd
 from eppy.pytest_helpers import almostequal
 from eppy.pytest_helpers import do_integration_tests
@@ -28,9 +28,7 @@ import pytest
 from six import StringIO
 from six import string_types
 
-import eppy.idfreader as idfreader
 import eppy.snippet as snippet
-from modeleditor import default_home
 
 
 iddsnippet = iddcurrent.iddtxt
