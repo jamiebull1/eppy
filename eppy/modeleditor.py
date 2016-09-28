@@ -19,6 +19,7 @@ import platform
 from eppy.iddcurrent import iddcurrent
 from eppy.idfreader import idfreader1
 from eppy.idfreader import makeabunch
+from eppy.pytest_helpers import IDD_FILES
 from py._log import warning
 from six import StringIO
 from six import iteritems
@@ -55,7 +56,14 @@ class NoIDFFilenameError(Exception):
     """Exception Object"""
     pass
 
+
 class DefaultIDDNotFoundError(Exception):
+
+    """Exception Object"""
+    pass
+
+
+class IDDNotFoundError(Exception):
 
     """Exception Object"""
     pass
@@ -506,9 +514,27 @@ def refname2key(idf, refname):
     return [item[0] for item in getallobjlists(idf, refname)]
 
 
-def find_idd():
+def find_idd(version=None):
     """Find the IDD for the currently-installed version of EnergyPlus.
     """
+    if version is not None:
+        version = version.replace('.', '_')
+        filename = 'Energy+V{version}.idd'.format(**locals())
+        idd = os.path.join(IDD_FILES, filename)
+        if os.path.isfile(idd):
+            return idd
+        version = version.replace('_', '-')
+        if platform.system() == 'Windows':
+            EPLUS_HOME = "C:\EnergyPlusV{}".format(version)
+        elif platform.system() == "Linux":
+            EPLUS_HOME = "/usr/local/EnergyPlus-{}".format(version)
+        else:
+            EPLUS_HOME = "/Applications/EnergyPlus-{}".format(version)
+        idd = os.path.join(EPLUS_HOME, 'Energy+.idd')
+        if os.path.isfile(idd):
+            return idd
+        else:
+            raise IDDNotFoundError()
     try:
         energyplus = distutils.spawn.find_executable('EnergyPlus')
         if not energyplus:
@@ -557,16 +583,18 @@ class IDF(object):
     idd_info = None
     block = None
 
-    def __init__(self, idfname=None):
+    def __init__(self, idfname=None, version=None):
         """
         Parameters
         ----------
         idf_name : str, optional
             Path to an IDF file (which does not have to exist yet).
+        version : str, optional
+            EnergyPlus version number to use for the IDF, default : None.
 
         """
         if self.iddname is not None:
-            self.iddname = find_idd()
+            self.iddname = find_idd(version)
         # import pdb; pdb.set_trace()
         if idfname != None:
             self.idfname = idfname
