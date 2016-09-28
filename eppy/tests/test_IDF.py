@@ -4,37 +4,38 @@
 #  (See accompanying file LICENSE or copy at
 #  http://opensource.org/licenses/MIT)
 # =======================================================================
-
 """py.test for class IDF"""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from six import StringIO
-
-from eppy.iddcurrent import iddcurrent
-from eppy.modeleditor import IDF
+from eppy import IDF
+from eppy.idf_msequence import Idf_MSequence
 
 
-def test_IDF():
-    """py.test for class IDF"""
-    stored_idd = IDF.iddname
-    IDF.iddname = None
-    assert IDF.iddname == None
-    IDF.setiddname("gumby", testing=True)
-    assert IDF.iddname == "gumby"
-    IDF.setiddname("karamba", testing=True)
-    assert IDF.iddname != "karamba"
-    assert IDF.iddname == "gumby"
-    IDF.iddname = stored_idd
+class TestIDFNew(object):
 
-iddsnippet = iddcurrent.iddtxt
-iddfhandle = StringIO(iddsnippet)
+    def test_IDF_new(self):
+        """
+        py.test for creating a blank IDF with the simple constructor.
+        """
+        idf = IDF()
+        empty_idf_msequence = Idf_MSequence([], [], None)
+        assert idf.idfobjects["ZONE"] == empty_idf_msequence
 
 
-if IDF.getiddname() == None:
-    IDF.setiddname(iddfhandle)
+    def test_get_set_iddname(self):
+        """py.test for class IDF"""
+        stored_idd = IDF.iddname
+        IDF.iddname = None
+        assert IDF.iddname == None
+        IDF.setiddname("gumby", testing=True)
+        assert IDF.iddname == "gumby"
+        IDF.setiddname("karamba", testing=True)
+        assert IDF.iddname != "karamba"
+        assert IDF.iddname == "gumby"
+        IDF.iddname = stored_idd
 
 
 class TestIDF(object):
@@ -43,9 +44,7 @@ class TestIDF(object):
 
     def test_removeidfobject(self):
         """py.test for IDF.removeidfobject """
-        idftxt = ""
-        idfhandle = StringIO(idftxt)
-        idf = IDF(idfhandle)
+        idf = IDF()
         key = "BUILDING"
         idf.newidfobject(key, Name="Building_remove")
         idf.newidfobject(key, Name="Building1")
@@ -58,9 +57,7 @@ class TestIDF(object):
         assert idf.model.dt[key][2][1] == "Building2"
 
     def test_popidfobject(self):
-        idftxt = ""
-        idfhandle = StringIO(idftxt)
-        idf = IDF(idfhandle)
+        idf = IDF()
         key = "BUILDING"
         idf.newidfobject(key, Name="Building_remove")
         idf.newidfobject(key, Name="Building1")

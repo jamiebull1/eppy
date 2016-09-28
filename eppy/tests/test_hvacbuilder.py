@@ -80,7 +80,7 @@ def test_makeplantloop():
         , , , , 0.0, Autocalculate, p_loop Supply Inlet,
         p_loop Supply Outlet, p_loop Supply Branchs,
         p_loop Supply Connectors, p_loop Demand Inlet, p_loop Demand Outlet,
-        p_loop Demand Branchs, p_loop Demand Connectors, Sequential, ,
+        p_loop Demand Branchs, p_loop Demand Connectors, SequentialLoad, ,
         SingleSetpoint, None, None;"""
     ), # blankidf, loopname, sloop, dloop, nidf
             )
@@ -141,7 +141,7 @@ def test_makecondenserloop():
         c_loop Cond_Supply Outlet, c_loop Cond_Supply Branchs,
         c_loop Cond_Supply Connectors, c_loop Demand Inlet,
         c_loop Demand Outlet, c_loop Condenser Demand Branchs,
-        c_loop Condenser Demand Connectors, Sequential, None;  """
+        c_loop Condenser Demand Connectors, SequentialLoad, None;  """
         ), # blankidf, loopname, sloop, dloop, nidf
             )
     for blankidf, loopname, sloop, dloop, nidf in tdata:
