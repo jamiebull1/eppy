@@ -26,7 +26,7 @@ install:
   - ps: $env:ENERGYPLUS_DOWNLOAD_BASE_URL = "https://github.com/NREL/EnergyPlus/releases/download/$env:ENERGYPLUS_TAG"
   - ps: $env:ENERGYPLUS_DOWNLOAD_FILENAME = "EnergyPlus-$env:ENERGYPLUS_VERSION-$env:ENERGYPLUS_SHA-Windows-$env:ARCHITECTURE.exe"
   - ps: $env:ENERGYPLUS_DOWNLOAD_URL = "$env:ENERGYPLUS_DOWNLOAD_BASE_URL/$env:ENERGYPLUS_DOWNLOAD_FILENAME"
-
+  - ps: $env:PATH = "$env:PATH;C:\EnergyPlusV$env:ENERGYPLUS_INSTALL_VERSION"
   - ps: "curl $env:ENERGYPLUS_DOWNLOAD_URL -OutFile $env:TMP\\$env:ENERGYPLUS_DOWNLOAD_FILENAME"
   - ps: "& $env:TMP\\$env:ENERGYPLUS_DOWNLOAD_FILENAME /S | Out-Null"
 
