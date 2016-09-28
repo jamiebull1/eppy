@@ -549,9 +549,9 @@ def test_refname2key():
         ),  # refname, key
         (
             'AllCurves',
-            [u'PUMP:VARIABLESPEED', 
-            u'PUMP:CONSTANTSPEED', u'BOILER:HOTWATER', 
-            u'ENERGYMANAGEMENTSYSTEM:CURVEORTABLEINDEXVARIABLE'],
+            [u'EVAPORATIVECOOLER:INDIRECT:RESEARCHSPECIAL', 
+             u'EVAPORATIVECOOLER:DIRECT:RESEARCHSPECIAL', 
+             u'ENERGYMANAGEMENTSYSTEM:CURVEORTABLEINDEXVARIABLE'],
         ),  # refname, key
     )
     for refname, key in tdata:

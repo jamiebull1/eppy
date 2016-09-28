@@ -565,13 +565,14 @@ class IDF(object):
             Path to an IDF file (which does not have to exist yet).
 
         """
+        if self.iddname is not None:
+            self.iddname = find_idd()
         # import pdb; pdb.set_trace()
         if idfname != None:
             self.idfname = idfname
             self.read()
         else:
             idftxt = "" # empty string
-            from StringIO import StringIO
             fhandle = StringIO(idftxt) # we can make a file handle of a string
             idfname = fhandle
             self.idfname = idfname
