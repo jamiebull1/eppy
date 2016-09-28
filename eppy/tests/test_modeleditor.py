@@ -30,6 +30,7 @@ from six import string_types
 
 import eppy.idfreader as idfreader
 import eppy.snippet as snippet
+from modeleditor import default_home
 
 
 iddsnippet = iddcurrent.iddtxt
@@ -600,8 +601,8 @@ def test_idd_index():
     assert idf.idd_index == {}
 
 
-#@pytest.mark.skipif(
-#    not do_integration_tests(), reason="$EPPY_INTEGRATION env var not set")
+@pytest.mark.skipif(
+    not do_integration_tests(), reason="$EPPY_INTEGRATION env var not set")
 def test_find_idd():
     """py.test for looking for the currently-installed IDD.
     
@@ -613,22 +614,16 @@ def test_find_idd():
     
     """
     version = '8-5-0'
-    
-    if platform.system() == 'Windows':
-        EPLUS_HOME = "C:\EnergyPlusV{}".format(version)
-    elif platform.system() == "Linux":
-        EPLUS_HOME = "/usr/local/EnergyPlus-{}".format(version)
-    else:
-        EPLUS_HOME = "/Applications/EnergyPlus-{}".format(version)
+    eplus_home_path = default_home(version)
 
     path = os.environ['PATH']
-    with set_env(PATH='%s%s%s' % (path, os.pathsep, EPLUS_HOME)):
+    with set_env(PATH='%s%s%s' % (path, os.pathsep, eplus_home_path)):
         try:
             result = find_idd()
         except DefaultIDDNotFoundError:
             print(os.environ['PATH'])
             result = ''
-        expected = os.path.join(EPLUS_HOME, "Energy+.idd")
+        expected = os.path.join(eplus_home_path, "Energy+.idd")
         assert result == expected
 
     with set_env(PATH=''):

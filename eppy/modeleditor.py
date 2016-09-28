@@ -52,6 +52,12 @@ class IDDAlreadySetError(Exception):
     pass
 
 
+class DefaultHomeNotFoundError(Exception):
+
+    """Exception Object"""
+    pass
+
+
 class NoIDFFilenameError(Exception):
     """Exception Object"""
     pass
@@ -515,40 +521,83 @@ def refname2key(idf, refname):
 
 
 def find_idd(version=None):
-    """Find the IDD for the currently-installed version of EnergyPlus.
+    """Find the IDD for the default EnergyPlus, or a specified version number.
+    
+    Parameters
+    ----------
+    version : str, optional
+        Version number of the IDD required in the format "major.minor.bugfix",
+        e.g. "8.5.0". Default : None.
+        If this is not specified then Eppy will look for an installed version
+        of EnergyPlus in locations on the system's PATH environment variable,
+        or failing that, in the IDDs packaged with Eppy.
+    
+    Returns
+    -------
+    str
+
     """
-    if version is not None:
-        version = version.replace('.', '_')
-        filename = 'Energy+V{version}.idd'.format(**locals())
-        idd = os.path.join(IDD_FILES, filename)
-        if os.path.isfile(idd):
+    if version is None:
+        try:
+            energyplus = distutils.spawn.find_executable('EnergyPlus')
+            if not energyplus:
+                raise DefaultIDDNotFoundError()
+            energyplus = os.path.realpath(energyplus) # follow links in /usr/bin
+            folder = os.path.dirname(energyplus)
+            idd = os.path.join(folder, 'Energy+.idd')
+            if not os.path.isfile(idd):
+                raise DefaultIDDNotFoundError()
             return idd
-        version = version.replace('_', '-')
-        if platform.system() == 'Windows':
-            EPLUS_HOME = "C:\EnergyPlusV{}".format(version)
-        elif platform.system() == "Linux":
-            EPLUS_HOME = "/usr/local/EnergyPlus-{}".format(version)
-        else:
-            EPLUS_HOME = "/Applications/EnergyPlus-{}".format(version)
-        idd = os.path.join(EPLUS_HOME, 'Energy+.idd')
+        except:
+            raise DefaultIDDNotFoundError()
+    else:
+        version = version.replace('.', '_')
+        try:
+            # look in the default install directory
+            filename = 'Energy+.idd'.format(**locals())
+            path = default_home(version)
+        except DefaultHomeNotFoundError:
+            # look in the IDD files packaged with Eppy
+            filename = 'Energy+V{version}.idd'.format(**locals())
+            path = IDD_FILES
+        idd = os.path.join(path, filename)
         if os.path.isfile(idd):
             return idd
         else:
             raise IDDNotFoundError()
-    try:
-        energyplus = distutils.spawn.find_executable('EnergyPlus')
-        if not energyplus:
-            raise DefaultIDDNotFoundError()
-        energyplus = os.path.realpath(energyplus) # follow links in /usr/bin
-        folder = os.path.dirname(energyplus)
-        idd = os.path.join(folder, 'Energy+.idd')
-        if not os.path.isfile(idd):
-            raise DefaultIDDNotFoundError()
-        return idd
-    except:
-        raise DefaultIDDNotFoundError()
-
     
+    
+def default_home(version):
+    """Find the directory where EnergyPlus is installed by default.
+    
+    Parameters
+    ----------
+    version : str
+        Version number of EnergyPlus in the format "major.minor.bugfix", e.g.
+        "8.5.0" ("8-5-0" or "8_5_0" are also accepted).
+    
+    Returns
+    -------
+    str
+    
+    Raises
+    ------
+    DefaultHomeNotFoundError
+    
+    """
+    version = version.replace('.', '-')
+    version = version.replace('_', '-')
+    if platform.system() == 'Windows':
+        eplus_home = "C:\EnergyPlusV{}".format(version)
+    elif platform.system() == "Linux":
+        eplus_home = "/usr/local/EnergyPlus-{}".format(version)
+    else:
+        eplus_home = "/Applications/EnergyPlus-{}".format(version)
+    if not os.path.isdir(eplus_home):
+        raise DefaultHomeNotFoundError()
+    return eplus_home
+
+
 class IDF(object):
 
     """

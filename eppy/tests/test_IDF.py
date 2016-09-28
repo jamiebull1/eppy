@@ -16,6 +16,14 @@ from eppy.idf_msequence import Idf_MSequence
 
 class TestIDFNew(object):
 
+    def test_IDF_by_version(self):
+        """
+        py.test for creating a blank IDF with the simple constructor.
+        """
+        idf = IDF(version='8.5.0')
+        empty_idf_msequence = Idf_MSequence([], [], None)
+        assert idf.idfobjects["ZONE"] == empty_idf_msequence
+
     def test_IDF_new(self):
         """
         py.test for creating a blank IDF with the simple constructor.
@@ -23,7 +31,6 @@ class TestIDFNew(object):
         idf = IDF()
         empty_idf_msequence = Idf_MSequence([], [], None)
         assert idf.idfobjects["ZONE"] == empty_idf_msequence
-
 
     def test_get_set_iddname(self):
         """py.test for class IDF"""
