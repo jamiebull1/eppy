@@ -51,6 +51,10 @@ class IDDAlreadySetError(Exception):
     pass
 
 
+class NoIDFFilenameError(Exception):
+    """Exception Object"""
+    pass
+
 class DefaultIDDNotFoundError(Exception):
 
     """Exception Object"""
@@ -496,6 +500,7 @@ def zonevolume(idf, zonename):
 
     return volume
 
+
 def refname2key(idf, refname):
     """return all keys that have the reference name"""
     return [item[0] for item in getallobjlists(idf, refname)]
@@ -562,6 +567,13 @@ class IDF(object):
         """
         # import pdb; pdb.set_trace()
         if idfname != None:
+            self.idfname = idfname
+            self.read()
+        else:
+            idftxt = "" # empty string
+            from StringIO import StringIO
+            fhandle = StringIO(idftxt) # we can make a file handle of a string
+            idfname = fhandle
             self.idfname = idfname
             self.read()
         self.outputtype = "standard"
