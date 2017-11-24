@@ -18,18 +18,19 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import argparse
 import os
 import sys
 
-import argparse
+from six import string_types
+
 from eppy.EPlusInterfaceFunctions import readidf
+import eppy.loops as loops
+
 try:
     import pydot
 except ImportError:
     import pydot3k as pydot
-from six import string_types
-
-import eppy.loops as loops
 
 
 pathnameto_eplusscripting = "../../"

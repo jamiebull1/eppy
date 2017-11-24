@@ -11,12 +11,12 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from eppy.EPlusInterfaceFunctions import readidf
-import eppy.bunchhelpers as bunchhelpers
-from eppy.bunch_subclass import EpBunch
 # from eppy.bunch_subclass import fieldnames, fieldvalues
-import eppy.iddgaps as iddgaps
+from eppy.bunch_subclass import EpBunch
+import eppy.bunchhelpers as bunchhelpers
+from eppy.EPlusInterfaceFunctions import readidf
 import eppy.function_helpers as fh
+import eppy.iddgaps as iddgaps
 from eppy.idf_msequence import Idf_MSequence
 
 

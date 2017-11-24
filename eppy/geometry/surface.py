@@ -1,4 +1,4 @@
-# Copyright (c) 2012 Tuan Tran
+"""# Copyright (c) 2012 Tuan Tran
 
 # This file is part of eppy.
 # =======================================================================
@@ -7,17 +7,20 @@
 #  http://opensource.org/licenses/MIT)
 # =======================================================================
 
-"""This module is used for assisted calculations on E+ surfaces"""
+This module is used for assisted calculations on E+ surfaces
 # Wrote by Tuan Tran trantuan@hawaii.edu / tranhuuanhtuan@gmail.com
 # School of Architecture, University of Hawaii at Manoa
 
 # The following code within the block
 # credited by ActiveState Code Recipes code.activestate.com
 # {{{ http://code.activestate.com/recipes/578276/ (r1)
+"""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
+
+import math
 
 try:
     import numpy as np
@@ -26,7 +29,6 @@ except ImportError as err:
     from tinynumpy import tinynumpy as np
     from tinynumpy import tinylinalg as linalg
     from math import acos as acos
-import math
 
 
 def area(poly):

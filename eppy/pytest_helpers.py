@@ -10,7 +10,6 @@ from __future__ import unicode_literals
 
 import os
 
-
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 PATH_TO_EPPY = os.path.join(THIS_DIR)
 

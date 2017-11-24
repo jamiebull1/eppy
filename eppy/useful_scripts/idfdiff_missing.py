@@ -20,14 +20,14 @@ from __future__ import unicode_literals
 import argparse
 import sys
 
+from bs4 import BeautifulSoup
+from bs4 import Tag
+from eppy.bunch_subclass import BadEPFieldError
+from eppy.modeleditor import IDF
 from six.moves import zip_longest
-from bs4 import BeautifulSoup, Tag
 
 pathnameto_eplusscripting = "../../"
 sys.path.append(pathnameto_eplusscripting)
-
-from eppy.bunch_subclass import BadEPFieldError
-from eppy.modeleditor import IDF
 
 
 help_message = '''

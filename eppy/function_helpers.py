@@ -11,10 +11,11 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from six.moves import zip_longest
 import itertools
+
 from eppy.constructions import thermal_properties
 from eppy.geometry import surface as g_surface
+from six.moves import zip_longest
 
 
 def grouper(num, iterable, fillvalue=None):

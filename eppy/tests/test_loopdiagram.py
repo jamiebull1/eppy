@@ -14,15 +14,13 @@ from __future__ import unicode_literals
 
 import os
 
-import pytest
-
+from eppy.pytest_helpers import do_integration_tests
 from eppy.useful_scripts.loopdiagram import clean_edges
 from eppy.useful_scripts.loopdiagram import dropnodes
 from eppy.useful_scripts.loopdiagram import edges2nodes
 from eppy.useful_scripts.loopdiagram import process_idf
 from eppy.useful_scripts.loopdiagram import replace_colon
-from eppy.pytest_helpers import do_integration_tests
-
+import pytest
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 

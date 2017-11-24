@@ -11,8 +11,9 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import eppy.idfreader as idfreader
 from six import StringIO
+
+import eppy.idfreader as idfreader
 
 
 def test_iddversiontuple():

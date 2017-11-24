@@ -17,7 +17,6 @@ import eppy.hvacbuilder as hvacbuilder
 from eppy.iddcurrent import iddcurrent
 from eppy.modeleditor import IDF
 
-
 # idd is read only once in this test
 # if it has already been read from some other test, it will continue with the old reading
 iddfhandle = StringIO(iddcurrent.iddtxt)

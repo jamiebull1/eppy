@@ -11,7 +11,8 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from string import ascii_letters, digits
+from string import ascii_letters
+from string import digits
 
 
 def onlylegalchar(name):

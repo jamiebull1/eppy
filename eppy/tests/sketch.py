@@ -1,13 +1,12 @@
 import glob
 import os
 
+from six import StringIO
+
 from eppy.iddcurrent import iddcurrent
 from eppy.modeleditor import IDF
 from eppy.pytest_helpers import IDD_FILES
-from six import StringIO
-
 import eppy.snippet as snippet
-
 
 iddsnippet = iddcurrent.iddtxt
 idfsnippet = snippet.idfsnippet

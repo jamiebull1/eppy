@@ -14,9 +14,9 @@ from __future__ import unicode_literals
 
 import os
 import pickle
+
 # import string
 import eppy.EPlusInterfaceFunctions.mylib1 as mylib1
-
 
 RET = '\r\n'
 

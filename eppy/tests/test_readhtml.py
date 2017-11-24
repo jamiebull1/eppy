@@ -12,6 +12,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import collections
+
 from bs4 import BeautifulSoup
 import eppy.results.readhtml as readhtml
 from eppy.tests.sample_html import sample_html as SAMPLE_HTML

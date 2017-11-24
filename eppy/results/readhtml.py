@@ -11,10 +11,14 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import string
 import collections
+import string
+
 import six
-from bs4 import BeautifulSoup, NavigableString, Tag
+
+from bs4 import BeautifulSoup
+from bs4 import NavigableString
+from bs4 import Tag
 
 
 class NotSimpleTable(Exception):

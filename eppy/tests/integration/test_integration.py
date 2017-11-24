@@ -17,12 +17,11 @@ import shutil
 import sys
 
 from eppy.modeleditor import IDF
+from eppy.pytest_helpers import do_integration_tests
 from eppy.pytest_helpers import IDD_FILES
 from eppy.pytest_helpers import INTEGRATION_FILES
 from eppy.pytest_helpers import PATH_TO_EPPY
-from eppy.pytest_helpers import do_integration_tests
 import pytest
-
 
 sys.path.append(PATH_TO_EPPY)
 

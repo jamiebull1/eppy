@@ -1,3 +1,4 @@
+"""
 # Copyright (c) 2012 Santosh Philip
 # =======================================================================
 #  Distributed under the MIT License.
@@ -5,7 +6,7 @@
 #  http://opensource.org/licenses/MIT)
 # =======================================================================
 
-"""sample script - autosize all autosizable fields"""
+sample script - autosize all autosizable fields
 # email to jason
 # Jason,
 #   Try out the attached script.
@@ -16,22 +17,26 @@
 # into the idd structure for any object and field
 # I'll put some thought into this and see how best to write this.
 # If that functionality is done well, hopefully anyone should be able to write
+
+pathnameto_eplusscripting = "../../"
+
 # the equivalent code to what I wrote in the attached file.
 #
 #
 # Santosh
+"""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
 import sys
-pathnameto_eplusscripting = "../../"
-sys.path.append(pathnameto_eplusscripting)
 
+from eppy import bunch_subclass
 from eppy import modeleditor
 from eppy.modeleditor import IDF
-from eppy import bunch_subclass
+
+sys.path.append(pathnameto_eplusscripting)
 
 
 def autosize_fieldname(idfobject):

@@ -10,14 +10,12 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from eppy import modeleditor
-from eppy.modeleditor import IDF
 from six import StringIO
 
-from eppy.iddcurrent import iddcurrent
-
 from eppy import json_functions
-
+from eppy import modeleditor
+from eppy.iddcurrent import iddcurrent
+from eppy.modeleditor import IDF
 
 # idd is read only once in this test
 # if it has already been read from some other test, it will continue with

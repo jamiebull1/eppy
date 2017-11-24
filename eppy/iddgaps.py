@@ -14,6 +14,8 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import eppy.bunchhelpers as bunchhelpers
+
 # see iddgaps6.py on usage
 # TODO : need unit tests for all htese functions
 
@@ -37,9 +39,6 @@ from __future__ import unicode_literals
 # find the first field that has an integer. This is a repeating field
 # gather the repeating field names (without the integer)
 # generate all the repeating fields for all variables
-
-
-import eppy.bunchhelpers as bunchhelpers
 
 
 def cleaniddfield(acomm):

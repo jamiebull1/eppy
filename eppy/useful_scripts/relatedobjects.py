@@ -2,25 +2,31 @@
 this script is to assist in further coding - not for end user
 Will assist in:
     - discovering useful functions to add to EpBunch using addfunctions
-"""
+
 # was designed to run from ../../docs
+
+# pathnameto_eppy = 'c:/eppy'
+
+
 # to run from here change some of the file paths below
 # run as
 # python relatedbojects.py > outputfile.txt
 # look at outputfile.txt
+"""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import StringIO
 import sys
-# pathnameto_eppy = 'c:/eppy'
-pathnameto_eppy = '../'
-sys.path.append(pathnameto_eppy)
 
 from eppy import modeleditor
 from eppy.modeleditor import IDF
-import StringIO
+
+pathnameto_eppy = '../'
+sys.path.append(pathnameto_eppy)
+
 
 iddfile = "./eppy/resources/iddfiles/Energy+V7_2_0.idd"
 iddfile = "./eppy/resources/iddfiles/Energy+V8_0_0.idd"

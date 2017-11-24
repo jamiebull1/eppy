@@ -15,9 +15,8 @@ from itertools import product
 import os
 import warnings
 
-import pytest
-from six import StringIO
 from six import string_types
+from six import StringIO
 
 from eppy import modeleditor
 from eppy.bunch_subclass import Bunch
@@ -26,7 +25,7 @@ import eppy.idfreader as idfreader
 from eppy.modeleditor import IDF
 from eppy.pytest_helpers import almostequal
 import eppy.snippet as snippet
-
+import pytest
 
 iddsnippet = iddcurrent.iddtxt
 idfsnippet = snippet.idfsnippet

@@ -14,8 +14,8 @@ from __future__ import unicode_literals
 import copy
 
 import eppy.bunch_subclass as bunch_subclass
-from eppy.modeleditor import IDF
 import eppy.modeleditor as modeleditor
+from eppy.modeleditor import IDF
 from six.moves import xrange
 
 

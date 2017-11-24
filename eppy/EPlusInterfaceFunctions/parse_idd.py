@@ -13,14 +13,15 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from six import StringIO
 from io import FileIO
-from decorator import decorator
 
-import eppy.EPlusInterfaceFunctions.mylib1 as mylib1
-import eppy.EPlusInterfaceFunctions.mylib2 as mylib2
+from decorator import decorator
+from six import StringIO
+
 import eppy.EPlusInterfaceFunctions.iddgroups as iddgroups
 import eppy.EPlusInterfaceFunctions.iddindex as iddindex
+import eppy.EPlusInterfaceFunctions.mylib1 as mylib1
+import eppy.EPlusInterfaceFunctions.mylib2 as mylib2
 
 
 def nocomment(astr, com):

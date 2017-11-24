@@ -11,16 +11,15 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import pytest
 from six import StringIO
 
-from eppy.EPlusInterfaceFunctions import readidf
 import eppy.bunch_subclass as bunch_subclass
 import eppy.bunchhelpers as bunchhelpers
+from eppy.EPlusInterfaceFunctions import readidf
 from eppy.iddcurrent import iddcurrent
 import eppy.idfreader as idfreader
 from eppy.modeleditor import IDF
-
+import pytest
 
 # This test is ugly because I have to send file names and not able to send file handles
 EpBunch = bunch_subclass.EpBunch

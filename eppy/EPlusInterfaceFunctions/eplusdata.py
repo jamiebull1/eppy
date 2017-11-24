@@ -15,8 +15,9 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import copy
-from six import StringIO
+
 from six import string_types as str
+from six import StringIO
 
 import eppy.EPlusInterfaceFunctions.mylib2 as mylib2
 

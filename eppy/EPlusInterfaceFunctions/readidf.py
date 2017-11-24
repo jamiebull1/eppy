@@ -11,9 +11,9 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import eppy.EPlusInterfaceFunctions.parse_idd as parse_idd
 import eppy.EPlusInterfaceFunctions.eplusdata as eplusdata
 import eppy.EPlusInterfaceFunctions.iddgroups as iddgroups
+import eppy.EPlusInterfaceFunctions.parse_idd as parse_idd
 
 # from EPlusInterfaceFunctions import parse_idd
 # from EPlusInterfaceFunctions import eplusdata

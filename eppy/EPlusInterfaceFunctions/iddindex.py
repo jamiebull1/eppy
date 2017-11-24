@@ -13,6 +13,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from eppy.bunch_subclass import getfieldidd_item
 
 # possible data structure:
 # idd_index = {
@@ -45,8 +46,6 @@ from __future__ import unicode_literals
 #  # MaterialName:[MATERIAL, MATERIAL:AIRGAP, ...] is the same list as in
 #  # ref2names above, not a new list. So we don't use too much memory
 #  u'type': [u'object-list']}
-
-from eppy.bunch_subclass import getfieldidd_item
 
 
 def makename2refdct(commdct):

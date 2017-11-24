@@ -3,17 +3,21 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import sys
+
+# rename object name with a colon and any field that refers to that name
+from eppy import modeleditor
+from eppy.bunch_subclass import BadEPFieldError
+from eppy.modeleditor import IDF
+
 # coding: utf-8
 
 # In[1]:
 
-import sys
 # pathnameto_eppy = 'c:/eppy'
 pathnameto_eppy = '../../'
 sys.path.append(pathnameto_eppy)
 
-from eppy import modeleditor
-from eppy.modeleditor import IDF
 iddfile = "../../eppy/resources/iddfiles/Energy+V8_1_0.idd"
 fname1 = "../../eppy/resources/idffiles/V8_1_0/Boiler.idf"
 
@@ -41,8 +45,6 @@ keys = list(idf1.idfobjects.keys())
 
 # In[6]:
 
-# rename object name with a colon and any field that refers to that name
-from eppy.bunch_subclass import BadEPFieldError
 renamednames = []
 for key in keys:
     for idfobject in idf1.idfobjects[key]:

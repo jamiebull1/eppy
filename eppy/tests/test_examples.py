@@ -11,22 +11,25 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from eppy.idfreader import idfreader
-import eppy.snippet as snippet
 import os
-import eppy.pytest_helpers as pytest_helpers
+
+from six import StringIO
+
+# iddsnippet = snippet.iddsnippet
+from eppy.iddcurrent import iddcurrent
+from eppy.idfreader import idfreader
 import eppy.modeleditor as modeleditor
+import eppy.pytest_helpers as pytest_helpers
+import eppy.snippet as snippet
+
 # iddfile = "../iddfiles/Energy+V7_0_0_036.idd"
 # fname = "../idffiles/V_7_0/5ZoneSupRetPlenRAB.idf"
 
 
-# iddsnippet = snippet.iddsnippet
-from eppy.iddcurrent import iddcurrent
 iddsnippet = iddcurrent.iddtxt
 
 idfsnippet = snippet.idfsnippet
 
-from six import StringIO
 
 idffhandle = StringIO(idfsnippet)
 iddfhandle = StringIO(iddsnippet)

@@ -18,8 +18,8 @@ import os
 import platform
 import warnings
 
-from six import StringIO
 from six import iteritems
+from six import StringIO
 
 import eppy.EPlusInterfaceFunctions.iddgroups as iddgroups
 import eppy.function_helpers as function_helpers

@@ -23,15 +23,16 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import argparse
-
+import os
 import sys
+
+from eppy.modeleditor import IDF
+import eppy.simpleread as simpleread
+
 # pathnameto_eppy = 'c:/eppy'
 pathnameto_eppy = '../../'
 sys.path.append(pathnameto_eppy)
 
-import os
-from eppy.modeleditor import IDF
-import eppy.simpleread as simpleread
 
 # iddfile = '/Applications/EnergyPlus-8-1-0/Energy+.idd'
 # folder = '/Applications/EnergyPlus-8-1-0/ExampleFiles'

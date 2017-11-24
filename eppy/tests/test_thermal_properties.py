@@ -21,7 +21,6 @@ from eppy.iddcurrent import iddcurrent
 from eppy.modeleditor import IDF
 from eppy.pytest_helpers import almostequal
 
-
 iddfhandle = StringIO(iddcurrent.iddtxt)
 
 if IDF.getiddname() == None:

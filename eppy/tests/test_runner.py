@@ -23,15 +23,14 @@ import re
 import shutil
 from subprocess import CalledProcessError
 
-import pytest
-from six.moves import reload_module as reload
-
 from eppy import modeleditor
 from eppy.pytest_helpers import do_integration_tests
 from eppy.runner.run_functions import install_paths
 from eppy.runner.run_functions import multirunner
 from eppy.runner.run_functions import run
 from eppy.runner.run_functions import runIDFs
+import pytest
+from six.moves import reload_module as reload
 
 
 def versiontuple(vers):

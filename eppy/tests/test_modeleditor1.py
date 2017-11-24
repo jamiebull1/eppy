@@ -11,11 +11,12 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 from six import StringIO
-import pytest
+
 from eppy import modeleditor
+from eppy.iddcurrent import iddcurrent
 import eppy.idfreader as idfreader
 import eppy.snippet as snippet
-from eppy.iddcurrent import iddcurrent
+import pytest
 
 idfsnippet = snippet.idfsnippet
 iddsnippet = iddcurrent.iddtxt
