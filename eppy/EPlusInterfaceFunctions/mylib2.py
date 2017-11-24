@@ -46,7 +46,7 @@ def tabfile2list(fname):
     "tabfile2list"
     #dat = mylib1.readfileasmac(fname)
     #data = string.strip(dat)
-    data = mylib1.readfileasmac(fname)
+    data = mylib1.readfileasmac(fname)  #pylint: disable=assignment-from-none
     #data = data[:-2]#remove the last return
     alist = data.split('\r')#since I read it as a mac file
     blist = alist[1].split('\t')

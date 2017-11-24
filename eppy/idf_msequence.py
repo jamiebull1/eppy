@@ -39,7 +39,7 @@ class Idf_MSequence(collections.MutableSequence):
             The IDF.
 
         """
-        super(Idf_MSequence, self).__init__()
+        super(Idf_MSequence, self).__init__()  #pylint: disable=no-member
         self.list1 = list1
         self.list2 = list2
         self.theidf = theidf

@@ -52,8 +52,11 @@ install:
   - python setup.py install
   # install numpy and remove tinynumpy if testing with numpy
   - if [[ $NUMPY == numpy ]]; then pip install numpy; pip uninstall tinynumpy -y; fi
+  - if [[ $PYTHON == 3* ]]; then pip3 install coala-bears; fi
 
-script: py.test ./eppy/tests --cov=./ -v
+script:
+  - py.test ./eppy/tests --cov=./ -v
+  - if [[ $PYTHON == 3* ]]; then coala --ci; fi
 
 after_success:
   # coverage reporting on CodeCov 

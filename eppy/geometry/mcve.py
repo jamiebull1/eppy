@@ -22,7 +22,7 @@ Building,
     ,                         !- Maximum Number of Warmup Days
     ;                         !- Minimum Number of Warmup Days
 
-Zone,                     
+Zone,
     Thermal Zone 1,           !- Name
     -0.0,                     !- Direction of Relative North
     3.41258124196863,         !- X Origin
@@ -36,7 +36,7 @@ Zone,
     ,                         !- Zone Inside Convection Algorithm
     ;                         !- Zone Outside Convection Algorithm
 
-Zone,                     
+Zone,
     Thermal Zone 2,           !- Name
     -0.0,                     !- Direction of Relative North
     3.41258124196863,         !- X Origin
@@ -50,7 +50,7 @@ Zone,
     ,                         !- Zone Inside Convection Algorithm
     ;                         !- Zone Outside Convection Algorithm
 
-BuildingSurface:Detailed, 
+BuildingSurface:Detailed,
     z1 Floor 0001,            !- Name
     Floor,                    !- Surface Type
     ,                         !- Construction Name
@@ -74,7 +74,7 @@ BuildingSurface:Detailed,
     2.46,                     !- Vertex 4 Ycoordinate
     0.0;                      !- Vertex 4 Zcoordinate
 
-BuildingSurface:Detailed, 
+BuildingSurface:Detailed,
     z1 Wall 0001,             !- Name
     Wall,                     !- Surface Type
     ,                         !- Construction Name
@@ -98,7 +98,7 @@ BuildingSurface:Detailed,
     2.46,                     !- Vertex 4 Ycoordinate
     0.7279;                   !- Vertex 4 Zcoordinate
 
-BuildingSurface:Detailed, 
+BuildingSurface:Detailed,
     z1 Wall 0002,             !- Name
     Wall,                     !- Surface Type
     ,                         !- Construction Name
@@ -122,7 +122,7 @@ BuildingSurface:Detailed,
     2.46,                     !- Vertex 4 Ycoordinate
     0.7279;                   !- Vertex 4 Zcoordinate
 
-BuildingSurface:Detailed, 
+BuildingSurface:Detailed,
     z1 Wall 0003,             !- Name
     Wall,                     !- Surface Type
     ,                         !- Construction Name
@@ -146,7 +146,7 @@ BuildingSurface:Detailed,
     0.4,                      !- Vertex 4 Ycoordinate
     0.7279;                   !- Vertex 4 Zcoordinate
 
-BuildingSurface:Detailed, 
+BuildingSurface:Detailed,
     z1 Wall 0004,             !- Name
     Wall,                     !- Surface Type
     ,                         !- Construction Name
@@ -170,7 +170,7 @@ BuildingSurface:Detailed,
     0.4,                      !- Vertex 4 Ycoordinate
     0.7279;                   !- Vertex 4 Zcoordinate
 
-BuildingSurface:Detailed, 
+BuildingSurface:Detailed,
     z1 Roof 0001,             !- Name
     Roof,                     !- Surface Type
     ,                         !- Construction Name
@@ -194,7 +194,7 @@ BuildingSurface:Detailed,
     0.4,                      !- Vertex 4 Ycoordinate
     0.7279;                   !- Vertex 4 Zcoordinate
 
-BuildingSurface:Detailed, 
+BuildingSurface:Detailed,
     z2 Floor 0001,            !- Name
     Floor,                    !- Surface Type
     ,                         !- Construction Name
@@ -218,7 +218,7 @@ BuildingSurface:Detailed,
     2.9,                      !- Vertex 4 Ycoordinate
     0.7279;                      !- Vertex 4 Zcoordinate
 
-BuildingSurface:Detailed, 
+BuildingSurface:Detailed,
     z2 Wall 0001,             !- Name
     Wall,                     !- Surface Type
     ,                         !- Construction Name

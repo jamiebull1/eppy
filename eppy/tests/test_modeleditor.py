@@ -413,7 +413,8 @@ def test_saveas():
     idf.idfname = 'test.idf'
 
     try:
-        idf.saveas()  # this should raise an error as no filename is passed
+        # this should raise an error as no filename is passed
+        idf.saveas()  #pylint: disable=no-value-for-parameter
         assert False
     except TypeError:
         pass
@@ -437,7 +438,8 @@ def test_savecopy():
     idf.idfname = 'test.idf'
 
     try:
-        idf.savecopy()  # this should raise an error as no filename is passed
+        # this should raise an error as no filename is passed
+        idf.savecopy()  #pylint: disable=no-value-for-parameter
         assert False
     except TypeError:
         pass

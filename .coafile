@@ -1,0 +1,5 @@
+[All]
+bears = PEP8Bear
+files = eppy/**.py
+use_spaces = True
+max_line_length=120

@@ -66,7 +66,7 @@ for okey in okeys:
                 referrings = fieldidd[u'object-list']
             except KeyError as e:
                 referrings = []
-            if fieldidd.has_key('begin-extensible'):
+            if 'begin-extensible' in fieldidd:
                 # print field, fieldidd['begin-extensible']
                 break # do extensibles later
             s_references = set(references)
@@ -75,7 +75,7 @@ for okey in okeys:
             intersect = s_references.intersection(s_referrings)
             if intersect:
                 akey = (group, field)
-                if not groupfield.has_key(akey):
+                if not akey in groupfield:
                     groupfield[akey] = []
                     groupfield[akey].append(key)
                 else:
@@ -86,8 +86,8 @@ for okey in okeys:
 
 
     for kkey, values in groupfield.items():
-        print okey
-        print '\t', '->', kkey
+        print(okey)
+        print('\t -> %s ' % kkey)
         for value in values:
-            print '\t\t', value
-        print
+            print('\t\t %s' % value)
+        print()

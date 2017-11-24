@@ -11,8 +11,10 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from IPython.display import Image
-from IPython.display import display_pretty, display_html, display_jpeg, display_png, display_json, display_latex, display_svg
+from IPython.display import Image  #pylint: disable=import-error
+from IPython.display import display_pretty, display_html, display_jpeg, display_png, display_json, display_latex, display_svg  #pylint: disable=import-error,line-too-long
+
+
 idfeditor = Image(filename='../docs/images/idf3.png')
 material_lists = Image(filename='../docs/images/material_lists.png')
 html_snippet1 = Image(filename='../docs/images/html1.png')

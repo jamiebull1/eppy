@@ -15,11 +15,11 @@ from __future__ import unicode_literals
 import argparse
 import sys
 
+import eppy
 
 pathnameto_eplusscripting = "../../"
 sys.path.append(pathnameto_eplusscripting)
 
-import eppy
 
 if __name__ == '__main__':
     # do the argparse stuff

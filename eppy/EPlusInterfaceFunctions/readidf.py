@@ -72,7 +72,7 @@ def readdatacommlst(idfname):
 def readdatacommdct(idfname, iddfile='Energy+.idd', commdct=None):
     """read the idf file"""
     if not commdct:
-        block, commlst, commdct, idd_index = parse_idd.extractidddata(iddfile)
+        block, commlst, commdct, idd_index = parse_idd.extractidddata(iddfile)  #pylint: disable=unbalanced-tuple-unpacking
         theidd = eplusdata.Idd(block, 2)
     else:
         theidd = iddfile
@@ -84,7 +84,7 @@ def readdatacommdct1(
         commdct=None, block=None):
     """read the idf file"""
     if not commdct:
-        block, commlst, commdct, idd_index = parse_idd.extractidddata(iddfile)
+        block, commlst, commdct, idd_index = parse_idd.extractidddata(iddfile)  #pylint: disable=unbalanced-tuple-unpacking
         theidd = eplusdata.Idd(block, 2)
     else:
         theidd = eplusdata.Idd(block, 2)

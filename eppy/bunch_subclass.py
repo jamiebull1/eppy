@@ -15,7 +15,7 @@ from __future__ import unicode_literals
 import copy
 import itertools
 
-from munch import Munch as Bunch
+from munch import Munch as Bunch #pylint: disable=import-error
 
 from eppy.bunchhelpers import matchfieldnames
 import eppy.function_helpers as fh

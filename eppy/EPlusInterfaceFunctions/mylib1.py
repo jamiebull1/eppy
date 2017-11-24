@@ -11,6 +11,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+
 def write_str2file(pathname, astr):
     """writes a string to file"""
     fname = pathname
