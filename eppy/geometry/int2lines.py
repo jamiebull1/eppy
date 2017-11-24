@@ -19,6 +19,7 @@ from __future__ import unicode_literals
 
 import numpy as np
 
+
 def vol_tehrahedron(poly):
     """volume of a irregular tetrahedron"""
     a_pnt = np.array(poly[0])
@@ -30,15 +31,17 @@ def vol_tehrahedron(poly):
 
 # poly = [(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (1.0, 1.0, 0.0), (0.0, 0.0, 1.0)]
 
+
 def central_p(poly1, poly2):
     """central point of a prism"""
     central_point = np.array([0.0, 0.0, 0.0])
     for i in range(len(poly1)):
         central_point += np.array(poly1[i]) + np.array(poly2[i])
-    return central_point/ (len(poly1)) / 2
+    return central_point / (len(poly1)) / 2
 
 # poly1 = [(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (1.0, 1.0, 0.0), (0, 1.0, 0.0)]
 # poly2 = [(0.0, 0.0, 1), (1.0, 0.0, 1), (1.0, 1.0, 1), (0, 1.0, 1)]
+
 
 def vol_zone(poly1, poly2):
     """"volume of a zone defined by two polygon bases """
@@ -64,4 +67,3 @@ def vol_zone(poly1, poly2):
     tehrahedron = [c_point, poly1[num-1], poly1[0], poly2[0]]
     vol_therah += vol_tehrahedron(tehrahedron)
     return vol_therah
-

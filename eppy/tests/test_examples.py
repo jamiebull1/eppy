@@ -32,6 +32,7 @@ idffhandle = StringIO(idfsnippet)
 iddfhandle = StringIO(iddsnippet)
 bunchdt, data, commdct, idd_index = idfreader(idffhandle, iddfhandle)
 
+
 def test_readwrite():
     """py.test for ex_readwrite"""
     txt = str(data)
@@ -40,9 +41,10 @@ def test_readwrite():
     # assert head == txt[:108]
     # assert tail == txt[-280:]
 
+
 def test_pythonic():
     """py.test for ex_pythonic.py"""
-    zones = bunchdt['zone'.upper()] # all the zones
+    zones = bunchdt['zone'.upper()]  # all the zones
     zone0 = zones[0]
     # -
     printout = "PLENUM-1"
@@ -83,9 +85,10 @@ def test_pythonic():
     zonenames = [zone.Name for zone in zones]
     assert printout == zonenames
 
+
 def test_addobject():
     """py.test for ex_addobject.py"""
-    zones = bunchdt['zone'.upper()] # all the zones
+    zones = bunchdt['zone'.upper()]  # all the zones
     assert len(zones) == 7
     modeleditor.addobject(
         bunchdt, data,
@@ -95,9 +98,10 @@ def test_addobject():
         'ZONE', 'NewZone', 0., 0., 0., 0., 1, 1,
         'autocalculate', 'autocalculate', 'autocalculate', '', '', 'Yes']
 
+
 def test_functions():
     """py.test for ex_functions.py"""
-    surfaces = bunchdt['BuildingSurface:Detailed'.upper()] # all the surfaces
+    surfaces = bunchdt['BuildingSurface:Detailed'.upper()]  # all the surfaces
     assert len(surfaces) == 1
     surface = surfaces[0]
     assert surface.Name == "WALL-1PF"

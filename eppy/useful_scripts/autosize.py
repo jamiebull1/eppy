@@ -33,6 +33,7 @@ from eppy import modeleditor
 from eppy.modeleditor import IDF
 from eppy import bunch_subclass
 
+
 def autosize_fieldname(idfobject):
     """return autsizeable field names in idfobject"""
     # undocumented stuff in this code
@@ -40,14 +41,13 @@ def autosize_fieldname(idfobject):
                                           idfobject['objidd'])
             if 'autosizable' in dct]
 
+
 iddfile = "../resources/iddfiles/Energy+V8_0_0.idd"
 fname1 = "../resources/idffiles/V8_0_0/5ZoneWaterLoopHeatPump.idf"
 
 IDF.setiddname(iddfile)
 idf = IDF(fname1)
 idf.saveas("./a.idf")
-
-
 
 
 allidfobjects = idf.idfobjects

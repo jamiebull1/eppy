@@ -45,7 +45,6 @@ import eppy.simpleread as simpleread
 def doreadtest(iddfile, folder, silent=False):
     """print out all the readtest results"""
 
-
     iddhandle = open(iddfile, 'r')
     fname1 = thefile
     idfhandle1 = open(fname1, 'rb')
@@ -67,6 +66,7 @@ def doreadtest(iddfile, folder, silent=False):
     idfhandle1.close()
     idfhandle2.close()
     iddhandle.close()
+
 
 if __name__ == '__main__':
     # do the argparse stuff

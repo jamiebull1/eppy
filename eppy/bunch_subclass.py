@@ -15,7 +15,7 @@ from __future__ import unicode_literals
 import copy
 import itertools
 
-from munch import Munch as Bunch #pylint: disable=import-error
+from munch import Munch as Bunch  # pylint: disable=import-error
 
 from eppy.bunchhelpers import matchfieldnames
 import eppy.function_helpers as fh
@@ -49,9 +49,11 @@ def almostequal(first, second, places=7, printit=True):
     else:
         return True
 
+
 def somevalues(ddtt):
     """returns some values"""
     return ddtt.Name, ddtt.Construction_Name, ddtt.obj
+
 
 def extendlist(lst, i, value=''):
     """extend the list so that you have i-th value"""
@@ -61,17 +63,17 @@ def extendlist(lst, i, value=''):
         lst.extend([value, ] * (i - len(lst) + 1))
 
 
-
 def return42(self, *args, **kwargs):
     # proof of concept - to be removed
     return 42
+
 
 def addfunctions(abunch):
     """add functions to epbunch"""
 
     # proof of concept - remove
-    abunch['__functions'].update({'return42':return42})
-    abunch['__functions'].update({'buildingname':fh.buildingname})
+    abunch['__functions'].update({'return42': return42})
+    abunch['__functions'].update({'buildingname': fh.buildingname})
     # proof of concept
 
     key = abunch.obj[0].upper()
@@ -140,7 +142,7 @@ def addfunctions(abunch):
     #-----------------
     # add function zonesurfaces
     if key == 'ZONE':
-        func_dict = {'zonesurfaces':fh.zonesurfaces}
+        func_dict = {'zonesurfaces': fh.zonesurfaces}
         abunch.__functions.update(func_dict)
 
     #-----------------
@@ -156,10 +158,11 @@ def addfunctions(abunch):
         group = None
     if group == u'Thermal Zones and Surfaces':
         if "Zone_Name" in fields:
-            func_dict = {'subsurfaces':fh.subsurfaces}
+            func_dict = {'subsurfaces': fh.subsurfaces}
             abunch.__functions.update(func_dict)
 
     return abunch
+
 
 class EpBunch(Bunch):
     """
@@ -168,14 +171,15 @@ class EpBunch(Bunch):
     fields as attributes as well as by keys.
 
     """
+
     def __init__(self, obj, objls, objidd, *args, **kwargs):
         super(EpBunch, self).__init__(*args, **kwargs)
         self.obj = obj  # field names
         self.objls = objls  # field values
         self.objidd = objidd  # field metadata (minimum, maximum, type, etc.)
         self.theidf = None  # pointer to the idf this epbunch belongs to
-                              # This is None if there is no idf - a standalone epbunch
-                              # This will be set by Idf_MSequence
+        # This is None if there is no idf - a standalone epbunch
+        # This will be set by Idf_MSequence
         self['__functions'] = {}  # initialize the functions
         addfunctions(self)
 
@@ -312,7 +316,7 @@ class EpBunch(Bunch):
 
     def __getitem__(self, key):
         if key in ('obj', 'objls', 'objidd',
-                '__functions', '__aliases', 'theidf'):
+                   '__functions', '__aliases', 'theidf'):
             return super(EpBunch, self).__getitem__(key)
         elif key in self.fieldnames:
             i = self.fieldnames.index(key)
@@ -326,7 +330,7 @@ class EpBunch(Bunch):
 
     def __setitem__(self, key, value):
         if key in ('obj', 'objls', 'objidd',
-                '__functions', '__aliases', 'theidf'):
+                   '__functions', '__aliases', 'theidf'):
             super(EpBunch, self).__setitem__(key, value)
             return None
         elif key in self.fieldnames:
@@ -409,7 +413,7 @@ def checkrange(bch, fieldname):
             astr = "Value %s is not less than the 'maximum<' of %s"
             astr = astr % (fieldvalue, therange['maximum<'])
             raise RangeError(astr)
-    if  therange['minimum>'] != None:
+    if therange['minimum>'] != None:
         if fieldvalue <= therange['minimum>']:
             astr = "Value %s is not greater than the 'minimum>' of %s"
             astr = astr % (fieldvalue, therange['minimum>'])
@@ -417,6 +421,7 @@ def checkrange(bch, fieldname):
     return fieldvalue
     """get the idd dict for this field
     Will return {} if the fieldname does not exist"""
+
 
 def getfieldidd(bch, fieldname):
     """get the idd dict for this field
@@ -426,9 +431,10 @@ def getfieldidd(bch, fieldname):
         fieldindex = bch.objls.index(fieldname)
     except ValueError as e:
         return {}  # the fieldname does not exist
-                    # so there is no idd
+        # so there is no idd
     fieldidd = bch.objidd[fieldindex]
     return fieldidd
+
 
 def getfieldidd_item(bch, fieldname, iddkey):
     """return an item from the fieldidd, given the iddkey
@@ -488,7 +494,7 @@ def getreferingobjs(referedobj, iddgroups=None, fields=None):
     idfobjs = list(itertools.chain.from_iterable(idfobjs))  # flatten list
     if iddgroups:  # optional filter
         idfobjs = [anobj for anobj in idfobjs
-            if anobj.getfieldidd('key')['group'] in iddgroups]
+                   if anobj.getfieldidd('key')['group'] in iddgroups]
     for anobj in idfobjs:
         if not fields:
             thefields = anobj.objls
@@ -540,6 +546,3 @@ def get_referenced_object(referring_object, fieldname):
                 referenced_obj_name = referring_object[fieldname]
                 if obj.Name == referenced_obj_name:
                     return obj
-
-
-

@@ -27,14 +27,14 @@ import eppy.simpleread as simpleread
 # python eppyreadtest_folder.py '/Applications/EnergyPlus-8-1-0/Energy+.idd'
 # '/Applications/EnergyPlus-8-1-0/ExampleFiles'
 
+
 def doreadtest(iddfile, folder, silent=False):
     """print out all the readtest results"""
     lst = os.listdir(folder)
     lst = [l for l in lst if l.endswith('.idf')]
 
-
     iddhandle = open(iddfile, 'r')
-    for i, fname in enumerate(lst[355:359]): # lst[6:7]
+    for i, fname in enumerate(lst[355:359]):  # lst[6:7]
                                     # if you want to test a specific file
         fname1 = "%s/%s" % (folder, fname)
         idfhandle1 = open(fname1, 'rb')
@@ -51,6 +51,7 @@ def doreadtest(iddfile, folder, silent=False):
         idfhandle1.close()
         idfhandle2.close()
     iddhandle.close()
+
 
 if __name__ == '__main__':
     # do the argparse stuff

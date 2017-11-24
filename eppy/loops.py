@@ -59,6 +59,7 @@ def extractfields(data, commdct, objkey, fieldlists):
         # fieldcontents.append([theobject[item] for item in fieldindex])
     return fieldcontents
 
+
 def plantloopfieldlists(data):
     """return the plantloopfield list"""
     objkey = 'plantloop'.upper()
@@ -72,11 +73,13 @@ def plantloopfieldlists(data):
         'Demand Side Outlet Node Name',
         'Demand Side Branch List Name']] * numobjects
 
+
 def plantloopfields(data, commdct):
     """get plantloop fields to diagram it"""
     fieldlists = plantloopfieldlists(data)
     objkey = 'plantloop'.upper()
     return extractfields(data, commdct, objkey, fieldlists)
+
 
 def branchlist2branches(data, commdct, branchlist):
     """get branches from the branchlist"""
@@ -91,6 +94,7 @@ def branchlist2branches(data, commdct, branchlist):
                    if name == branchlist]
     return thebranches[0]
 
+
 def branch_inlet_outlet(data, commdct, branchname):
     """return the inlet and outlet of a branch"""
     objkey = 'Branch'.upper()
@@ -100,6 +104,7 @@ def branch_inlet_outlet(data, commdct, branchname):
     inletindex = 6
     outletindex = len(theobject) - 2
     return [theobject[inletindex], theobject[outletindex]]
+
 
 def splittermixerfieldlists(data, commdct, objkey):
     """docstring for splittermixerfieldlists"""
@@ -113,11 +118,13 @@ def splittermixerfieldlists(data, commdct, objkey):
         fieldlists.append(fieldlist)
     return fieldlists
 
+
 def splitterfields(data, commdct):
     """get splitter fields to diagram it"""
     objkey = "Connector:Splitter".upper()
     fieldlists = splittermixerfieldlists(data, commdct, objkey)
     return extractfields(data, commdct, objkey, fieldlists)
+
 
 def mixerfields(data, commdct):
     """get mixer fields to diagram it"""
@@ -133,7 +140,7 @@ def repeatingfields(theidd, commdct, objkey, flds):
     does not work for 'fields as indicated' """
     # TODO : make it work for 'fields as indicated'
     if type(flds) != list:
-        flds = [flds] # for backward compatability
+        flds = [flds]  # for backward compatability
     objindex = theidd.dtls.index(objkey)
     objcomm = commdct[objindex]
     allfields = []
@@ -152,10 +159,12 @@ def repeatingfields(theidd, commdct, objkey, flds):
     allfields = list(zip(*allfields))
     return [item for sublist in allfields for item in sublist]
 
+
 def objectcount(data, key):
     """return the count of objects of key"""
     objkey = key.upper()
     return len(data.dt[objkey])
+
 
 def getfieldindex(data, commdct, objkey, fname):
     """given objkey and fieldname, return its index"""
@@ -169,6 +178,7 @@ def getfieldindex(data, commdct, objkey, fname):
             pass
     return i_index
 
+
 def getadistus(data, commdct):
     """docstring for fname"""
     objkey = "ZoneHVAC:AirDistributionUnit".upper()
@@ -178,6 +188,7 @@ def getadistus(data, commdct):
     ifield = getfieldindex(data, commdct, objkey, adistutypefield)
     adistus = objcomm[ifield]['key']
     return adistus
+
 
 def makeadistu_inlets(data, commdct):
     """make the dict adistu_inlets"""

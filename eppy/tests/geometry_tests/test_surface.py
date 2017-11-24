@@ -16,6 +16,7 @@ from __future__ import unicode_literals
 import eppy.geometry.surface as surface
 from eppy.pytest_helpers import almostequal
 
+
 def test_area():
     """test the area of a polygon poly"""
     data = (
@@ -35,6 +36,7 @@ def test_area():
     for poly, answer in data:
         result = surface.area(poly)
         assert almostequal(answer, result, places=4) == True
+
 
 def test_height():
     """test the height of a polygon poly"""
@@ -62,6 +64,7 @@ def test_height():
         result = surface.height(poly)
         assert almostequal(answer, result, places=5) == True
 
+
 def test_width():
     """test the width of a polygon poly """
     data = (
@@ -82,6 +85,7 @@ def test_width():
         result = surface.width(poly)
         assert almostequal(answer, result, places=4) == True
 
+
 def test_azimuth():
     """test the azimuth of a polygon poly"""
     data = (
@@ -100,6 +104,7 @@ def test_azimuth():
     for poly, answer in data:
         result = surface.azimuth(poly)
         assert almostequal(answer, result, places=3) == True
+
 
 def test_tilt():
     """test the tilt of a polygon poly"""

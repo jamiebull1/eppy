@@ -26,6 +26,7 @@ from eppy.bunch_subclass import EpBunch
 
 class Idf_MSequence(collections.MutableSequence):
     """Used to keep IDF.idfobjects in sync with IDF.model.dt."""
+
     def __init__(self, list1, list2, theidf):
         """Initialise the object.
 
@@ -39,7 +40,7 @@ class Idf_MSequence(collections.MutableSequence):
             The IDF.
 
         """
-        super(Idf_MSequence, self).__init__()  #pylint: disable=no-member
+        super(Idf_MSequence, self).__init__()  # pylint: disable=no-member
         self.list1 = list1
         self.list2 = list2
         self.theidf = theidf

@@ -127,7 +127,7 @@ class Eplusdata(object):
         dt = self.dt
         dtls = self.dtls
         UNIXSEP = "\n"
-        DOSSEP = UNIXSEP # using a unix EOL
+        DOSSEP = UNIXSEP  # using a unix EOL
         astr = ''
         for node in dtls:
             nodedata = dt[node.upper()]

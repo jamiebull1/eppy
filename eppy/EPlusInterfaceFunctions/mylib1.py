@@ -19,6 +19,7 @@ def write_str2file(pathname, astr):
     fhandle.write(astr)
     fhandle.close()
 
+
 def readfile(pathname):
     """retrun the data in the file"""
     fhandle = open(pathname, 'rb')
@@ -29,6 +30,7 @@ def readfile(pathname):
         pass
     fhandle.close()
     return data
+
 
 def readfileasmac():
     """docstring for readfileasmac"""

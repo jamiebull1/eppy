@@ -154,6 +154,7 @@ def addfunctions(dtls, bunchdt):
     #         idfobject['__functions']['getrange'] = GetRange(idfobject)
     #         idfobject['__functions']['checkrange'] = CheckRange(idfobject)
 
+
 def addfunctions2new(abunch, key):
     """add functions to a new bunch/munch object"""
     snames = [

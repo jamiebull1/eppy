@@ -11,6 +11,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+
 def key2elements(key):
     """split key to elements"""
     # words = key.split('.')
@@ -32,8 +33,8 @@ def key2elements(key):
     if namephrase.startswith("'") and namephrase.endswith("'"):
         namephrase = namephrase[1:-1]
     return first2words + [namephrase] + [lastword]
-    
-    
+
+
 def updateidf(idf, dct):
     """update idf using dct"""
     for key in list(dct.keys()):

@@ -22,6 +22,7 @@ from six.moves import xrange
 class WhichLoopError(Exception):
     pass
 
+
 class SomeFields(object):
     """Some fields"""
     c_fields = ['Condenser Side Inlet Node Name',
@@ -48,7 +49,6 @@ class SomeFields(object):
                 'Supply Side Outlet Node Names']
 
 
-
 def flattencopy(lst):
     """flatten and return a copy of the list
     indefficient on large lists"""
@@ -69,6 +69,7 @@ def flattencopy(lst):
         thelist = atemp[:]
     return thelist
 
+
 def makepipecomponent(idf, pname):
     """make a pipe component
     generate inlet outlet names"""
@@ -77,6 +78,7 @@ def makepipecomponent(idf, pname):
     apipe.Outlet_Node_Name = "%s_outlet" % (pname,)
     return apipe
 
+
 def makeductcomponent(idf, dname):
     """make a duct component
     generate inlet outlet names"""
@@ -84,6 +86,7 @@ def makeductcomponent(idf, dname):
     aduct.Inlet_Node_Name = "%s_inlet" % (dname,)
     aduct.Outlet_Node_Name = "%s_outlet" % (dname,)
     return aduct
+
 
 def makepipebranch(idf, bname):
     """make a branch with a pipe
@@ -100,6 +103,7 @@ def makepipebranch(idf, bname):
     abranch.Component_1_Branch_Control_Type = "Bypass"
     return abranch
 
+
 def makeductbranch(idf, bname):
     """make a branch with a duct
     use standard inlet outlet names"""
@@ -114,6 +118,7 @@ def makeductbranch(idf, bname):
     abranch.Component_1_Outlet_Node_Name = aduct.Outlet_Node_Name
     abranch.Component_1_Branch_Control_Type = "Bypass"
     return abranch
+
 
 def getbranchcomponents(idf, branch, utest=False):
     """get the components of the branch"""
@@ -133,6 +138,7 @@ def getbranchcomponents(idf, branch, utest=False):
         return complist
     else:
         return [idf.getobject(ot, on) for ot, on in complist]
+
 
 def renamenodes(idf, fieldtype):
     """rename all the changed nodes"""
@@ -161,6 +167,7 @@ def renamenodes(idf, fieldtype):
                                 fieldvalue = tempdct[fieldvalue]
                                 idfobject.obj[i] = fieldvalue
 
+
 def getfieldnamesendswith(idfobject, endswith):
     """get the filednames for the idfobject based on endswith"""
     objls = idfobject.objls
@@ -168,6 +175,7 @@ def getfieldnamesendswith(idfobject, endswith):
     if tmp == []:
         pass
     return [name for name in objls if name.endswith(endswith)]
+
 
 def getnodefieldname(idfobject, endswith, fluid=None, startswith=None):
     """return the field name of the node
@@ -232,6 +240,7 @@ def initinletoutlet(idf, idfobject, thisnode, force=False):
                 return False
         except AttributeError:  # field may be a list
             return False
+
     def trimfields(fields, thisnode):
         if len(fields) > 1:
             if thisnode is not None:
@@ -259,6 +268,7 @@ def initinletoutlet(idf, idfobject, thisnode, force=False):
             idfobject[outletfield] = "%s_%s" % (idfobject.Name, outletfield)
     return idfobject
 
+
 def componentsintobranch(idf, branch, listofcomponents, fluid=None):
     """insert a list of components into a branch
     fluid is only needed if there are air and water nodes in same object
@@ -272,7 +282,7 @@ def componentsintobranch(idf, branch, listofcomponents, fluid=None):
     thebranchname = branch.Name
     thebranch = idf.removeextensibles('BRANCH', thebranchname)  # empty the branch
     # fill in the new components with the node names into this branch
-        # find the first extensible field and fill in the data in obj.
+    # find the first extensible field and fill in the data in obj.
     e_index = idf.getextensibleindex('BRANCH', thebranchname)
     theobj = thebranch.obj
     modeleditor.extendlist(theobj, e_index)  # just being careful here
@@ -289,6 +299,7 @@ def componentsintobranch(idf, branch, listofcomponents, fluid=None):
 
     return thebranch
 
+
 def doingtesting(testing, testn, result=None):
     """doing testing"""
     testn += 1
@@ -298,9 +309,11 @@ def doingtesting(testing, testn, result=None):
     else:
         return testn
 
+
 def returnnone():
     """return None"""
     return None
+
 
 def makeairloop(idf, loopname, sloop, dloop, testing=None):
     """make an airloop"""
@@ -572,6 +585,7 @@ def makeairloop(idf, loopname, sloop, dloop, testing=None):
     # -------- testing ---------
     return newairloop
 
+
 def makeplantloop(idf, loopname, sloop, dloop, testing=None):
     """make plant loop with pip components"""
     # -------- <testing ---------
@@ -715,7 +729,6 @@ def makeplantloop(idf, loopname, sloop, dloop, testing=None):
         returnnone()
     # -------- testing> ---------
 
-
     # TODO : test if there are parallel branches
     # make the connectorlist an fill fields
     sconnlist = idf.newidfobject(
@@ -763,6 +776,7 @@ def makeplantloop(idf, loopname, sloop, dloop, testing=None):
     # -------- testing> ---------
 
     return newplantloop
+
 
 def makecondenserloop(idf, loopname, sloop, dloop, testing=None):
     """make condenser loop with pipe components"""
@@ -901,7 +915,6 @@ def makecondenserloop(idf, loopname, sloop, dloop, testing=None):
         returnnone()
     # -------- testing> ---------
 
-
     # TODO : test if there are parallel branches
     # make the connectorlist an fill fields
     sconnlist = idf.newidfobject(
@@ -959,6 +972,7 @@ def makecondenserloop(idf, loopname, sloop, dloop, testing=None):
     # -------- testing> ---------
     return newcondenserloop
 
+
 def _clean_listofcomponents(listofcomponents):
     """force it to be a list of tuples"""
     def totuple(item):
@@ -968,6 +982,7 @@ def _clean_listofcomponents(listofcomponents):
         else:
             return (item, None)
     return [totuple(item) for item in listofcomponents]
+
 
 def _clean_listofcomponents_tuples(listofcomponents_tuples):
     """force 3 items in the tuple"""
@@ -979,6 +994,7 @@ def _clean_listofcomponents_tuples(listofcomponents_tuples):
             return (item[0], item[1], None)
     return [to3tuple(item) for item in listofcomponents_tuples]
 
+
 def getmakeidfobject(idf, key, name):
     """get idfobject or make it if it does not exist"""
     idfobject = idf.getobject(key, name)
@@ -986,6 +1002,7 @@ def getmakeidfobject(idf, key, name):
         return idf.newidfobject(key, Name=name)
     else:
         return idfobject
+
 
 def replacebranch1(idf, loop, branchname, listofcomponents_tuples, fluid=None,
                    debugsave=False):
@@ -1002,6 +1019,7 @@ def replacebranch1(idf, loop, branchname, listofcomponents_tuples, fluid=None,
                           debugsave=debugsave, fluid=fluid)
     return newbr
 
+
 def replacebranch(idf, loop, branch,
                   listofcomponents, fluid=None,
                   debugsave=False,
@@ -1017,9 +1035,9 @@ def replacebranch(idf, loop, branch,
     # join them into a branch
     # -----------------------
     # np1_inlet -> np1 -> np1_np2_node -> np2 -> np2_outlet
-        # change the node names in the component
-        # empty the old branch
-        # fill in the new components with the node names into this branch
+    # change the node names in the component
+    # empty the old branch
+    # fill in the new components with the node names into this branch
     listofcomponents = _clean_listofcomponents(listofcomponents)
 
     components = [item[0] for item in listofcomponents]
@@ -1176,6 +1194,7 @@ def replacebranch(idf, loop, branch,
     if debugsave:
         idf.savecopy("hhh9.idf")
     return thebranch
+
 
 def main():
     """the main routine"""

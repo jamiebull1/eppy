@@ -24,4 +24,3 @@ for idf in idfs:
     os.remove(idf)
 for dot in dots:
     os.remove(dot)
-    

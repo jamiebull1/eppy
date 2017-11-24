@@ -18,6 +18,7 @@ import eppy.EPlusInterfaceFunctions.iddgroups as iddgroups
 # from EPlusInterfaceFunctions import parse_idd
 # from EPlusInterfaceFunctions import eplusdata
 
+
 def readidf(idfname):
     """read the idf file"""
     # iddfile = sys.path[0] + '/EplusCode/Energy+.idd'
@@ -43,6 +44,7 @@ def readiddidf(idfname):
     data = eplusdata.Eplusdata(theidd, idfname)
     return theidd, data
 
+
 def readiddstuff(idfname):
     """read the idf file"""
     # iddfile = sys.path[0] + '/EplusCode/Energy+.idd'
@@ -54,7 +56,6 @@ def readiddstuff(idfname):
     theidd = eplusdata.Idd(block, 2)
     data = eplusdata.Eplusdata(theidd, idfname)
     return block, commlst, commdct
-
 
 
 def readdatacommlst(idfname):
@@ -69,25 +70,29 @@ def readdatacommlst(idfname):
     data = eplusdata.Eplusdata(theidd, idfname)
     return data, commlst
 
+
 def readdatacommdct(idfname, iddfile='Energy+.idd', commdct=None):
     """read the idf file"""
     if not commdct:
-        block, commlst, commdct, idd_index = parse_idd.extractidddata(iddfile)  #pylint: disable=unbalanced-tuple-unpacking
+        block, commlst, commdct, idd_index = parse_idd.extractidddata(
+            iddfile)  # pylint: disable=unbalanced-tuple-unpacking
         theidd = eplusdata.Idd(block, 2)
     else:
         theidd = iddfile
     data = eplusdata.Eplusdata(theidd, idfname)
     return data, commdct, idd_index
 
+
 def readdatacommdct1(
         idfname, iddfile='Energy+.idd',
         commdct=None, block=None):
     """read the idf file"""
     if not commdct:
-        block, commlst, commdct, idd_index = parse_idd.extractidddata(iddfile)  #pylint: disable=unbalanced-tuple-unpacking
+        block, commlst, commdct, idd_index = parse_idd.extractidddata(
+            iddfile)  # pylint: disable=unbalanced-tuple-unpacking
         theidd = eplusdata.Idd(block, 2)
     else:
         theidd = eplusdata.Idd(block, 2)
-        idd_index = {} # it should not get here :-(
+        idd_index = {}  # it should not get here :-(
     data = eplusdata.Eplusdata(theidd, idfname)
     return block, data, commdct, idd_index

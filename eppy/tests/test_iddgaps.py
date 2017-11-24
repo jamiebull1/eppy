@@ -13,6 +13,7 @@ from __future__ import unicode_literals
 
 import eppy.iddgaps as iddgaps
 
+
 def test_cleaniddfield():
     """pytest for cleaniddfield"""
     data = ((
@@ -27,7 +28,7 @@ def test_cleaniddfield():
             'object-list': ['WaterStorageTankNames'],
             'type': ['object-list']
         }
-        ), #field, newfield
+        ),  # field, newfield
            )
     for field, newfield in data:
         result = iddgaps.cleaniddfield(field)

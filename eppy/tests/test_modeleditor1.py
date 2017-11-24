@@ -23,6 +23,7 @@ idffhandle = StringIO(idfsnippet)
 iddfhandle = StringIO(iddsnippet)
 bunchdt, data, commdct, idd_index = idfreader.idfreader(idffhandle, iddfhandle, None)
 
+
 def test_addobject():
     """py.test for addobject"""
     thedata = (
@@ -45,6 +46,7 @@ def test_addobject():
             for kkey, value in fielddict.items():
                 assert bunchdt[key][-1][kkey] == value
 
+
 def test_addobject1():
     """py.test for addobject"""
     thedata = (
@@ -55,6 +57,7 @@ def test_addobject1():
         aname = kwargs['Name']
         assert data.dt[key][-1][1] == aname
         assert bunchdt[key][-1].Name == aname
+
 
 def test_getobject():
     """py.test for getobject"""
@@ -69,6 +72,7 @@ def test_getobject():
     for key, name, theobject in thedata:
         result = modeleditor.getobject(bunchdt, key, name)
         assert result == theobject
+
 
 def test___objecthasfields():
     """py.test for __objecthasfields"""
@@ -88,6 +92,7 @@ def test___objecthasfields():
             idfobject, **fielddict)
         assert result == istrue
 
+
 def test_getobjects():
     """py.test for getobjects"""
     thedata = (
@@ -104,6 +109,7 @@ def test_getobjects():
             key, **fielddict)
         assert result == theobjects
 
+
 def test_is_retaincase():
     """py.test for is_retaincase"""
     thedata = (
@@ -116,6 +122,7 @@ def test_is_retaincase():
             bunchdt, data, commdct,
             idfobject, fieldname)
         assert result == case
+
 
 def test_isfieldvalue():
     """py.test for isfieldvalue"""
@@ -141,6 +148,7 @@ def test_isfieldvalue():
             bunchdt, data, commdct,
             idfobject, fieldname, value, places)
         assert result == isequal
+
 
 def test_equalfield():
     """py.test for equalfield"""
@@ -177,6 +185,7 @@ def test_equalfield():
             bunchdt, data, commdct,
             idfobject1, idfobject2, fieldname, places)
 
+
 def test_removeextensibles():
     """py.test for removeextensibles"""
     thedata = (
@@ -197,6 +206,7 @@ def test_removeextensibles():
         print(rawobject)
         assert result.obj == rawobject
 
+
 def test_newrawobject():
     """py.test for newrawobject"""
     thedata = (
@@ -211,6 +221,7 @@ def test_newrawobject():
     for key, obj in thedata:
         result = modeleditor.newrawobject(data, commdct, key)
         assert result == obj
+
 
 def test_obj2bunch():
     """py.test for obj2bunch"""
@@ -228,15 +239,16 @@ def test_obj2bunch():
         result = modeleditor.obj2bunch(data, commdct, obj)
         assert result.__repr__() == abunch.__repr__()
 
+
 def test_iddofobject():
     """py.test of iddofobject"""
     thedata = (
         (
             'VERSION',
             [
-                {u'idfobj': u'Version', 
-                u'group': u'Simulation Parameters', 
-                'format': ['singleLine'], 'unique-object': ['']},
+                {u'idfobj': u'Version',
+                 u'group': u'Simulation Parameters',
+                 'format': ['singleLine'], 'unique-object': ['']},
                 {
                     'default': ['7.0'], 'field': ['Version Identifier'],
                     'required-field': ['']
@@ -251,4 +263,3 @@ def test_iddofobject():
         except KeyError:
             pass
         assert result == itsidd
-

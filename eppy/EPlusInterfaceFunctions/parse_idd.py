@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-## EPlusInterface (EPI) - An interface for EnergyPlus
-## Copyright (C) 2004 Santosh Philip
+# EPlusInterface (EPI) - An interface for EnergyPlus
+# Copyright (C) 2004 Santosh Philip
 # =======================================================================
 #  Distributed under the MIT License.
 #  (See accompanying file LICENSE or copy at
@@ -36,6 +36,7 @@ def nocomment(astr, com):
             alist[i] = element[:pnt]
     return '\n'.join(alist)
 
+
 def get_nocom_vars(astr):
     """
     input 'astr' which is the Energy+.idd file as a string
@@ -44,9 +45,9 @@ def get_nocom_vars(astr):
     st2 = strips all comments - both the '!' and '\\'
     lss = nested list of all the variables in Energy+.idd file
     """
-    nocom = nocomment(astr, '!')# remove '!' comments
+    nocom = nocomment(astr, '!')  # remove '!' comments
     st1 = nocom
-    nocom1 = nocomment(st1, '\\')# remove '\' comments
+    nocom1 = nocomment(st1, '\\')  # remove '\' comments
     st1 = nocom
     st2 = nocom1
     # alist = string.split(st2, ';')
@@ -66,8 +67,8 @@ def get_nocom_vars(astr):
         lss.pop(-1)
     #=======================================
 
-    #st1 has the '\' comments --- looks like I don't use this
-    #lss is the .idd file as a nested list
+    # st1 has the '\' comments --- looks like I don't use this
+    # lss is the .idd file as a nested list
     return (st1, st2, lss)
 
 
@@ -76,7 +77,8 @@ def removeblanklines(astr):
     lines = astr.splitlines()
     lines = [line for line in lines if line.strip() != ""]
     return "\n".join(lines)
-    
+
+
 def _readfname(fname):
     """copied from extractidddata below. 
     It deals with all the types of fnames"""
@@ -91,7 +93,8 @@ def _readfname(fname):
         else:
             astr = mylib2.readfile(fname)
     return astr
-            
+
+
 @decorator
 def make_idd_index(extract_func, fname, debug):
     """generate the iddindex"""
@@ -102,23 +105,23 @@ def make_idd_index(extract_func, fname, debug):
     fname = StringIO(astr)
 
     # glist = iddgroups.iddtxt2grouplist(astr.decode('ISO-8859-2'))
-    
-    
+
     blocklst, commlst, commdct = extract_func(fname)
-    
+
     name2refs = iddindex.makename2refdct(commdct)
     ref2namesdct = iddindex.makeref2namesdct(name2refs)
     idd_index = dict(name2refs=name2refs, ref2names=ref2namesdct)
     commdct = iddindex.ref2names2commdct(ref2namesdct, commdct)
-    
+
     return blocklst, commlst, commdct, idd_index
+
 
 @decorator
 def embedgroupdata(extract_func, fname, debug):
     """insert group info into extracted idd"""
-    
+
     astr = _readfname(fname)
-    
+
     # fname is exhausted by the above read
     # reconstitute fname as a StringIO
     fname = StringIO(astr)
@@ -126,16 +129,16 @@ def embedgroupdata(extract_func, fname, debug):
     try:
         astr = astr.decode('ISO-8859-2')
     except Exception as e:
-        pass # for python 3
+        pass  # for python 3
     glist = iddgroups.iddtxt2grouplist(astr)
-    
-    
+
     blocklst, commlst, commdct = extract_func(fname)
     # add group information to commlst and commdct
     # glist = getglist(fname)
     commlst = iddgroups.group2commlst(commlst, glist)
     commdct = iddgroups.group2commdct(commdct, glist)
     return blocklst, commlst, commdct
+
 
 @make_idd_index
 @embedgroupdata
@@ -160,7 +163,7 @@ def extractidddata(fname, debug=False):
             try:
                 astr = astr.decode('ISO-8859-2')
             except AttributeError:
-                pass 
+                pass
         else:
             astr = mylib2.readfile(fname)
             # astr = astr.decode('ISO-8859-2') -> mylib1 does a decode
@@ -176,15 +179,13 @@ def extractidddata(fname, debug=False):
             # astr = astr.decode('ISO-8859-2') -> mylib2.readfile has decoded
     (nocom, nocom1, blocklst) = get_nocom_vars(astr)
 
-
     astr = nocom
     st1 = removeblanklines(astr)
     if debug:
         mylib1.write_str2file('nocom2.txt', st1.encode('latin-1'))
 
-
-    #find the groups and the start object of the group
-    #find all the group strings
+    # find the groups and the start object of the group
+    # find all the group strings
     groupls = []
     alist = st1.splitlines()
     for element in alist:
@@ -192,14 +193,13 @@ def extractidddata(fname, debug=False):
         if lss[0].upper() == '\\group'.upper():
             groupls.append(element)
 
-
-    #find the var just after each item in groupls
+    # find the var just after each item in groupls
     groupstart = []
     for i in range(len(groupls)):
         iindex = alist.index(groupls[i])
         groupstart.append([alist[iindex], alist[iindex+1]])
 
-    #remove the group commentline
+    # remove the group commentline
     for element in groupls:
         alist.remove(element)
 
@@ -207,7 +207,7 @@ def extractidddata(fname, debug=False):
         st1 = '\n'.join(alist)
         mylib1.write_str2file('nocom3.txt', st1.encode('latin-1'))
 
-    #strip each line
+    # strip each line
     for i in range(len(alist)):
         alist[i] = alist[i].strip()
 
@@ -215,18 +215,18 @@ def extractidddata(fname, debug=False):
         st1 = '\n'.join(alist)
         mylib1.write_str2file('nocom4.txt', st1.encode('latin-1'))
 
-    #ensure that each line is a comment or variable
-    #find lines that don't start with a comment
-    #if this line has a comment in it
+    # ensure that each line is a comment or variable
+    # find lines that don't start with a comment
+    # if this line has a comment in it
     #   then move the comment to a new line below
     lss = []
     for i in range(len(alist)):
-        #find lines that don't start with a comment
+        # find lines that don't start with a comment
         if alist[i][0] != '\\':
-            #if this line has a comment in it
+            # if this line has a comment in it
             pnt = alist[i].find('\\')
             if pnt != -1:
-                #then move the comment to a new line below
+                # then move the comment to a new line below
                 lss.append(alist[i][:pnt].strip())
                 lss.append(alist[i][pnt:].strip())
             else:
@@ -234,18 +234,17 @@ def extractidddata(fname, debug=False):
         else:
             lss.append(alist[i])
 
-
     alist = lss[:]
     if debug:
         st1 = '\n'.join(alist)
         mylib1.write_str2file('nocom5.txt', st1.encode('latin-1'))
 
-    #need to make sure that each line has only one variable - as in WindowGlassSpectralData,
+    # need to make sure that each line has only one variable - as in WindowGlassSpectralData,
     lss = []
     for element in alist:
         # if the line is not a comment
         if element[0] != '\\':
-            #test for more than one var
+            # test for more than one var
             llist = element.split(',')
             if llist[-1] == '':
                 tmp = llist.pop()
@@ -257,22 +256,22 @@ def extractidddata(fname, debug=False):
         else:
             lss.append(element)
 
-    ls_debug = alist[:] # needed for the next debug - 'nocom7.txt'
+    ls_debug = alist[:]  # needed for the next debug - 'nocom7.txt'
     alist = lss[:]
     if debug:
         st1 = '\n'.join(alist)
         mylib1.write_str2file('nocom6.txt', st1.encode('latin-1'))
 
     if debug:
-        #need to make sure that each line has only one variable - as in WindowGlassSpectralData,
-        #this is same as above.
+        # need to make sure that each line has only one variable - as in WindowGlassSpectralData,
+        # this is same as above.
         # but the variables are put in without the ';' and ','
-        #so we can do a diff between 'nocom7.txt' and 'nocom8.txt'. Should be identical
+        # so we can do a diff between 'nocom7.txt' and 'nocom8.txt'. Should be identical
         lss_debug = []
         for element in ls_debug:
             # if the line is not a comment
             if element[0] != '\\':
-                #test for more than one var
+                # test for more than one var
                 llist = element.split(',')
                 if llist[-1] == '':
                     tmp = llist.pop()
@@ -288,18 +287,17 @@ def extractidddata(fname, debug=False):
         st1 = '\n'.join(ls_debug)
         mylib1.write_str2file('nocom7.txt', st1.encode('latin-1'))
 
-
-    #replace each var with '=====var======'
-    #join into a string,
-    #split using '=====var====='
+    # replace each var with '=====var======'
+    # join into a string,
+    # split using '=====var====='
     for i in range(len(lss)):
-        #if the line is not a comment
+        # if the line is not a comment
         if lss[i][0] != '\\':
             lss[i] = '=====var====='
 
     st2 = '\n'.join(lss)
     lss = st2.split('=====var=====\n')
-    lss.pop(0) # the above split generates an extra item at start
+    lss.pop(0)  # the above split generates an extra item at start
 
     if debug:
         fname = 'nocom8.txt'
@@ -315,9 +313,9 @@ def extractidddata(fname, debug=False):
 
         fhandle.close()
 
-    #map the structure of the comments -(this is 'lss' now) to
-    #the structure of blocklst - blocklst is a nested list
-    #make lss a similar nested list
+    # map the structure of the comments -(this is 'lss' now) to
+    # the structure of blocklst - blocklst is a nested list
+    # make lss a similar nested list
     k = 0
     lst = []
     for i in range(len(blocklst)):
@@ -325,7 +323,6 @@ def extractidddata(fname, debug=False):
         for j in range(len(blocklst[i])):
             lst[i].append(lss[k])
             k = k+1
-
 
     if debug:
         fname = 'nocom9.txt'
@@ -340,9 +337,7 @@ def extractidddata(fname, debug=False):
 
         fhandle.close()
 
-
-
-    #break up multiple line comment so that it is a list
+    # break up multiple line comment so that it is a list
     for i in range(len(lst)):
         for j in range(len(lst[i])):
             lst[i][j] = lst[i][j].splitlines()
@@ -351,8 +346,7 @@ def extractidddata(fname, debug=False):
                 lst[i][j][k] = lst[i][j][k][1:]
     commlst = lst
 
-
-    #copied with minor modifications from readidd2_2.py -- which has been erased ha !
+    # copied with minor modifications from readidd2_2.py -- which has been erased ha !
     clist = lst
     lss = []
     for i in range(0, len(clist)):
@@ -371,19 +365,19 @@ def extractidddata(fname, debug=False):
                 # ddtt[element.split()[0].lower()].append(string.join(element.split()[1:]))
                 ddtt[element.split()[0].lower()].append(' '.join(element.split()[1:]))
 
-
             alist.append(ddtt)
 
         lss.append(alist)
     commdct = lss
-    
+
     # add group information to commlst and commdct
     # glist = iddgroups.idd2grouplist(fname)
     # commlst = group2commlst(commlst, glist)
     # commdct = group2commdct(commdct, glist)
-    
+
     return blocklst, commlst, commdct
     # give blocklst a better name :-(
+
 
 def getobjectref(blocklst, commdct):
     """
@@ -406,4 +400,3 @@ def getobjectref(blocklst, commdct):
                         if ref == objlist:
                             objlst_dct[objlist].append((blocklst[i][0], j))
     return objlst_dct
-

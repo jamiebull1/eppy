@@ -32,13 +32,14 @@ def test_table2matrix():
                 </tr>
             </table>""",
             [['1', '2'], ['3', '4']]
-        ), # tabletxt, rows
+        ),  # tabletxt, rows
     )
     for tabletxt, rows in thedata:
         soup = BeautifulSoup(tabletxt, "lxml")
         table = soup.find('table')
         result = readhtml.table2matrix(table)
         assert result == rows
+
 
 def test_table2val_matrix():
     """py.test for table2val_matrix"""
@@ -55,7 +56,7 @@ def test_table2val_matrix():
             </tr>
             </table>""",
             [["b", 2], [3, 4]]
-        ), # tabletxt, rows
+        ),  # tabletxt, rows
         # the following test data has a <br> in the <td></td>
         # it will test if tdbr2EOL works correctly
         (
@@ -70,13 +71,14 @@ def test_table2val_matrix():
             </tr>
             </table>""",
             [["b \n b", 2], [3, 4]]
-        ), # tabletxt, rows
+        ),  # tabletxt, rows
     )
     for tabletxt, rows in thedata:
         soup = BeautifulSoup(tabletxt, "lxml")
         table = soup.find('table')
         result = readhtml.table2val_matrix(table)
         assert result == rows
+
 
 def test_gettables():
     """py.test for gettables"""
@@ -99,7 +101,7 @@ def test_gettables():
                     'Custom Monthly Report',
                     [['d', '26'], ['27', '28']]
                 )
-            ], False), # titlerows, tofloat
+            ], False),  # titlerows, tofloat
         (
             [
                 (
@@ -118,7 +120,7 @@ def test_gettables():
                     'Custom Monthly Report',
                     [['d', 26], [27, 28]]
                 )
-            ], True), # titlerows, tofloat
+            ], True),  # titlerows, tofloat
     )
     for titlerows, tofloat in thedata:
         result = readhtml.titletable(SAMPLE_HTML, tofloat=tofloat)
@@ -126,6 +128,7 @@ def test_gettables():
             assert title1 == title2
             assert rows1 == rows2
         assert result == titlerows
+
 
 def test_has_name():
     """py.test for has_name"""
@@ -138,6 +141,7 @@ def test_has_name():
     assert readhtml._has_name(soup.p.contents[0]) is True
     # soup.b.contents[0] = u'EnergyPlus-Windows-OMP-32 7.2.0.006, YMD=2013.01.28 16:38'
     assert readhtml._has_name(soup.b.contents[0]) is False
+
 
 def test_lines_table():
     """py.test for lines_table"""
@@ -177,13 +181,14 @@ def test_lines_table():
             [['d', '26'], ['27', '28']]
         ]]
 
+
 def test_make_ntgrid():
     """py.test make_ntgrid"""
     grid = [
-    ["",  "a b", "b c", "c d"],
-    ["x y", 1,     2,     3 ],
-    ["y z", 4,     5,     6 ],
-    ["z z", 7,     8,     9 ],]
+        ["",  "a b", "b c", "c d"],
+        ["x y", 1,     2,     3],
+        ["y z", 4,     5,     6],
+        ["z z", 7,     8,     9], ]
     result = readhtml._make_ntgrid(grid)
     ntcol = collections.namedtuple('ntcol', "x_y y_z z_z")
     ntrow = collections.namedtuple('ntrow', "a_b b_c c_d")

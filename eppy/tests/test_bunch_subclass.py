@@ -388,7 +388,7 @@ def test_EpBunch():
     iddfile = StringIO(iddtxt)
     fname = StringIO(idftxt)
     block, data, commdct, idd_index = readidf.readdatacommdct1(fname,
-                iddfile=iddfile)
+                                                               iddfile=iddfile)
 
     # setup code walls - can be generic for any object
     ddtt = data.dt
@@ -399,7 +399,6 @@ def test_EpBunch():
 
     dwalls = ddtt[wallkey]
     dwall = dwalls[0]
-
 
     wallfields = [comm.get('field') for comm in commdct[wall_i]]
     wallfields[0] = ['key']
@@ -414,7 +413,6 @@ def test_EpBunch():
         'Vertex_2_Ycoordinate', 'Vertex_2_Zcoordinate', 'Vertex_3_Xcoordinate',
         'Vertex_3_Ycoordinate', 'Vertex_3_Zcoordinate']
 
-
     bwall = EpBunch(dwall, wall_fields, wallidd)
 
     # print bwall.Name
@@ -427,7 +425,7 @@ def test_EpBunch():
     assert bwall.Name == data.dt[wallkey][0][1]
 
     # set aliases
-    bwall.__aliases = {'Constr':'Construction_Name'}
+    bwall.__aliases = {'Constr': 'Construction_Name'}
 
     # print "wall.Construction_Name = %s" % (bwall.Construction_Name, )
     # print "wall.Constr = %s" % (bwall.Constr, )
@@ -441,7 +439,7 @@ def test_EpBunch():
     assert bwall.Constr == data.dt[wallkey][0][3]
 
     # add functions
-    bwall.__functions = {'svalues':bunch_subclass.somevalues}
+    bwall.__functions = {'svalues': bunch_subclass.somevalues}
     assert 'svalues' in bwall.__functions
 
     # print bwall.svalues
@@ -512,6 +510,7 @@ def test_EpBunch():
     assert bconstr.Layer_10 == ''
     assert bconstr["Layer_10"] == ''
 
+
 def test_extendlist():
     """py.test for extendlist"""
     data = (
@@ -524,12 +523,14 @@ def test_extendlist():
         bunch_subclass.extendlist(lst, i, value=value)
         assert lst == nlst
 
+
 class TestEpBunch(object):
     """
     py.test for EpBunch.getrange, EpBunch.checkrange, EpBunch.fieldnames,
     EpBunch.fieldvalues, EpBunch.getidd.
 
     """
+
     def initdata(self):
         obj, objls, objidd = (
             [
@@ -581,12 +582,12 @@ class TestEpBunch(object):
                 {'type': ['choice']},
 
                 {
-                    'maximum':None, 'minimum':None, 'maximum<':['5'],
+                    'maximum': None, 'minimum': None, 'maximum<': ['5'],
                     'minimum>':['-3'],
                     'type': ['integer']},
 
                 {
-                    'maximum':['5'], 'minimum':['-3'], 'maximum<':None,
+                    'maximum': ['5'], 'minimum':['-3'], 'maximum<':None,
                     'minimum>':None,
                     'type': ['real']},
                 ])
@@ -614,19 +615,18 @@ class TestEpBunch(object):
         for fv_item, objls_item in zip(idfobject.fieldvalues, idfobject.obj):
             assert fv_item == objls_item
 
-
     def test_getrange(self):
         data = (
             (
                 "Loads_Convergence_Tolerance_Value",
                 {
-                    'maximum': .5, 'minimum>': 0.0, 'maximum<':None,
-                    'minimum':None, 'type': 'real'},),  # fieldname, theranges
+                    'maximum': .5, 'minimum>': 0.0, 'maximum<': None,
+                    'minimum': None, 'type': 'real'},),  # fieldname, theranges
             (
                 "Maximum_Number_of_Warmup_Days",
                 {
-                    'maximum': None, 'minimum>':-3, 'maximum<':5,
-                    'minimum':None, 'type': 'integer'},),  # fieldname, theranges
+                    'maximum': None, 'minimum>': -3, 'maximum<': 5,
+                    'minimum': None, 'type': 'integer'},),  # fieldname, theranges
         )
         obj, objls, objidd = self.initdata()
         idfobject = EpBunch(obj, objls, objidd)
@@ -755,7 +755,7 @@ class TestEpBunch(object):
     def test_getreferingobjs(self):
         """py.test for getreferingobjs"""
         thedata = ((
-        """  Zone,
+            """  Zone,
         Box,  !- Name
         0.0,  !- Direction of Relative North {deg}
         0.288184,  !- X Origin {m}
@@ -828,8 +828,8 @@ class TestEpBunch(object):
         1.0,                      !- Multiplier
         autocalculate;            !- Number of Vertices
       """,
-        'Box',
-        ['N_Wall', 'EWall', 'WallExterior']),  # idftxt, zname, surfnamelst
+            'Box',
+            ['N_Wall', 'EWall', 'WallExterior']),  # idftxt, zname, surfnamelst
         )
         for idftxt, zname, surfnamelst in thedata:
             # import pdb; pdb.set_trace()
@@ -844,7 +844,7 @@ class TestEpBunch(object):
         for idftxt, zname, surfnamelst in thedata:
             idf = IDF(StringIO(idftxt))
             zone = idf.getobject('zone'.upper(), zname)
-            kwargs = {'iddgroups':[u'Thermal Zones and Surfaces', ]}
+            kwargs = {'iddgroups': [u'Thermal Zones and Surfaces', ]}
             result = zone.getreferingobjs(**kwargs)
             rnames = [item.Name for item in result]
             rnames.sort()
@@ -853,7 +853,7 @@ class TestEpBunch(object):
         for idftxt, zname, surfnamelst in thedata:
             idf = IDF(StringIO(idftxt))
             zone = idf.getobject('zone'.upper(), zname)
-            kwargs = {'fields':[u'Zone_Name', ], }
+            kwargs = {'fields': [u'Zone_Name', ], }
             result = zone.getreferingobjs(**kwargs)
             rnames = [item.Name for item in result]
             rnames.sort()
@@ -862,8 +862,8 @@ class TestEpBunch(object):
         for idftxt, zname, surfnamelst in thedata:
             idf = IDF(StringIO(idftxt))
             zone = idf.getobject('zone'.upper(), zname)
-            kwargs = {'fields':[u'Zone_Name', ],
-                'iddgroups':[u'Thermal Zones and Surfaces', ]}
+            kwargs = {'fields': [u'Zone_Name', ],
+                      'iddgroups': [u'Thermal Zones and Surfaces', ]}
             result = zone.getreferingobjs(**kwargs)
             rnames = [item.Name for item in result]
             rnames.sort()
@@ -875,8 +875,8 @@ class TestEpBunch(object):
             wname = 'EWall1'
             windownamelist = ['Window1', ]
             wall = idf.getobject('BUILDINGSURFACE:DETAILED'.upper(), wname)
-            kwargs = {'fields':[u'Building_Surface_Name', ],
-                'iddgroups':[u'Thermal Zones and Surfaces', ]}
+            kwargs = {'fields': [u'Building_Surface_Name', ],
+                      'iddgroups': [u'Thermal Zones and Surfaces', ]}
             result = wall.getreferingobjs(**kwargs)
             rnames = [item.Name for item in result]
             rnames.sort()
@@ -950,12 +950,13 @@ BuildingSurface:Detailed,
 # test_EpBunch1()
 # import idfreader
 
+
 def test_EpBunch1():
     """py.test for EpBunch1"""
     iddfile = StringIO(iddtxt)
     idffile = StringIO(bldfidf)
     block, data, commdct, idd_index = readidf.readdatacommdct1(idffile,
-            iddfile=iddfile)
+                                                               iddfile=iddfile)
     key = "BUILDING"
     objs = data.dt[key]
     obj = objs[0]

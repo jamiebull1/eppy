@@ -13,6 +13,7 @@ from __future__ import unicode_literals
 import eppy.modeleditor as modeleditor
 from eppy.modeleditor import IDF
 
+
 def nocomment(astr, com='!'):
     """
     just like the comment in python.
@@ -33,6 +34,7 @@ def _tofloat(num):
         return float(num)
     except ValueError:
         return num
+
 
 def idf2txt(txt):
     """convert the idf text to a simple text"""

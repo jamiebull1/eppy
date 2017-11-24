@@ -5,8 +5,8 @@
 #  http://opensource.org/licenses/MIT)
 # =======================================================================
 
-## {{{ http://code.activestate.com/recipes/578276/ (r1)
-## modified by Tuan Tran trantuan@hawaii.edu at L+U, www.coolshadow.com
+# {{{ http://code.activestate.com/recipes/578276/ (r1)
+# modified by Tuan Tran trantuan@hawaii.edu at L+U, www.coolshadow.com
 """height and surface"""
 from __future__ import absolute_import
 from __future__ import division
@@ -22,7 +22,7 @@ except ImportError as err:
 # area of a polygon
 def area(poly):
     """area"""
-    if len(poly) < 3: # not a plane - no area
+    if len(poly) < 3:  # not a plane - no area
         return 0
     total = [0, 0, 0]
     num = len(poly)
@@ -37,6 +37,8 @@ def area(poly):
     return abs(result/2)
 
 # average height of a polygon
+
+
 def height(poly):
     """height"""
     num = len(poly)
@@ -45,7 +47,9 @@ def height(poly):
         hgt += (poly[i][2])
     return hgt/num
 
-#unit normal vector of plane defined by points a, b, and c
+# unit normal vector of plane defined by points a, b, and c
+
+
 def unit_normal(apnt, bpnt, cpnt):
     """unit normal"""
     xvar = np.tinylinalg.det([
@@ -57,7 +61,7 @@ def unit_normal(apnt, bpnt, cpnt):
     magnitude = (xvar**2 + yvar**2 + zvar**2)**.5
     if magnitude < 0.00000001:
         mag = (0, 0, 0)
-    else: mag = (xvar/magnitude, yvar/magnitude, zvar/magnitude)
+    else:
+        mag = (xvar/magnitude, yvar/magnitude, zvar/magnitude)
     return mag
-## end of http://code.activestate.com/recipes/578276/ }}}
-
+# end of http://code.activestate.com/recipes/578276/ }}}

@@ -39,11 +39,8 @@ from __future__ import unicode_literals
 # generate all the repeating fields for all variables
 
 
-
-
-
-
 import eppy.bunchhelpers as bunchhelpers
+
 
 def cleaniddfield(acomm):
     """make all the keys lower case"""
@@ -56,9 +53,11 @@ def cleaniddfield(acomm):
             acomm.pop(key)
     return acomm
 
+
 def cleancommdct(commdct):
     """make all keys in commdct lower case"""
     return [[cleaniddfield(fcomm) for fcomm in comm] for comm in commdct]
+
 
 def getfields(comm):
     """get all the fields that have the key 'field' """
@@ -67,6 +66,7 @@ def getfields(comm):
         if 'field' in field:
             fields.append(field)
     return fields
+
 
 def repeatingfieldsnames(fields):
     """get the names of the repeating fields"""
@@ -79,6 +79,8 @@ def repeatingfieldsnames(fields):
     return repnames
 
 # TODO : looks like "TABLE:MULTIVARIABLELOOKUP" will have to be skipped for now.
+
+
 def missingkeys_standard(commdct, dtls, skiplist=None):
     """put missing keys in commdct for standard objects
     return a list of keys where it is unable to do so
@@ -96,8 +98,6 @@ def missingkeys_standard(commdct, dtls, skiplist=None):
         # for a function, pass comm as a variable
         key_i = dtls.index(key_txt.upper())
         comm = commdct[key_i]
-
-
 
         # get all fields
         fields = getfields(comm)
@@ -149,6 +149,7 @@ def missingkeys_standard(commdct, dtls, skiplist=None):
         commdct[key_i] = comm
     return nofirstfields
 
+
 def missingkeys_nonstandard(block, commdct, dtls, objectlist, afield='afiled %s'):
     """This is an object list where thre is no first field name
     to give a hint of what the first field name should be"""
@@ -167,4 +168,4 @@ def missingkeys_nonstandard(block, commdct, dtls, objectlist, afield='afiled %s'
                 if block:
                     comm[i]['field'] = ['%s' % (blk[i])]
                 else:
-                    comm[i]['field'] = [afield % (i - first_i + 1,),]
+                    comm[i]['field'] = [afield % (i - first_i + 1,), ]

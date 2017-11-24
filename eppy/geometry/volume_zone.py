@@ -21,6 +21,7 @@ try:
 except ImportError as err:
     from tinynumpy import tinynumpy as np
 
+
 def vol_tehrahedron(poly):
     """volume of a irregular tetrahedron"""
     p_a = np.array(poly[0])
@@ -33,11 +34,13 @@ def vol_tehrahedron(poly):
             np.subtract(p_b, p_d),
             np.subtract(p_c, p_d))) / 6)
 
+
 def central_p(poly1, poly2):
     central_point = np.array([0.0, 0.0, 0.0])
     for i in range(len(poly1)):
         central_point = np.add(central_point, np.add(np.array(poly1[i]), np.array(poly2[i])))
     return np.divide(np.divide(central_point, (len(poly1))), 2)
+
 
 def vol(poly1, poly2):
     """"volume of a zone defined by two polygon bases """

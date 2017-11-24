@@ -365,6 +365,7 @@ def test_newidfobject_warning():
         idf.newidfobject(objtype, Name="Krypton")
     assert len(captured_warnings) == 0
 
+
 def test_save():
     """
     Test the IDF.save() function using a filehandle to avoid external effects.
@@ -414,7 +415,7 @@ def test_saveas():
 
     try:
         # this should raise an error as no filename is passed
-        idf.saveas()  #pylint: disable=no-value-for-parameter
+        idf.saveas()  # pylint: disable=no-value-for-parameter
         assert False
     except TypeError:
         pass
@@ -439,7 +440,7 @@ def test_savecopy():
 
     try:
         # this should raise an error as no filename is passed
-        idf.savecopy()  #pylint: disable=no-value-for-parameter
+        idf.savecopy()  # pylint: disable=no-value-for-parameter
         assert False
     except TypeError:
         pass
@@ -570,8 +571,8 @@ def test_refname2key():
         (
             'AllCurves',
             [u'PUMP:VARIABLESPEED',
-            u'PUMP:CONSTANTSPEED', u'BOILER:HOTWATER',
-            u'ENERGYMANAGEMENTSYSTEM:CURVEORTABLEINDEXVARIABLE'],
+             u'PUMP:CONSTANTSPEED', u'BOILER:HOTWATER',
+             u'ENERGYMANAGEMENTSYSTEM:CURVEORTABLEINDEXVARIABLE'],
         ),  # refname, key
     )
     for refname, key in tdata:
@@ -580,12 +581,13 @@ def test_refname2key():
         result = modeleditor.refname2key(idf, refname)
         assert result == key
 
+
 def test_getiddgroupdict():
     """py.test for IDF.getiddgroupdict()"""
     data = ((
-    {
-        None: ['Lead Input', 'Simulation Data']
-    },
+        {
+            None: ['Lead Input', 'Simulation Data']
+            },
     ),  # gdict,
     )
     for gdict, in data:
@@ -593,6 +595,7 @@ def test_getiddgroupdict():
         idf = IDF(fhandle)
         result = idf.getiddgroupdict()
         assert result[None] == gdict[None]
+
 
 def test_idfinmsequence():
     """py.test for setting of theidf in Idf_MSequence"""

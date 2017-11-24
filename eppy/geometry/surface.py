@@ -13,7 +13,7 @@
 
 # The following code within the block
 # credited by ActiveState Code Recipes code.activestate.com
-## {{{ http://code.activestate.com/recipes/578276/ (r1)
+# {{{ http://code.activestate.com/recipes/578276/ (r1)
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -31,7 +31,7 @@ import math
 
 def area(poly):
     """Area of a polygon poly"""
-    if len(poly) < 3: # not a plane - no area
+    if len(poly) < 3:  # not a plane - no area
         return 0
     total = [0, 0, 0]
     num = len(poly)
@@ -47,6 +47,7 @@ def area(poly):
     result = np.dot(total, unit_normal(poly[0], poly[1], poly[2]))
     return abs(result/2)
 
+
 def unit_normal(pt_a, pt_b, pt_c):
     """unit normal vector of plane defined by points pt_a, pt_b, and pt_c"""
     x_val = np.linalg.det([[1, pt_a[1], pt_a[2]], [1, pt_b[1], pt_b[2]], [1, pt_c[1], pt_c[2]]])
@@ -57,14 +58,18 @@ def unit_normal(pt_a, pt_b, pt_c):
     if magnitude < 0.00000001:
         mag = (0, 0, 0)
     return mag
-## end of http://code.activestate.com/recipes/578276/ }}}
+# end of http://code.activestate.com/recipes/578276/ }}}
 
 # distance between two points
+
+
 def dist(pt1, pt2):
     """Distance between two points"""
     return ((pt2[0] - pt1[0])**2 + (pt2[1] - pt1[1])**2 + (pt2[2] - pt1[2])**2)**0.5
 
 # width of a rectangular polygon
+
+
 def width(poly):
     """Width of a polygon poly"""
     num = len(poly) - 1
@@ -72,9 +77,12 @@ def width(poly):
         return dist(poly[num], poly[0])
     elif abs(poly[num][2] - poly[0][2]) > abs(poly[1][2] - poly[0][2]):
         return dist(poly[1], poly[0])
-    else: return max(dist(poly[num], poly[0]), dist(poly[1], poly[0]))
+    else:
+        return max(dist(poly[num], poly[0]), dist(poly[1], poly[0]))
 
 # height of a polygon poly
+
+
 def height(poly):
     """Height of a polygon poly"""
     num = len(poly) - 1
@@ -94,10 +102,13 @@ def angle2vecs(vec1, vec2):
     vec2_modulus = np.sqrt(np.multiply(vec2, vec2).sum())
     if (vec1_modulus * vec2_modulus) == 0:
         cos_angle = 1
-    else: cos_angle = dot / (vec1_modulus * vec2_modulus)
+    else:
+        cos_angle = dot / (vec1_modulus * vec2_modulus)
     return math.degrees(acos(cos_angle))
 
 # orienation of a polygon poly
+
+
 def azimuth(poly):
     """Azimuth of a polygon poly"""
     num = len(poly) - 1
@@ -113,6 +124,7 @@ def azimuth(poly):
         return 360 - angle2vecs(vec_azi, vec_n)
     else:
         return angle2vecs(vec_azi, vec_n)
+
 
 def tilt(poly):
     """Tilt of a polygon poly"""

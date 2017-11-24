@@ -6,8 +6,8 @@ Will assist in:
 # was designed to run from ../../docs
 # to run from here change some of the file paths below
 # run as
-    # python relatedbojects.py > outputfile.txt
-    # look at outputfile.txt
+# python relatedbojects.py > outputfile.txt
+# look at outputfile.txt
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -31,9 +31,9 @@ idf = IDF(StringIO.StringIO(""))
 okeys = idf.idfobjects.keys()
 for okey in okeys:
     idf.newidfobject(okey)
-    
+
 for okey in okeys:
-    referreds = idf.idfobjects[okey.upper()]    
+    referreds = idf.idfobjects[okey.upper()]
     referred = referreds[0]
     try:
         nameidd = referred.getfieldidd('Name')
@@ -49,14 +49,12 @@ for okey in okeys:
     groupfield = {}
     ikeys = idf.idfobjects.keys()
     for key in ikeys:
-    # key = u'BUILDINGSURFACE:DETAILED'
-    # key = u'ZONELIST'
+        # key = u'BUILDINGSURFACE:DETAILED'
+        # key = u'ZONELIST'
         objs = idf.idfobjects[key]
         obj = objs[0]
         keyidd = obj.getfieldidd('key')
         group = keyidd['group']
-
-
 
         fields = obj.objls
         for field in fields:
@@ -68,7 +66,7 @@ for okey in okeys:
                 referrings = []
             if 'begin-extensible' in fieldidd:
                 # print field, fieldidd['begin-extensible']
-                break # do extensibles later
+                break  # do extensibles later
             s_references = set(references)
             s_referrings = set(referrings)
 
@@ -83,7 +81,6 @@ for okey in okeys:
                 # print obj.key
                 # print '\t', dict(group=group, field=field)
                 # print
-
 
     for kkey, values in groupfield.items():
         print(okey)

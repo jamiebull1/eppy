@@ -12,12 +12,14 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import os, pickle
+import os
+import pickle
 # import string
 import eppy.EPlusInterfaceFunctions.mylib1 as mylib1
 
 
 RET = '\r\n'
+
 
 def readfile(filename):
     """readfile"""
@@ -25,15 +27,17 @@ def readfile(filename):
     data = fhandle.read()
     try:
         data = data.decode('ISO-8859-2')
-    except AttributeError:  
+    except AttributeError:
         pass
     fhandle.close()
     return data
+
 
 def printlist(alist):
     """printlist"""
     for num in range(0, len(alist)):
         print(alist[num])
+
 
 def printdict(adict):
     """printdict"""
@@ -42,21 +46,23 @@ def printdict(adict):
     for i in range(0, len(dlist)):
         print(dlist[i], adict[dlist[i]])
 
+
 def tabfile2list(fname):
     "tabfile2list"
     #dat = mylib1.readfileasmac(fname)
     #data = string.strip(dat)
-    data = mylib1.readfileasmac(fname)  #pylint: disable=assignment-from-none
-    #data = data[:-2]#remove the last return
-    alist = data.split('\r')#since I read it as a mac file
+    data = mylib1.readfileasmac(fname)  # pylint: disable=assignment-from-none
+    # data = data[:-2]#remove the last return
+    alist = data.split('\r')  # since I read it as a mac file
     blist = alist[1].split('\t')
 
     clist = []
     for num in range(0, len(alist)):
         ilist = alist[num].split('\t')
         clist = clist+[ilist]
-    cclist = clist[:-1]#the last element is turning out to be empty
+    cclist = clist[:-1]  # the last element is turning out to be empty
     return cclist
+
 
 def tabstr2list(data):
     """tabstr2list"""
@@ -68,9 +74,10 @@ def tabstr2list(data):
         ilist = alist[num].split('\t')
         clist = clist+[ilist]
     cclist = clist[:-1]
-      #the last element is turning out to be empty
-      #this is because the string ends with a os.linesep
+    # the last element is turning out to be empty
+    # this is because the string ends with a os.linesep
     return cclist
+
 
 def list2doe(alist):
     """list2doe"""
@@ -87,11 +94,13 @@ def list2doe(alist):
         astr = astr + RET
     return astr
 
+
 def tabfile2doefile(tabfile, doefile):
     """tabfile2doefile"""
     alist = tabfile2list(tabfile)
     astr = list2doe(alist)
     mylib1.write_str2file(doefile, astr)
+
 
 def tabstr2doestr(astr):
     """tabstr2doestr"""
@@ -99,10 +108,11 @@ def tabstr2doestr(astr):
     astr = list2doe(alist)
     return astr
 
+
 def makedoedict(str1):
     """makedoedict"""
     blocklist = str1.split('..')
-    blocklist = blocklist[:-1]#remove empty item after last '..'
+    blocklist = blocklist[:-1]  # remove empty item after last '..'
     blockdict = {}
     belongsdict = {}
     for num in range(0, len(blocklist)):
@@ -115,10 +125,11 @@ def makedoedict(str1):
         alinelist = aline.split('=')
         belongs = alinelist[-1].strip()
         theblock = blocklist[num] + os.linesep + '..' + os.linesep + os.linesep
-            #put the '..' back in the block
+        # put the '..' back in the block
         blockdict[name] = theblock
         belongsdict[name] = belongs
     return [blockdict, belongsdict]
+
 
 def makedoetree(ddict, bdict):
     """makedoetree"""
@@ -126,60 +137,61 @@ def makedoetree(ddict, bdict):
     blist = list(bdict.keys())
     dlist.sort()
     blist.sort()
-    #make space dict
+    # make space dict
     doesnot = 'DOES NOT'
     lst = []
     for num in range(0, len(blist)):
-        if bdict[blist[num]] == doesnot:#belong
+        if bdict[blist[num]] == doesnot:  # belong
             lst = lst + [blist[num]]
 
     doedict = {}
     for num in range(0, len(lst)):
-        #print lst[num]
+        # print lst[num]
         doedict[lst[num]] = {}
     lv1list = list(doedict.keys())
     lv1list.sort()
 
-    #make wall dict
-    #for each space
+    # make wall dict
+    # for each space
     for i in range(0, len(lv1list)):
         walllist = []
         adict = doedict[lv1list[i]]
-        #loop thru the entire blist dictonary and list the ones that belong into walllist
+        # loop thru the entire blist dictonary and list the ones that belong into walllist
         for num in range(0, len(blist)):
             if bdict[blist[num]] == lv1list[i]:
                 walllist = walllist + [blist[num]]
-        #put walllist into dict
+        # put walllist into dict
         for j in range(0, len(walllist)):
             adict[walllist[j]] = {}
 
-    #make window dict
-    #for each space
+    # make window dict
+    # for each space
     for i in range(0, len(lv1list)):
         adict1 = doedict[lv1list[i]]
-        #for each wall
+        # for each wall
         walllist = list(adict1.keys())
         walllist.sort()
         for j in range(0, len(walllist)):
             windlist = []
             adict2 = adict1[walllist[j]]
-           #loop thru the entire blist dictonary and list the ones that belong into windlist
+           # loop thru the entire blist dictonary and list the ones that belong into windlist
             for num in range(0, len(blist)):
                 if bdict[blist[num]] == walllist[j]:
                     windlist = windlist + [blist[num]]
-            #put walllist into dict
+            # put walllist into dict
             for k in range(0, len(windlist)):
                 adict2[windlist[k]] = {}
     return doedict
+
 
 def tree2doe(str1):
     """tree2doe"""
     retstuff = makedoedict(str1)
     ddict = makedoetree(retstuff[0], retstuff[1])
     ddict = retstuff[0]
-    retstuff[1] = {}# don't need it anymore
+    retstuff[1] = {}  # don't need it anymore
 
-    str1 = ''#just re-using it
+    str1 = ''  # just re-using it
     l1list = list(ddict.keys())
     l1list.sort()
     for i in range(0, len(l1list)):
@@ -194,13 +206,14 @@ def tree2doe(str1):
                 str1 = str1 + ddict[l3list[k]]
     return str1
 
+
 def mtabstr2doestr(st1):
     """mtabstr2doestr"""
     seperator = '$ =============='
     alist = st1.split(seperator)
 
-    #this removes all the tabs that excel
-    #puts after the seperator and before the next line
+    # this removes all the tabs that excel
+    # puts after the seperator and before the next line
     for num in range(0, len(alist)):
         alist[num] = alist[num].lstrip()
     st2 = ''
@@ -209,14 +222,14 @@ def mtabstr2doestr(st1):
         st2 = st2 + list2doe(alist)
 
     lss = st2.split('..')
-    mylib1.write_str2file('forfinal.txt', st2)#for debugging
+    mylib1.write_str2file('forfinal.txt', st2)  # for debugging
     print(len(lss))
-
 
     st3 = tree2doe(st2)
     lsss = st3.split('..')
     print(len(lsss))
     return st3
+
 
 def getoneblock(astr, start, end):
     """get the block bounded by start and end
@@ -227,11 +240,12 @@ def getoneblock(astr, start, end):
     astr = alist[0]
     return astr
 
+
 def doestr2tabstr(astr, kword):
     """doestr2tabstr"""
     alist = astr.split('..')
     del astr
-    #strip junk put .. back
+    # strip junk put .. back
     for num in range(0, len(alist)):
         alist[num] = alist[num].strip()
         alist[num] = alist[num] + os.linesep + '..' + os.linesep
@@ -245,9 +259,9 @@ def doestr2tabstr(astr, kword):
         keyword = assignls[-1].strip()
         if keyword == kword:
             lblock = lblock + [alist[num]]
-            #print firstline
+            # print firstline
 
-    #get all val
+    # get all val
     lval = []
     for num in range(0, len(lblock)):
         block = lblock[num]
@@ -265,7 +279,7 @@ def doestr2tabstr(astr, kword):
         lvalin.pop()
         lval = lval + [lvalin]
 
-    #get keywords
+    # get keywords
     kwordl = []
     block = lblock[0]
     linel = block.split(os.linesep)
@@ -293,26 +307,31 @@ def doestr2tabstr(astr, kword):
 
     return astr
 
+
 def myreplace(astr, thefind, thereplace):
     """in string astr replace all occurences of thefind with thereplace"""
     alist = astr.split(thefind)
     new_s = alist.split(thereplace)
     return new_s
 
+
 def fslicebefore(astr, sub):
     """Return the slice starting at sub in string astr"""
     findex = astr.find(sub)
     return astr[findex:]
+
 
 def fsliceafter(astr, sub):
     """Return the slice after at sub in string astr"""
     findex = astr.find(sub)
     return astr[findex + len(sub):]
 
+
 def pickleload(fname):
     """same as pickle.load(fhandle).takes filename as parameter"""
     fhandle = open(fname, 'rb')
     return pickle.load(fhandle)
+
 
 def pickledump(theobject, fname):
     """same as pickle.dump(theobject, fhandle).takes filename as parameter"""

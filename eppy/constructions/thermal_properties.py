@@ -47,11 +47,11 @@ def rvalue(ddtt):
         conductivity = ddtt.obj[ddtt.objls.index('Conductivity')]
         rvalue = thickness / conductivity
     elif object_type == 'Material:AirGap':
-        rvalue = ddtt.obj[ddtt.objls.index('Thermal_Resistance')] 
+        rvalue = ddtt.obj[ddtt.objls.index('Thermal_Resistance')]
     elif object_type == 'Material:InfraredTransparent':
         rvalue = 0
     elif object_type == 'Material:NoMass':
-        rvalue = ddtt.obj[ddtt.objls.index('Thermal_Resistance')] 
+        rvalue = ddtt.obj[ddtt.objls.index('Thermal_Resistance')]
     elif object_type == 'Material:RoofVegetation':
         warnings.warn(
             "Material:RoofVegetation thermal properties are based on dry soil",
@@ -63,26 +63,30 @@ def rvalue(ddtt):
         raise AttributeError("%s rvalue property not implemented" % object_type)
     return rvalue
 
+
 def ufactor(ddtt):
     """
     U factor (W/m2-K) of a construction or material.
     1 / R value (W/K)
     """
     return 1 / rvalue(ddtt)
-    
+
+
 def ufactor_ip(ddtt):
     """
     U factor (BTU/(h °F ft^2)) of a construction or material.
     1 / R value (ft^2 °F hr/Btu)
     """
     # quick fix for Santosh. Needs to thought thru
-    mult = 0.076 / 0.429 # base on doing conversion in the table report
+    mult = 0.076 / 0.429  # base on doing conversion in the table report
     return ufactor(ddtt) * mult
+
 
 def rvalue_ip(ddtt):
     """return R value in IP units"""
     # quick fix for Santosh. Needs to thought thru
-    return 1 /  ufactor_ip(ddtt)       
+    return 1 / ufactor_ip(ddtt)
+
 
 def heatcapacity(ddtt):
     """
@@ -130,4 +134,3 @@ def heatcapacity(ddtt):
     else:
         raise AttributeError("%s has no heatcapacity property" % object_type)
     return heatcapacity
-        
